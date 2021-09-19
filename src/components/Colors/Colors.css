@@ -4,7 +4,7 @@
     justify-content: space-evenly;
     border: solid 2px rgb(173, 173, 173);
     box-shadow: 3px 3px 10px black;
-    width: 400px;
+    width: 420px;
 }
 .color-columnsTop,.color-columnsBottom{
     display: flex;

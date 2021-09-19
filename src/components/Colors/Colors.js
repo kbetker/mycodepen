@@ -275,6 +275,19 @@ function Colors(){
               <div className="color" onClick={(e) => dispatch(dispatchSelectedColor(e.target.id))} style={{backgroundColor: "#17202a"}} id="#17202a"></div>
         </div>
 
+        <div className="color-column">
+              <div className="color" onClick={(e) => dispatch(dispatchSelectedColor(e.target.id))} style={{backgroundColor: "#ffffff"}} id="#eaecee"></div>
+              <div className="color" onClick={(e) => dispatch(dispatchSelectedColor(e.target.id))} style={{backgroundColor: "#e6e6e6"}} id="#d5d8dc"></div>
+              <div className="color" onClick={(e) => dispatch(dispatchSelectedColor(e.target.id))} style={{backgroundColor: "#cdcdcd"}} id="#abb2b9"></div>
+              <div className="color" onClick={(e) => dispatch(dispatchSelectedColor(e.target.id))} style={{backgroundColor: "#b4b4b4"}} id="#808b96"></div>
+              <div className="color" onClick={(e) => dispatch(dispatchSelectedColor(e.target.id))} style={{backgroundColor: "#9b9b9b"}} id="#566573"></div>
+              <div className="color" onClick={(e) => dispatch(dispatchSelectedColor(e.target.id))} style={{backgroundColor: "#828282"}} id="#2c3e50"></div>
+              <div className="color" onClick={(e) => dispatch(dispatchSelectedColor(e.target.id))} style={{backgroundColor: "#696969"}} id="#273746"></div>
+              <div className="color" onClick={(e) => dispatch(dispatchSelectedColor(e.target.id))} style={{backgroundColor: "#505050"}} id="#212f3d"></div>
+              <div className="color" onClick={(e) => dispatch(dispatchSelectedColor(e.target.id))} style={{backgroundColor: "#373737"}} id="#1c2833"></div>
+              <div className="color" onClick={(e) => dispatch(dispatchSelectedColor(e.target.id))} style={{backgroundColor: "#000000"}} id="#17202a"></div>
+        </div>
+
     </div>
     )
 }

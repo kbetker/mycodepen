@@ -10,7 +10,7 @@ function Colors(){
         <div className="colorsContainer">
 
         <div className="color-column">
-              <div className="color" onClick={(e) => dispatch(dispatchSelectedColor(e.target.id))} style={{backgroundColor: "#f9ebea"}} id="#f9ebea"></div>
+              <div className="color" onClick={(e) => dispatch(dispatchSelectedColor(e.target.id))} style={{backgroundColor: "rgba(0, 0, 0, 0)"}} id="rgba(0, 0, 0, 0)"></div>
               <div className="color" onClick={(e) => dispatch(dispatchSelectedColor(e.target.id))} style={{backgroundColor: "#f2d7d5"}} id="#f2d7d5"></div>
               <div className="color" onClick={(e) => dispatch(dispatchSelectedColor(e.target.id))} style={{backgroundColor: "#e6b0aa"}} id="#e6b0aa"></div>
               <div className="color" onClick={(e) => dispatch(dispatchSelectedColor(e.target.id))} style={{backgroundColor: "#d98880"}} id="#d98880"></div>

@@ -1,5 +1,19 @@
 .canvas{
-    border: 1px solid white;
+    /* border: 1px solid white; */
     width: 80px;
     height: 80px;
+    /* background-color: red; */
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.pixel{
+    width: 20px;
+    height: 20px;
+    box-sizing: border-box;
+    border: solid 1px rgba(252, 252, 252, 0.062);
+}
+.pixel:hover{
+    background-color: rgba(255, 255, 255, 0.288);
 }

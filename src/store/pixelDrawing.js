@@ -26,7 +26,6 @@ export const dispatchSelectedColor = (selectedColor) => async (dispatch) => {
     switch( action.type ){
         case SELECTED_COLOR:
             newState = Object.assign({}, state);
-            console.log(action)
             newState.selectedColor = action.selectedColor
             return newState;
 

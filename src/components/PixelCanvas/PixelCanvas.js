@@ -10,9 +10,9 @@ function PixelCanvas() {
     const [colorArray, setColorArray] = useState([])
     const [editMode, setEditMode] = useState("drawingMode")
     const arrayBg = "rgba(0, 0, 0, 0)"
-    const pixel = 28
-    const rows = 10
-    const columns = 10
+    const pixel = 15
+    const rows = 30
+    const columns = 30
 
     //initializes empty array
     const initArray = () => {
@@ -31,14 +31,13 @@ function PixelCanvas() {
 
     // fill function helper
     function fillColorRecurs(row, column, currBgColor, newArr){
+        if(
+            row === null
+            || column === null
+            || newArr[row][column] !== currBgColor
+            || selectedColor === currBgColor
+            ) return newArr;
 
-        if(row !== null && column !== null){
-            console.log( newArr[row][column],currBgColor, "In Fill Recurs")
-
-        }
-
-
-        if(row === null || column === null || newArr[row][column] !== currBgColor) return newArr;
         newArr[row][column] = selectedColor
         let up = row - 1 >= 0 ? row - 1 : null
         let down = row + 1 < newArr.length ? row + 1 : null
@@ -72,16 +71,15 @@ function PixelCanvas() {
         }
         newArr[row][column] = selectedColor
         setColorArray(newArr)
-        // console.log(colorArray)
     }
 
 
 
-    //sets mousedown status - allows for continuous drawing
-    // useEffect(() => {
-    //     document.addEventListener("mousedown", (e) => { isMouseDown.current = true })
-    //     document.addEventListener("mouseup", (e) => { isMouseDown.current = false })
-    // }, [isMouseDown])
+    // sets mousedown status - allows for continuous drawing
+    useEffect(() => {
+        document.addEventListener("mousedown", (e) => { isMouseDown.current = true })
+        document.addEventListener("mouseup", (e) => { isMouseDown.current = false })
+    }, [isMouseDown])
 
 
     return (

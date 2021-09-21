@@ -29,7 +29,12 @@ function Colors() {
       function stopDrag() {
             document.onmouseup = null; // stop moving when mouse button is released:
             document.onmousemove = null;
+
       }
+
+      // useEffect(()=>{
+      //       dispatch(dispatchSelectedColor(`rgba(${red}, ${green}, ${blue}, ${alpha})`))
+      // },[stopDrag])
 
 
       useEffect(() => {
@@ -94,21 +99,25 @@ function Colors() {
 
                   <div className="nameThisBetter">
                         <div className="leftMarker" ref={leftMarker}></div>
-                        <div className="slidersContainer">
-                              <div className="slider Red" style={{backgroundImage: `linear-gradient(to right, rgba(0, ${green}, ${blue}, ${alpha}), rgba(255, ${green}, ${blue}, ${alpha}))`}} >
-                                    <div className="knob Red" ref={knobRed} id="red" draggable="true">r</div>
+                        <div className="slidersContainer" style={{backgroundImage: `url(${transparent})`}} onMouseLeave={()=>  dispatch(dispatchSelectedColor(`rgba(${red}, ${green}, ${blue}, ${alpha})`))}>
+                              <div className="slider"
+                                    style={{backgroundImage: `linear-gradient(to right, rgba(0, ${green}, ${blue}, ${alpha}), rgba(255, ${green}, ${blue}, ${alpha}))`}} >
+                                    <div className="knob Red" ref={knobRed} id="red" draggable="true"></div>
                               </div>
 
-                              <div className="slider Green">
+                              <div className="slider"
+                                    style={{backgroundImage: `linear-gradient(to right, rgba(${red}, 0, ${blue}, ${alpha}), rgba(${red}, 255, ${blue}, ${alpha}))`}}>
                                     <div className="knob Green" ref={knobGreen} id="green" draggable="true"></div>
                               </div>
 
-                              <div className="slider Blue">
+                              <div className="slider"
+                                    style={{backgroundImage: `linear-gradient(to right, rgba(${red}, ${green}, 0, ${alpha}), rgba(${red}, ${green}, 255, ${alpha}))`}}>
                                     <div className="knob Blue" ref={knobBlue} id="blue" draggable="true"></div>
                               </div>
 
-                              <div className="slider Alpha">
-                                    <div className="knob Alpha" ref={knobAlpha} id="alpha" draggable="true" style={{left: "240px"}}></div>
+                              <div className="slider"
+                                    style={{backgroundImage: `linear-gradient(to right, rgba(${red}, ${green}, ${blue}, 0), rgba(${red}, ${green}, ${blue}, 1))`}}>
+                                    <div className="knob Alpha" ref={knobAlpha} id="alpha" draggable="true" style={{left: "240px", backgroundImage: `url(${transparent})`}}></div>
                               </div>
                         </div>
 

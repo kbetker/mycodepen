@@ -17,7 +17,7 @@ export const dispatchSelectedColor = (selectedColor) => async (dispatch) => {
 
 
   export const initialState = {
-      selectedColor: "#222222",
+      selectedColor: "rgba(0, 0, 0, 1)",
       drawing: [],
     }
 

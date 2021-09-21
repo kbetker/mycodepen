@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from "react"
 import "./Colors.css"
 import { dispatchSelectedColor } from "../../store/pixelDrawing"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import transparent from "./transparent.png"
 
 function Colors() {
+      const pickedColor = useSelector(state => state.pixelDrawing.selectedColor)
       const knobRed = useRef(0)
       const knobRedPOS = useRef(0)
 
@@ -32,9 +33,38 @@ function Colors() {
 
       }
 
-      // useEffect(()=>{
-      //       dispatch(dispatchSelectedColor(`rgba(${red}, ${green}, ${blue}, ${alpha})`))
-      // },[stopDrag])
+      useEffect(()=>{
+            // console.log(pickedColor)
+            let grabColors = pickedColor.slice(5, pickedColor.indexOf(")")).split(", ")
+            let red = grabColors[0]
+            let green = grabColors[1]
+            let blue = grabColors[2]
+            let alpha = grabColors[3]
+
+          setRed(red)
+          knobRedPOS.current = red
+          knobRed.current.style.left = `${red}px`
+
+          setGreen(green)
+          knobGreenPOS.current = green
+          knobGreen.current.style.left = `${green}px`
+
+          setBlue(blue)
+          knobBluePOS.current = blue
+          knobBlue.current.style.left = `${blue}px`
+
+          setAlpha(alpha)
+          let alphaConvert = (alpha / 0.00392).toFixed(2)
+
+          if(alphaConvert > 255){
+            knobAlphaPOS.current = 255
+            knobAlpha.current.style.left = "255px"
+          } else {
+            knobAlphaPOS.current = (alpha / 0.00392).toFixed(2)
+            knobAlpha.current.style.left = `${(alpha / 0.00392).toFixed(2)}px`
+          }
+
+      },[pickedColor])
 
 
       useEffect(() => {
@@ -70,17 +100,17 @@ function Colors() {
                               stopDrag()
                               theKnob.style.left = `0px`;
                           }
-                          else if ((e.clientX) > 252 + leftMarkerPos) {
+                          else if ((e.clientX) >= 270 + leftMarkerPos) {
                               stopDrag()
-                              theKnob.style.left = `240px`;
+                              theKnob.style.left = `255px`;
                           }
                           else {
                               theKnob.style.left = (theKnob.offsetLeft - xDiff) + "px";
                           }
                           let adjustAlpha = knobAlphaPOS.current * 0.00392
-                          setRed(knobRedPOS.current)
-                          setGreen(knobGreenPOS.current)
-                          setBlue(knobBluePOS.current)
+                          setRed(knobRedPOS.current < 0 ? 0 : knobRedPOS.current > 255 ? 255 : knobRedPOS.current)
+                          setGreen(knobGreenPOS.current  < 0 ? 0 : knobGreenPOS.current > 255 ? 255 : knobGreenPOS.current)
+                          setBlue(knobBluePOS.current  < 0 ? 0 : knobBluePOS.current > 255 ? 255 : knobBluePOS.current)
                           setAlpha(adjustAlpha < 0 ? 0 : adjustAlpha > 1 ? 1 : (adjustAlpha).toFixed(2))
                   }
 
@@ -117,7 +147,7 @@ function Colors() {
 
                               <div className="slider"
                                     style={{backgroundImage: `linear-gradient(to right, rgba(${red}, ${green}, ${blue}, 0), rgba(${red}, ${green}, ${blue}, 1))`}}>
-                                    <div className="knob Alpha" ref={knobAlpha} id="alpha" draggable="true" style={{left: "240px", backgroundImage: `url(${transparent})`}}></div>
+                                    <div className="knob Alpha" ref={knobAlpha} id="alpha" draggable="true" style={{left: "255px", backgroundImage: `url(${transparent})`}}></div>
                               </div>
                         </div>
 

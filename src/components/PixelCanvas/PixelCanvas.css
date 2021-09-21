@@ -13,7 +13,7 @@
     /* width: 20px;
     height: 20px; */
     box-sizing: border-box;
-    border: solid 1px rgba(128, 128, 128, 0.137);
+    /* border: solid 1px rgba(128, 128, 128, 0.137); */
 }
 .pixel:hover{
     background-color: rgba(1, 1, 1, 1);

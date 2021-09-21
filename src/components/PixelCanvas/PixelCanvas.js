@@ -10,9 +10,9 @@ function PixelCanvas() {
     const [colorArray, setColorArray] = useState([])
     const [editMode, setEditMode] = useState("drawingMode")
     const arrayBg = "rgba(0, 0, 0, 0)"
-    const pixel = 15
-    const rows = 30
-    const columns = 30
+    const pixel = 10
+    const rows = 50
+    const columns = 50
 
     //initializes empty array
     const initArray = () => {
@@ -25,14 +25,18 @@ function PixelCanvas() {
 
     useEffect(() => {
         setColorArray(initArray())
-        dispatch(dispatchSelectedColor("#000000"))
+        dispatch(dispatchSelectedColor("rgba(0, 0, 0, 1)"))
     }, [])
 
 
     // fill function helper
     function fillColorRecurs(row, column, currBgColor, newArr){
-        if(
-            row === null
+        // if(row !==null && column !== null){
+        //     console.log(currBgColor, "currBgColor", selectedColor, "Selected Color")
+        //     console.log(newArr[row][column] !== currBgColor, selectedColor === currBgColor)
+        // }
+
+        if( row === null
             || column === null
             || newArr[row][column] !== currBgColor
             || selectedColor === currBgColor
@@ -53,7 +57,7 @@ function PixelCanvas() {
 
     // fill function
     function fillFunc(row, column, currBgColor){
-        console.log(currBgColor, "<== FillFunc")
+        // console.log(currBgColor, "<== FillFunc CurrentBackground")
         // copies array
         let newArr = []
         for (var i = 0; i < colorArray.length; i++){
@@ -87,6 +91,7 @@ function PixelCanvas() {
         <div className="editButtons">
             <button onClick={() => setEditMode('drawingMode')}>Draw Mode</button>
             <button onClick={() => setEditMode('fillMode')}>Fill Mode</button>
+            <button onClick={() => setEditMode('colorPicker')}>Color Picker</button>
             <span style={{color: "white", marginLeft: "10px"}}>{editMode}</span>
         </div>
 
@@ -109,7 +114,8 @@ function PixelCanvas() {
                             backgroundColor: colorArray[i][j]}}
                         onMouseDown={(e) => [
                             editMode==="drawingMode" && changeColor(i, j),
-                            editMode==="fillMode" && fillFunc(i, j, e.target.style.backgroundColor)
+                            editMode==="fillMode" && fillFunc(i, j, e.target.style.backgroundColor),
+                            editMode==="colorPicker" && dispatch(dispatchSelectedColor(e.target.style.backgroundColor)),
                         ]}
 
                         onMouseOver={()=>

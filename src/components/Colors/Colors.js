@@ -285,7 +285,7 @@ function Colors(){
               <div className="color" onClick={(e) => dispatch(dispatchSelectedColor(e.target.id))} style={{backgroundColor: "#696969"}} id="#273746"></div>
               <div className="color" onClick={(e) => dispatch(dispatchSelectedColor(e.target.id))} style={{backgroundColor: "#505050"}} id="#212f3d"></div>
               <div className="color" onClick={(e) => dispatch(dispatchSelectedColor(e.target.id))} style={{backgroundColor: "#373737"}} id="#1c2833"></div>
-              <div className="color" onClick={(e) => dispatch(dispatchSelectedColor(e.target.id))} style={{backgroundColor: "#000000"}} id="#17202a"></div>
+              <div className="color" onClick={(e) => dispatch(dispatchSelectedColor(e.target.id))} style={{backgroundColor: "#000000"}} id="#000000"></div>
         </div>
 
     </div>

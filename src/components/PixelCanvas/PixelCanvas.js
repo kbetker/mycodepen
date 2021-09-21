@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { dispatchSelectedColor } from "../../store/pixelDrawing"
 import "./PixelCanvas.css"
@@ -8,7 +8,8 @@ function PixelCanvas() {
     const selectedColor =  useSelector(state => state.pixelDrawing.selectedColor)
     const isMouseDown = useRef(false)
     const colorArray = useRef([])
-    const arrayBg = "rgba(0, 0, 0, 0,)"
+    const editMode = useRef("drawingMode")
+    const arrayBg = "rgb(255, 255, 255)"
     const pixel = 12
     const rows = 30
     const columns = 30
@@ -24,26 +25,40 @@ function PixelCanvas() {
         }
         colorArray.current = initArray()
         dispatch(dispatchSelectedColor("#000000"))
+        console.log(colorArray.current)
     }, [])
 
 
-    // changes the background color
+    function fillFunc(row, column, divBgColor){
+       console.log(colorArray.current[row][column])
+
+    }
+
+
+    // changes the background color Drawing Mode
     useEffect(() => {
         let pixels = document.querySelectorAll(`.pixel`)
 
         for (let i = 0; i < pixels.length; i++) {
             let arr = pixels[i].id.split("-")
-
-            pixels[i].addEventListener("mouseover", (e) => {
-                if (isMouseDown.current) {
-                    colorArray.current[arr[0]][arr[1]] = selectedColor
-                    pixels[i].style.backgroundColor = `${colorArray.current[arr[0]][arr[1]]}`
-                }
-            })
+            // console.log(arr[0], "-", arr[1])
+            // pixels[i].addEventListener("mouseover", (e) => {
+            //     if (isMouseDown.current && editMode.current === "drawingMode") {
+            //         colorArray.current[arr[0]][arr[1]] = selectedColor
+            //         pixels[i].style.backgroundColor = `${colorArray.current[arr[0]][arr[1]]}`
+            //     }
+            // })
 
             pixels[i].addEventListener("mousedown", (e) => {
+                e.stopPropagation()
+                if(editMode.current === "drawingMode"){
                 colorArray.current[arr[0]][arr[1]] = selectedColor
                 pixels[i].style.backgroundColor = `${colorArray.current[arr[0]][arr[1]]}`
+                console.log(colorArray.current)
+                } else if (editMode.current === "fillMode"){
+                    let id = e.target.id.split("-")
+                    fillFunc(id[0], id[1], e.target.style.backgroundColor)
+                }
             })
         }
     }, [selectedColor, colorArray])
@@ -56,6 +71,9 @@ function PixelCanvas() {
     }, [isMouseDown])
 
 
+
+
+
     //DON'T DELETE - this will allow you to continue editing a saved picture
     // useEffect(() => {
     //     let pixelBg = document.querySelectorAll(`.pixel`)
@@ -66,6 +84,12 @@ function PixelCanvas() {
     // }, [])
 
     return (
+        <>
+        <div className="editButtons">
+            <button onClick={() => editMode.current = 'drawingMode'}>Draw Mode</button>
+            <button onClick={() => editMode.current = 'fillMode'}>Fill Mode</button>
+            <span style={{color: "white", marginLeft: "10px"}}>{editMode.current}</span>
+        </div>
         <div
             className="canvas"
             style={{
@@ -81,13 +105,15 @@ function PixelCanvas() {
                         key={`key-${i}-${j}`}
                         style={{
                             height: `${pixel}px`,
-                            width: `${pixel}px`
+                            width: `${pixel}px`,
+                            backgroundColor: "rgb(255, 255, 255)"
                         }}>
 
                     </div>
                 )
             )}
         </div>
+        </>
     )
 }
 

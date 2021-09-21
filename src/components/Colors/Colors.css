@@ -23,3 +23,8 @@
     border: solid 1px white;
     box-shadow: 0 0 3px black inset;
 }
+
+.sliderContainer{
+    width: 255px;
+    background-color: red;
+}

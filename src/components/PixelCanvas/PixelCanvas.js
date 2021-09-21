@@ -78,10 +78,10 @@ function PixelCanvas() {
 
 
     //sets mousedown status - allows for continuous drawing
-    useEffect(() => {
-        document.addEventListener("mousedown", (e) => { isMouseDown.current = true })
-        document.addEventListener("mouseup", (e) => { isMouseDown.current = false })
-    }, [isMouseDown])
+    // useEffect(() => {
+    //     document.addEventListener("mousedown", (e) => { isMouseDown.current = true })
+    //     document.addEventListener("mouseup", (e) => { isMouseDown.current = false })
+    // }, [isMouseDown])
 
 
     return (

@@ -8,20 +8,17 @@ function Colors() {
       const pickedColor = useSelector(state => state.pixelDrawing.selectedColor)
       const knobRed = useRef(0)
       const knobRedPOS = useRef(0)
-
       const knobGreen = useRef()
       const knobGreenPOS = useRef(0)
-
       const knobBlue = useRef(0)
       const knobBluePOS = useRef(0)
-
       const knobAlpha = useRef(0)
       const knobAlphaPOS = useRef(255)
 
       const leftMarker = useRef()
 
       const dispatch = useDispatch();
-      const [color, setColor] = useState('rgba(0, 0, 0, 0,)')
+      // const [color, setColor] = useState('rgba(0, 0, 0, 0,)')
       const [red, setRed] = useState(0)
       const [green, setGreen] = useState(0)
       const [blue, setBlue] = useState(0)
@@ -30,7 +27,6 @@ function Colors() {
       function stopDrag() {
             document.onmouseup = null; // stop moving when mouse button is released:
             document.onmousemove = null;
-
       }
 
       useEffect(()=>{
@@ -111,13 +107,11 @@ function Colors() {
                           setRed(knobRedPOS.current < 0 ? 0 : knobRedPOS.current > 255 ? 255 : knobRedPOS.current)
                           setGreen(knobGreenPOS.current  < 0 ? 0 : knobGreenPOS.current > 255 ? 255 : knobGreenPOS.current)
                           setBlue(knobBluePOS.current  < 0 ? 0 : knobBluePOS.current > 255 ? 255 : knobBluePOS.current)
-                          setAlpha(adjustAlpha < 0 ? 0 : adjustAlpha > 1 ? 1 : (adjustAlpha).toFixed(2))
+                          setAlpha(adjustAlpha < 0 ? 0 : adjustAlpha > 1 ? 1.00 : (adjustAlpha).toFixed(2))
                   }
-
-
                   theKnob.onmousedown = mouseDown;
             }
-      })
+      }, [])
 
 
 
@@ -127,7 +121,7 @@ function Colors() {
             <div className="colorsContainer">
 
 
-                  <div className="nameThisBetter">
+                  <div className="IneedToWorkOnMyNamingConventions">
                         <div className="leftMarker" ref={leftMarker}></div>
                         <div className="slidersContainer" style={{backgroundImage: `url(${transparent})`}} onMouseLeave={()=>  dispatch(dispatchSelectedColor(`rgba(${red}, ${green}, ${blue}, ${alpha})`))}>
                               <div className="slider"

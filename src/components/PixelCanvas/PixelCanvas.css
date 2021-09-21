@@ -7,6 +7,8 @@
     display: flex;
     flex-wrap: wrap;
     cursor: none;
+    background-size: 10%;
+
 }
 
 .pixel{

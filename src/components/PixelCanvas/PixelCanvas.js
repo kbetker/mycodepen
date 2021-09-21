@@ -2,17 +2,18 @@ import React, { useEffect, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { dispatchSelectedColor } from "../../store/pixelDrawing"
 import "./PixelCanvas.css"
+import transparent2 from "./transparent2.png"
 
 function PixelCanvas() {
     const dispatch = useDispatch()
-    const selectedColor =  useSelector(state => state.pixelDrawing.selectedColor)
+    const selectedColor = useSelector(state => state.pixelDrawing.selectedColor)
     const isMouseDown = useRef(false)
     const [colorArray, setColorArray] = useState([])
     const [editMode, setEditMode] = useState("drawingMode")
     const arrayBg = "rgba(0, 0, 0, 0)"
-    const pixel = 10
-    const rows = 50
-    const columns = 50
+    const pixel = 15
+    const rows = 30
+    const columns = 30
 
     //initializes empty array
     const initArray = () => {
@@ -23,24 +24,35 @@ function PixelCanvas() {
         return columnsArr
     }
 
+    //set empty array and initializes first color
     useEffect(() => {
         setColorArray(initArray())
-        dispatch(dispatchSelectedColor("rgba(0, 0, 0, 1)"))
+        dispatch(dispatchSelectedColor("rgba(0, 0, 0, 1.00)"))
     }, [])
 
 
-    // fill function helper
-    function fillColorRecurs(row, column, currBgColor, newArr){
-        // if(row !==null && column !== null){
-        //     console.log(currBgColor, "currBgColor", selectedColor, "Selected Color")
-        //     console.log(newArr[row][column] !== currBgColor, selectedColor === currBgColor)
-        // }
+    //if rgb - converts to rgba
+    function convertToRGBA(rgb) {
+        if (!rgb.startsWith("rgba")) {
+            let first = rgb.slice(0, 3)
+            let mid = rgb.slice(rgb.indexOf("("), rgb.indexOf(")"))
+            return first + "a" + mid + ", 1.00" + ")"
+        } else {
+            return rgb
+        }
+    }
 
-        if( row === null
+    // fill function helper
+    function fillColorRecurs(row, column, currBgColor, newArr) {
+        if (row !== null && column !== null) {
+            // console.log(currBgColor, "<== currBgColor", selectedColor, "<== Selected Color")
+        }
+
+        if (row === null
             || column === null
             || newArr[row][column] !== currBgColor
             || selectedColor === currBgColor
-            ) return newArr;
+        ) return newArr;
 
         newArr[row][column] = selectedColor
         let up = row - 1 >= 0 ? row - 1 : null
@@ -52,25 +64,27 @@ function PixelCanvas() {
         fillColorRecurs(down, column, currBgColor, newArr)
         fillColorRecurs(row, left, currBgColor, newArr)
         fillColorRecurs(row, right, currBgColor, newArr)
-       return newArr
+        return newArr
     }
 
+
     // fill function
-    function fillFunc(row, column, currBgColor){
-        // console.log(currBgColor, "<== FillFunc CurrentBackground")
-        // copies array
+    function fillFunc(row, column, currBgColor) {
+        //copy array
+        console.log(currBgColor, "<===currBgColor", colorArray[row][column], "<==== whats in the array")
         let newArr = []
-        for (var i = 0; i < colorArray.length; i++){
+        for (var i = 0; i < colorArray.length; i++) {
             newArr[i] = colorArray[i].slice();
         }
+        //calls helper function
         setColorArray(fillColorRecurs(row, column, currBgColor, newArr))
     }
 
 
     // change bgColor when drawing
-    function changeColor(row, column){
+    function changeColor(row, column) {
         let newArr = []
-        for (var i = 0; i < colorArray.length; i++){
+        for (var i = 0; i < colorArray.length; i++) {
             newArr[i] = colorArray[i].slice();
         }
         newArr[row][column] = selectedColor
@@ -85,47 +99,63 @@ function PixelCanvas() {
         document.addEventListener("mouseup", (e) => { isMouseDown.current = false })
     }, [isMouseDown])
 
+    useEffect(()=>{
+        document.addEventListener("keypress", (e)=>{
+           if(e.key === "d"){
+             setEditMode('drawingMode')
+           } else if  (e.key === "f"){
+            setEditMode('fillMode')
+          } else if (e.key === "c"){
+            setEditMode('colorPicker')
+          }
+        })
+
+    },[])
+
 
     return (
         <>
-        <div className="editButtons">
-            <button onClick={() => setEditMode('drawingMode')}>Draw Mode</button>
-            <button onClick={() => setEditMode('fillMode')}>Fill Mode</button>
-            <button onClick={() => setEditMode('colorPicker')}>Color Picker</button>
-            <span style={{color: "white", marginLeft: "10px"}}>{editMode}</span>
-        </div>
+            <div className="editButtons">
+                <button onClick={() => setEditMode('drawingMode')}>Draw Mode</button>
+                <button onClick={() => setEditMode('fillMode')}>Fill Mode</button>
+                <button onClick={() => setEditMode('colorPicker')}>Color Picker</button>
+                <button onClick={() =>setColorArray(initArray())}>Clear Canvas</button>
+                <span style={{ color: "white", marginLeft: "10px" }}>{editMode}</span>
+            </div>
 
-        <div
-            className="canvas"
-            style={{
-                width: `${rows * pixel}px`,
-                height: `${columns * pixel}px`
-            }}>
+            <div
+                className="canvas"
+                style={{
+                    width: `${rows * pixel}px`,
+                    height: `${columns * pixel}px`,
+                    backgroundImage: `url(${transparent2})`
+                }}>
 
-            {colorArray.map((e, i) =>
-                e.map((e2, j) =>
-                    <div
-                        className="pixel"
-                        id={`${i}-${j}`}
-                        key={`key-${i}-${j}`}
-                        style={{
-                            height: `${pixel}px`,
-                            width: `${pixel}px`,
-                            backgroundColor: colorArray[i][j]}}
-                        onMouseDown={(e) => [
-                            editMode==="drawingMode" && changeColor(i, j),
-                            editMode==="fillMode" && fillFunc(i, j, e.target.style.backgroundColor),
-                            editMode==="colorPicker" && dispatch(dispatchSelectedColor(e.target.style.backgroundColor)),
-                        ]}
+                {colorArray.map((e, i) =>
+                    e.map((e2, j) =>
+                        <div
+                            className="pixel"
+                            id={`${i}-${j}`}
+                            key={`key-${i}-${j}`}
+                            style={{
+                                height: `${pixel}px`,
+                                width: `${pixel}px`,
+                                backgroundColor: colorArray[i][j]
+                            }}
+                            onMouseDown={(e) => [
+                                editMode === "drawingMode" && changeColor(i, j),
+                                editMode === "fillMode" && fillFunc(i, j, convertToRGBA(e.target.style.backgroundColor)),
+                                editMode === "colorPicker" && dispatch(dispatchSelectedColor(convertToRGBA(e.target.style.backgroundColor))),
+                            ]}
 
-                        onMouseOver={()=>
-                            isMouseDown.current && editMode==="drawingMode" && changeColor(i, j)
-                        }
+                            onMouseOver={() =>
+                                isMouseDown.current && editMode === "drawingMode" && changeColor(i, j)
+                            }
                         >
-                    </div>
-                )
-            )}
-        </div>
+                        </div>
+                    )
+                )}
+            </div>
         </>
     )
 }

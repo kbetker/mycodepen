@@ -101,5 +101,10 @@
     background-color: rgb(0, 0, 255);
 }
 .Alpha{
-    background-size: 300%;
+    background-size: 4%;
+    background-attachment: fixed;
+    background-repeat: repeat;
 }
+/* .knob.Alpha{
+    backg
+} */

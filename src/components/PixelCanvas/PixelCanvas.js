@@ -48,11 +48,8 @@ function PixelCanvas() {
 
     // fill function helper
     function fillColorRecurs(row, column, currBgColor, newArr) {
-        if (row !== null && column !== null) {
-            // console.log(currBgColor, "<== currBgColor", selectedColor, "<== Selected Color")
-        }
-
-        if (row === null
+        // if (row !== null && column !== null) { console.log(currBgColor, "<== currBgColor", selectedColor, "<== Selected Color") }
+        if (   row === null
             || column === null
             || newArr[row][column] !== currBgColor
             || selectedColor === currBgColor
@@ -103,27 +100,27 @@ function PixelCanvas() {
         document.addEventListener("mouseup", (e) => { isMouseDown.current = false })
     }, [isMouseDown])
 
-    useEffect(()=>{
-        document.addEventListener("keypress", (e)=>{
-           if(e.key === "d"){
-             setEditMode('drawingMode')
-           } else if  (e.key === "f"){
-            setEditMode('fillMode')
-          } else if (e.key === "c"){
-            setEditMode('colorPicker')
-          }
+    useEffect(() => {
+        document.addEventListener("keypress", (e) => {
+            if (e.key === "d") {
+                setEditMode('drawingMode')
+            } else if (e.key === "f") {
+                setEditMode('fillMode')
+            } else if (e.key === "c") {
+                setEditMode('colorPicker')
+            }
         })
 
-    },[])
+    }, [])
 
 
     return (
         <>
             <div className="editButtons">
-                <button onClick={() => setEditMode('drawingMode')}>Draw Mode</button>
-                <button onClick={() => setEditMode('fillMode')}>Fill Mode</button>
-                <button onClick={() => setEditMode('colorPicker')}>Color Picker</button>
-                <button onClick={() =>setColorArray(initArray())}>Clear Canvas</button>
+                <button onClick={() => setEditMode('drawingMode')}>&#40;D&#41;raw Mode</button>
+                <button onClick={() => setEditMode('fillMode')}>&#40;F&#41;ill Mode</button>
+                <button onClick={() => setEditMode('colorPicker')}>&#40;C&#41;olor Picker</button>
+                <button onClick={() => setColorArray(initArray())}>Clear Canvas</button>
                 <span style={{ color: "white", marginLeft: "10px" }}>{editMode}</span>
             </div>
 
@@ -134,9 +131,9 @@ function PixelCanvas() {
                     height: `${columns * pixel}px`,
                     backgroundImage: `url(${transparent2})`,
                     cursor:
-                    editMode === 'drawingMode' ? `url( ${cursor2}) 10 10, auto`
-                    : editMode === 'colorPicker' ? `url( ${colorPicker}) 0 20, auto`
-                    : editMode === "fillMode" && `url( ${bucketFill}) 0 20, auto`
+                        editMode === 'drawingMode' ? `url( ${cursor2}) 10 10, auto`
+                            : editMode === 'colorPicker' ? `url( ${colorPicker}) 0 20, auto`
+                                : editMode === "fillMode" && `url( ${bucketFill}) 0 20, auto`
 
 
                 }}>

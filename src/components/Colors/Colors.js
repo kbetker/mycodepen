@@ -29,7 +29,7 @@ function Colors() {
             document.onmousemove = null;
       }
 
-      useEffect(()=>{
+      useEffect(() => {
             // console.log(pickedColor)
             let grabColors = pickedColor.slice(5, pickedColor.indexOf(")")).split(", ")
             let red = grabColors[0]
@@ -37,30 +37,30 @@ function Colors() {
             let blue = grabColors[2]
             let alpha = grabColors[3]
 
-          setRed(red)
-          knobRedPOS.current = red
-          knobRed.current.style.left = `${red}px`
+            setRed(red)
+            knobRedPOS.current = red
+            knobRed.current.style.left = `${red}px`
 
-          setGreen(green)
-          knobGreenPOS.current = green
-          knobGreen.current.style.left = `${green}px`
+            setGreen(green)
+            knobGreenPOS.current = green
+            knobGreen.current.style.left = `${green}px`
 
-          setBlue(blue)
-          knobBluePOS.current = blue
-          knobBlue.current.style.left = `${blue}px`
+            setBlue(blue)
+            knobBluePOS.current = blue
+            knobBlue.current.style.left = `${blue}px`
 
-          setAlpha(alpha)
-          let alphaConvert = (alpha / 0.00392).toFixed(2)
+            setAlpha(alpha)
+            let alphaConvert = (alpha / 0.00392).toFixed(2)
 
-          if(alphaConvert > 255){
-            knobAlphaPOS.current = 255
-            knobAlpha.current.style.left = "255px"
-          } else {
-            knobAlphaPOS.current = (alpha / 0.00392).toFixed(2)
-            knobAlpha.current.style.left = `${(alpha / 0.00392).toFixed(2)}px`
-          }
+            if (alphaConvert > 255) {
+                  knobAlphaPOS.current = 255
+                  knobAlpha.current.style.left = "255px"
+            } else {
+                  knobAlphaPOS.current = (alpha / 0.00392).toFixed(2)
+                  knobAlpha.current.style.left = `${(alpha / 0.00392).toFixed(2)}px`
+            }
 
-      },[pickedColor])
+      }, [pickedColor])
 
 
       useEffect(() => {
@@ -92,22 +92,22 @@ function Colors() {
                         knobBluePOS.current = (knobBlue.current.getBoundingClientRect().left - leftMarkerPos)
                         knobAlphaPOS.current = (knobAlpha.current.getBoundingClientRect().left - leftMarkerPos)
 
-                          if ((e.clientX) <= 0 + leftMarkerPos) {
+                        if ((e.clientX) <= 0 + leftMarkerPos) {
                               stopDrag()
                               theKnob.style.left = `0px`;
-                          }
-                          else if ((e.clientX) >= 270 + leftMarkerPos) {
+                        }
+                        else if ((e.clientX) >= 270 + leftMarkerPos) {
                               stopDrag()
                               theKnob.style.left = `255px`;
-                          }
-                          else {
+                        }
+                        else {
                               theKnob.style.left = (theKnob.offsetLeft - xDiff) + "px";
-                          }
-                          let adjustAlpha = knobAlphaPOS.current * 0.00392
-                          setRed(knobRedPOS.current < 0 ? 0 : knobRedPOS.current > 255 ? 255 : knobRedPOS.current)
-                          setGreen(knobGreenPOS.current  < 0 ? 0 : knobGreenPOS.current > 255 ? 255 : knobGreenPOS.current)
-                          setBlue(knobBluePOS.current  < 0 ? 0 : knobBluePOS.current > 255 ? 255 : knobBluePOS.current)
-                          setAlpha(adjustAlpha < 0 ? 0 : adjustAlpha > 1 ? 1.00 : (adjustAlpha).toFixed(2))
+                        }
+                        let adjustAlpha = knobAlphaPOS.current * 0.00392
+                        setRed(knobRedPOS.current < 0 ? 0 : knobRedPOS.current > 255 ? 255 : knobRedPOS.current)
+                        setGreen(knobGreenPOS.current < 0 ? 0 : knobGreenPOS.current > 255 ? 255 : knobGreenPOS.current)
+                        setBlue(knobBluePOS.current < 0 ? 0 : knobBluePOS.current > 255 ? 255 : knobBluePOS.current)
+                        setAlpha(adjustAlpha < 0 ? 0 : adjustAlpha > 1 ? 1.00 : (adjustAlpha).toFixed(2))
                   }
                   theKnob.onmousedown = mouseDown;
             }
@@ -123,33 +123,33 @@ function Colors() {
 
                   <div className="IneedToWorkOnMyNamingConventions">
                         <div className="leftMarker" ref={leftMarker}></div>
-                        <div className="slidersContainer" style={{backgroundImage: `url(${transparent})`}} onMouseLeave={()=>  dispatch(dispatchSelectedColor(`rgba(${red}, ${green}, ${blue}, ${alpha})`))}>
+                        <div className="slidersContainer" style={{ backgroundImage: `url(${transparent})` }} onMouseLeave={() => dispatch(dispatchSelectedColor(`rgba(${red}, ${green}, ${blue}, ${alpha})`))}>
                               <div className="slider"
-                                    style={{backgroundImage: `linear-gradient(to right, rgba(0, ${green}, ${blue}, ${alpha}), rgba(255, ${green}, ${blue}, ${alpha}))`}} >
+                                    style={{ backgroundImage: `linear-gradient(to right, rgba(0, ${green}, ${blue}, ${alpha}), rgba(255, ${green}, ${blue}, ${alpha}))` }} >
                                     <div className="knob Red" ref={knobRed} id="red" draggable="true"></div>
                               </div>
 
                               <div className="slider"
-                                    style={{backgroundImage: `linear-gradient(to right, rgba(${red}, 0, ${blue}, ${alpha}), rgba(${red}, 255, ${blue}, ${alpha}))`}}>
+                                    style={{ backgroundImage: `linear-gradient(to right, rgba(${red}, 0, ${blue}, ${alpha}), rgba(${red}, 255, ${blue}, ${alpha}))` }}>
                                     <div className="knob Green" ref={knobGreen} id="green" draggable="true"></div>
                               </div>
 
                               <div className="slider"
-                                    style={{backgroundImage: `linear-gradient(to right, rgba(${red}, ${green}, 0, ${alpha}), rgba(${red}, ${green}, 255, ${alpha}))`}}>
+                                    style={{ backgroundImage: `linear-gradient(to right, rgba(${red}, ${green}, 0, ${alpha}), rgba(${red}, ${green}, 255, ${alpha}))` }}>
                                     <div className="knob Blue" ref={knobBlue} id="blue" draggable="true"></div>
                               </div>
 
                               <div className="slider"
-                                    style={{backgroundImage: `linear-gradient(to right, rgba(${red}, ${green}, ${blue}, 0), rgba(${red}, ${green}, ${blue}, 1))`}}>
-                                    <div className="knob Alpha" ref={knobAlpha} id="alpha" draggable="true" style={{left: "255px", backgroundImage: `url(${transparent})`}}></div>
+                                    style={{ backgroundImage: `linear-gradient(to right, rgba(${red}, ${green}, ${blue}, 0), rgba(${red}, ${green}, ${blue}, 1))` }}>
+                                    <div className="knob Alpha" ref={knobAlpha} id="alpha" draggable="true" style={{ left: "255px", backgroundImage: `url(${transparent})` }}></div>
                               </div>
                         </div>
 
                   </div>
 
                   <div className="theColorContainer">
-                        <div className="theColor" style={{backgroundColor: `rgba(${red}, ${green}, ${blue}, ${alpha})`}}></div>
-                        <div style={{backgroundImage: `url(${transparent})`}} className="theColorBackImg"></div>
+                        <div className="theColor" style={{ backgroundColor: `rgba(${red}, ${green}, ${blue}, ${alpha})` }}></div>
+                        <div style={{ backgroundImage: `url(${transparent})` }} className="theColorBackImg"></div>
 
                   </div>
 

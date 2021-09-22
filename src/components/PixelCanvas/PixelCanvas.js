@@ -3,6 +3,10 @@ import { useDispatch, useSelector } from "react-redux"
 import { dispatchSelectedColor } from "../../store/pixelDrawing"
 import "./PixelCanvas.css"
 import transparent2 from "./transparent2.png"
+// import paintCursor from "./paintCursor.png"
+import cursor2 from "./cursor2.png"
+import colorPicker from "./colorPicker.png"
+import bucketFill from "./bucketFill.png"
 
 function PixelCanvas() {
     const dispatch = useDispatch()
@@ -128,7 +132,13 @@ function PixelCanvas() {
                 style={{
                     width: `${rows * pixel}px`,
                     height: `${columns * pixel}px`,
-                    backgroundImage: `url(${transparent2})`
+                    backgroundImage: `url(${transparent2})`,
+                    cursor:
+                    editMode === 'drawingMode' ? `url( ${cursor2}) 10 10, auto`
+                    : editMode === 'colorPicker' ? `url( ${colorPicker}) 0 20, auto`
+                    : editMode === "fillMode" && `url( ${bucketFill}) 0 20, auto`
+
+
                 }}>
 
                 {colorArray.map((e, i) =>

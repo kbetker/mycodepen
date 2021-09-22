@@ -14,10 +14,13 @@ function PixelCanvas() {
     const isMouseDown = useRef(false)
     const [colorArray, setColorArray] = useState([])
     const [editMode, setEditMode] = useState("drawingMode")
+    const [undo, setUndo] = useState([[]])
+    const [redo, setRedo] = useState([])
     const arrayBg = "rgba(0, 0, 0, 0)"
-    const pixel = 15
+    const pixel = 20
     const rows = 30
     const columns = 30
+    // const penSize = 8
 
     //initializes empty array
     const initArray = () => {
@@ -72,7 +75,6 @@ function PixelCanvas() {
     // fill function
     function fillFunc(row, column, currBgColor) {
         //copy array
-        console.log(currBgColor, "<===currBgColor", colorArray[row][column], "<==== whats in the array")
         let newArr = []
         for (var i = 0; i < colorArray.length; i++) {
             newArr[i] = colorArray[i].slice();
@@ -88,7 +90,8 @@ function PixelCanvas() {
         for (var i = 0; i < colorArray.length; i++) {
             newArr[i] = colorArray[i].slice();
         }
-        newArr[row][column] = selectedColor
+            newArr[row][column] = selectedColor
+
         setColorArray(newArr)
     }
 
@@ -110,8 +113,43 @@ function PixelCanvas() {
                 setEditMode('colorPicker')
             }
         })
-
     }, [])
+
+
+    function handleHistory(){
+        if(undo.length >= 23){
+            let newArr = []
+            for (let i = 1; i < undo.length; i++) {
+                newArr.push(undo[i]);
+            }
+            newArr.push(colorArray)
+            setUndo(newArr)
+
+        } else {
+        setUndo(oldUndo => [...oldUndo, colorArray])
+        }
+    }
+
+    function handleUndo(){
+        if(undo.length <= 1){console.log("End of History"); return}
+        let pop = undo.pop()
+        setRedo(oldRedo => [...oldRedo, colorArray])
+        setColorArray(pop)
+        console.log("undo")
+
+    }
+
+    function clearCanvas(){
+        // let newEmptyArr = initArray()
+        setUndo(oldUndo => [...oldUndo, colorArray])
+        setColorArray(initArray())
+    }
+
+    function consoleCrap(){
+        console.log(colorArray)
+        console.log(undo, "<===== UNDO")
+        console.log(redo, "+_!+_!+_!+_!+_!+_!+_!+redo")
+    }
 
 
     return (
@@ -120,7 +158,10 @@ function PixelCanvas() {
                 <button onClick={() => setEditMode('drawingMode')}>&#40;D&#41;raw Mode</button>
                 <button onClick={() => setEditMode('fillMode')}>&#40;F&#41;ill Mode</button>
                 <button onClick={() => setEditMode('colorPicker')}>&#40;C&#41;olor Picker</button>
-                <button onClick={() => setColorArray(initArray())}>Clear Canvas</button>
+                <button onClick={() => clearCanvas()}>Clear Canvas</button>
+                <button onClick={() => handleUndo()}>Undo</button>
+                <button onClick={() => consoleCrap()}>Sanity Check</button>
+                <button onClick={() => console.log("woot!")}>Redo</button>
                 <span style={{ color: "white", marginLeft: "10px" }}>{editMode}</span>
             </div>
 
@@ -133,10 +174,12 @@ function PixelCanvas() {
                     cursor:
                         editMode === 'drawingMode' ? `url( ${cursor2}) 10 10, auto`
                             : editMode === 'colorPicker' ? `url( ${colorPicker}) 0 20, auto`
-                                : editMode === "fillMode" && `url( ${bucketFill}) 0 20, auto`
+                                : editMode === "fillMode" && `url( ${bucketFill}) 0 20, auto`}}
+                onMouseDown={() =>
+                    editMode === 'drawingMode' || editMode === "fillMode" && handleHistory
+                }
 
-
-                }}>
+                >
 
                 {colorArray.map((e, i) =>
                     e.map((e2, j) =>
@@ -150,6 +193,7 @@ function PixelCanvas() {
                                 backgroundColor: colorArray[i][j]
                             }}
                             onMouseDown={(e) => [
+                                handleHistory(),
                                 editMode === "drawingMode" && changeColor(i, j),
                                 editMode === "fillMode" && fillFunc(i, j, convertToRGBA(e.target.style.backgroundColor)),
                                 editMode === "colorPicker" && dispatch(dispatchSelectedColor(convertToRGBA(e.target.style.backgroundColor))),

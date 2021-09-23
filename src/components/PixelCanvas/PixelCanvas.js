@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { dispatchSelectedColor } from "../../store/pixelDrawing"
 import "./PixelCanvas.css"
@@ -11,18 +11,36 @@ import bucketFill from "./bucketFill.png"
 function PixelCanvas() {
     const dispatch = useDispatch()
     const selectedColor = useSelector(state => state.pixelDrawing.selectedColor)
-    const isMouseDown = useRef(false)
-    const [colorArray, setColorArray] = useState([])
+    const isMouseDown = useSelector(state => state.pixelDrawing.mouseDown)
+    const whatKeyPressed = useSelector(state => state.pixelDrawing.keyPressed)
+    const [currentCanvas, setCurrentCanvas] = useState([])
     const [editMode, setEditMode] = useState("drawingMode")
     const [undo, setUndo] = useState([[]])
     const [redo, setRedo] = useState([])
     const arrayBg = "rgba(0, 0, 0, 0)"
-    const pixel = 20
-    const rows = 30
-    const columns = 30
-    // const penSize = 8
+    const pixel = 14
+    const rows = 40
+    const columns = 40
 
-    //initializes empty array
+
+    // ======================   Listens for keypress   ======================
+    useEffect(()=>{
+        if (whatKeyPressed.key === "d") {
+            setEditMode('drawingMode')
+        } else if (whatKeyPressed.key === "f") {
+            setEditMode('fillMode')
+        } else if (whatKeyPressed.key === "c") {
+            setEditMode('colorPicker')
+        } else if (whatKeyPressed.ctrlKey && whatKeyPressed.key === "z") {
+            handleUndo()
+        } else if (whatKeyPressed.ctrlKey && whatKeyPressed.key === "y") {
+            handleRedo()
+        }
+
+    }, [whatKeyPressed])
+
+
+    // ======================   initializes array to transparent background   ======================
     const initArray = () => {
         let rowsArr = []
         let columnsArr = []
@@ -31,32 +49,34 @@ function PixelCanvas() {
         return columnsArr
     }
 
-    //set empty array and initializes first color
+    //======================   sets currentCanvas to initial array and initializes first color   ======================
     useEffect(() => {
-        setColorArray(initArray())
+        setCurrentCanvas(initArray())
         dispatch(dispatchSelectedColor("rgba(0, 0, 0, 1.00)"))
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
 
-    //if rgb - converts to rgba
-    function convertToRGBA(rgb) {
-        if (!rgb.startsWith("rgba")) {
-            let first = rgb.slice(0, 3)
-            let mid = rgb.slice(rgb.indexOf("("), rgb.indexOf(")"))
-            return first + "a" + mid + ", 1.00" + ")"
+    //======================  converts to rgba if not already  ======================
+    function convertToRGBA(color) {
+        if (!color.startsWith("rgba")) {
+            let first = color.slice(0, 3)
+            let mid = color.slice(color.indexOf("("), color.indexOf(")"))
+            return `${first}a${mid}, 1.00)`
         } else {
-            return rgb
+            return color
         }
     }
 
-    // fill function helper
+    //======================   fill function helper   ======================
     function fillColorRecurs(row, column, currBgColor, newArr) {
-        // if (row !== null && column !== null) { console.log(currBgColor, "<== currBgColor", selectedColor, "<== Selected Color") }
-        if (   row === null
+        //=== edge cases and base case ===
+        if (row === null
             || column === null
             || newArr[row][column] !== currBgColor
             || selectedColor === currBgColor
         ) return newArr;
+
 
         newArr[row][column] = selectedColor
         let up = row - 1 >= 0 ? row - 1 : null
@@ -71,97 +91,82 @@ function PixelCanvas() {
         return newArr
     }
 
+    //======================  helper function to DRY up the code a bit  ======================
+    function draw_fill_helper(){
+        //=== resets redo history ===
+        setRedo([])
 
-    // fill function
+        //=== retruns a copy of the  array ===
+        let newArr = []
+        for (var i = 0; i < currentCanvas.length; i++) {
+            newArr[i] = currentCanvas[i].slice();
+        }
+        return newArr
+    }
+
+
+    //======================  fill function   ======================
     function fillFunc(row, column, currBgColor) {
-        //copy array
-        let newArr = []
-        for (var i = 0; i < colorArray.length; i++) {
-            newArr[i] = colorArray[i].slice();
-        }
-        //calls helper function
-        setColorArray(fillColorRecurs(row, column, currBgColor, newArr))
+        //=== calls helper function ===
+        setCurrentCanvas(fillColorRecurs(row, column, currBgColor, draw_fill_helper()))
     }
 
 
-    // change bgColor when drawing
+    //======================   change bgColor when drawing   ======================
     function changeColor(row, column) {
-        let newArr = []
-        for (var i = 0; i < colorArray.length; i++) {
-            newArr[i] = colorArray[i].slice();
-        }
-            newArr[row][column] = selectedColor
-
-        setColorArray(newArr)
+        let newArr = draw_fill_helper()
+        //=== changes value then set the currentCanvas ===
+        newArr[row][column] = selectedColor
+        setCurrentCanvas(newArr)
     }
 
 
-
-    // sets mousedown status - allows for continuous drawing
-    useEffect(() => {
-        document.addEventListener("mousedown", (e) => { isMouseDown.current = true })
-        document.addEventListener("mouseup", (e) => { isMouseDown.current = false })
-    }, [isMouseDown])
-
-    useEffect(() => {
-        document.addEventListener("keypress", (e) => {
-            if (e.key === "d") {
-                setEditMode('drawingMode')
-            } else if (e.key === "f") {
-                setEditMode('fillMode')
-            } else if (e.key === "c") {
-                setEditMode('colorPicker')
-            }
-        })
-    }, [])
-
-
-    function handleHistory(){
-        if(undo.length >= 23){
+    //======================   Records History   ======================
+    function handleHistory() {
+        if (undo.length >= 30) {
             let newArr = []
             for (let i = 1; i < undo.length; i++) {
                 newArr.push(undo[i]);
             }
-            newArr.push(colorArray)
+            newArr.push(currentCanvas)
             setUndo(newArr)
 
         } else {
-        setUndo(oldUndo => [...oldUndo, colorArray])
+            setUndo(oldUndo => [...oldUndo, currentCanvas])
         }
     }
 
-    function handleUndo(){
-        if(undo.length <= 1){console.log("End of History"); return}
+    //====================== Undo ======================
+    function handleUndo() {
+        if (undo.length <= 1) { console.log("End of History"); return }
         let pop = undo.pop()
-        setRedo(oldRedo => [...oldRedo, colorArray])
-        setColorArray(pop)
-        console.log("undo")
-
+        setRedo(oldRedo => [...oldRedo, currentCanvas])
+        setCurrentCanvas(pop)
     }
 
-    function clearCanvas(){
-        // let newEmptyArr = initArray()
-        setUndo(oldUndo => [...oldUndo, colorArray])
-        setColorArray(initArray())
+    //====================== Redo ======================
+    function handleRedo() {
+        if (redo.length === 0) { console.log("End of History"); return }
+        let pop = redo.pop();
+        setUndo(oldRedo => [...oldRedo, currentCanvas])
+        setCurrentCanvas(pop)
     }
 
-    function consoleCrap(){
-        console.log(colorArray)
-        console.log(undo, "<===== UNDO")
-        console.log(redo, "+_!+_!+_!+_!+_!+_!+_!+redo")
+    //====================== Clears Canvas ======================
+    function clearCanvas() {
+        setUndo(oldUndo => [...oldUndo, currentCanvas])
+        setCurrentCanvas(initArray())
     }
-
 
     return (
         <>
-            <div className="editButtons">
+            <div className="editButtons" >
                 <button onClick={() => setEditMode('drawingMode')}>&#40;D&#41;raw Mode</button>
                 <button onClick={() => setEditMode('fillMode')}>&#40;F&#41;ill Mode</button>
                 <button onClick={() => setEditMode('colorPicker')}>&#40;C&#41;olor Picker</button>
                 <button onClick={() => clearCanvas()}>Clear Canvas</button>
                 <button onClick={() => handleUndo()}>Undo</button>
-                <button onClick={() => consoleCrap()}>Sanity Check</button>
-                <button onClick={() => console.log("woot!")}>Redo</button>
+                <button onClick={() => handleRedo()}>Redo</button>
                 <span style={{ color: "white", marginLeft: "10px" }}>{editMode}</span>
             </div>
 
@@ -174,14 +179,14 @@ function PixelCanvas() {
                     cursor:
                         editMode === 'drawingMode' ? `url( ${cursor2}) 10 10, auto`
                             : editMode === 'colorPicker' ? `url( ${colorPicker}) 0 20, auto`
-                                : editMode === "fillMode" && `url( ${bucketFill}) 0 20, auto`}}
+                                : editMode === "fillMode" && `url( ${bucketFill}) 0 20, auto`
+                }}
                 onMouseDown={() =>
-                    editMode === 'drawingMode' || editMode === "fillMode" && handleHistory
+                    (editMode === 'drawingMode' || editMode === "fillMode") && handleHistory
                 }
 
-                >
-
-                {colorArray.map((e, i) =>
+            >
+                {currentCanvas.map((e, i) =>
                     e.map((e2, j) =>
                         <div
                             className="pixel"
@@ -190,7 +195,7 @@ function PixelCanvas() {
                             style={{
                                 height: `${pixel}px`,
                                 width: `${pixel}px`,
-                                backgroundColor: colorArray[i][j]
+                                backgroundColor: currentCanvas[i][j]
                             }}
                             onMouseDown={(e) => [
                                 handleHistory(),
@@ -200,7 +205,7 @@ function PixelCanvas() {
                             ]}
 
                             onMouseOver={() =>
-                                isMouseDown.current && editMode === "drawingMode" && changeColor(i, j)
+                                isMouseDown && editMode === "drawingMode" && changeColor(i, j)
                             }
                         >
                         </div>
@@ -223,6 +228,6 @@ export default PixelCanvas
     //     let pixelBg = document.querySelectorAll(`.pixel`)
     //     for (let i = 0; i < pixelBg.length; i++) {
     //         let arr = pixelBg[i].id.split("-")
-    //         pixelBg[i].style.backgroundColor = `${colorArray[arr[0]][arr[1]]}`
+    //         pixelBg[i].style.backgroundColor = `${currentCanvas[arr[0]][arr[1]]}`
     //     }
     // }, [])

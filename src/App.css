@@ -5,4 +5,9 @@ body{
 .wrapper{
     height: 100vh;
     transition: all 1s linear;
+    padding: 0;
+    border: none;
+    background: none;
+    outline: none;
+
 }

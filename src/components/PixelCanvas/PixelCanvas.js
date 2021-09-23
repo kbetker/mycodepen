@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { dispatchSelectedColor } from "../../store/pixelDrawing"
 import "./PixelCanvas.css"
@@ -13,7 +13,6 @@ function PixelCanvas() {
     const selectedColor = useSelector(state => state.pixelDrawing.selectedColor)
     const isMouseDown = useSelector(state => state.pixelDrawing.mouseDown)
     const whatKeyPressed = useSelector(state => state.pixelDrawing.keyPressed)
-    // const isMouseDownXXX = useRef(false)
     const [currentCanvas, setCurrentCanvas] = useState([])
     const [editMode, setEditMode] = useState("drawingMode")
     const [undo, setUndo] = useState([[]])
@@ -37,6 +36,7 @@ function PixelCanvas() {
         } else if (whatKeyPressed.ctrlKey && whatKeyPressed.key === "y") {
             handleRedo()
         }
+
     }, [whatKeyPressed])
 
 
@@ -53,6 +53,7 @@ function PixelCanvas() {
     useEffect(() => {
         setCurrentCanvas(initArray())
         dispatch(dispatchSelectedColor("rgba(0, 0, 0, 1.00)"))
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
 
@@ -61,7 +62,7 @@ function PixelCanvas() {
         if (!color.startsWith("rgba")) {
             let first = color.slice(0, 3)
             let mid = color.slice(color.indexOf("("), color.indexOf(")"))
-            return first + "a" + mid + ", 1.00" + ")"
+            return `${first}a${mid}, 1.00)`
         } else {
             return color
         }

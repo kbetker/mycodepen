@@ -32,9 +32,9 @@ function PixelCanvas() {
     const mouseDownXY = useRef([0, 0]);
     const mouseUpXY = useRef([0, 0]);
     const arrayBg = "rgba(0, 0, 0, 0)"
-    const pixel = 20
-    const rows = 20
-    const columns = 20
+    const pixel = 10
+    const rows = 40
+    const columns = 40
 
     useEffect(() => {
         let left = canvas.current.getBoundingClientRect().left

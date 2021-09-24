@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux"
 import { dispatchSelectedColor } from "../../store/pixelDrawing"
 import "./PixelCanvas.css"
 import transparent2 from "./transparent2.png"
-// import paintCursor from "./paintCursor.png"
 import cursor2 from "./cursor2.png"
 import colorPicker from "./colorPicker.png"
 import bucketFill from "./bucketFill.png"
@@ -24,6 +23,12 @@ function PixelCanvas() {
     const [rectH, setRectH] = useState(0)
     const [rectStart, setRectStart] = useState(0)
     const [validRectangle, setValidRectangle] = useState(true)
+
+
+    const [NW, setNW] = useState([0,0])
+    const [NE, setNE] = useState([0,0])
+    const [SW, setSW] = useState([0,0])
+    const [SE, setSE] = useState([0,0])
 
     const[canvasStart, setCanvasStart] = useState(30)
     const canvas = useRef('')
@@ -197,19 +202,31 @@ function PixelCanvas() {
 
     //====================== Handles rectangle outline ======================
     const handleRectangleOutline =(e) =>{
-        let width =  parseInt((e.clientX - rectStart[0] - canvasStart[0] + pixel) / 20, 10) * 20
-        let height = parseInt((e.clientY - rectStart[1] - canvasStart[1] + pixel) / 20, 10) * 20
 
-        if(width <= -0 || height <= -0){
-        setValidRectangle(false)
-        } else {
-        setValidRectangle(true)
-        setRectX(parseInt(rectStart[0]/ 20, 10) * 20)
-        setRectY(parseInt(rectStart[1]/ 20, 10) * 20)
-        setRectW(width)
-        setRectH(height)
-        }
+        // document.getElementById(`${NW[0]}-${NW[1]}`).classList.add("NW")
+
+        console.log(NW[0])
+
+
+        // let width =  parseInt((e.clientX - rectStart[0] - canvasStart[0] + pixel) / 20, 10) * 10
+        // let height = parseInt((e.clientY - rectStart[1] - canvasStart[1] + pixel) / 20, 10) * 10
+
+        // if(width <= -0 || height <= -0){
+        // setValidRectangle(false)
+        // } else {
+        // setValidRectangle(true)
+        // setRectX(parseInt(rectStart[0]/ 20, 10) * 20)
+        // setRectY(parseInt(rectStart[1]/ 20, 10) * 20)
+        // setRectW(width)
+        // setRectH(height)
+        // }
     }
+
+
+    useEffect(()=>{
+
+
+    },[])
 
     //====================== resets rectangle ======================
     const clearRectangle = (e) => {
@@ -257,10 +274,10 @@ function PixelCanvas() {
                 {currentCanvas.map((e, i) =>
                     e.map((e2, j) =>
                         <div
-                            className={
-                            (editMode === "drawingMode" ||  editMode === "fillMode") ? "pixel"
-                            : (editMode === "rectangleMode" && !isMouseDown) ? "rectangleMarkerHover"
-                            : (editMode === "rectangleMode" && isMouseDown && validRectangle) ? "rectangleMarkerDown" : undefined
+                            className={ "pixel"
+                            // (editMode === "drawingMode" ||  editMode === "fillMode") ? "pixel"
+                            // : (editMode === "rectangleMode" && !isMouseDown) ? "rectangleMarkerHover"
+                            // : (editMode === "rectangleMode" && isMouseDown && validRectangle) ? "rectangleMarkerDown" : undefined
                             }
                             id={`${i}-${j}`}
                             key={`key-${i}-${j}`}
@@ -275,7 +292,7 @@ function PixelCanvas() {
                             onMouseDown={(e) => [
                                 handleHistory(),
                                 mouseDownXY.current = [i, j],
-                                setRectStart([e.clientX - canvasStart[0], e.clientY - canvasStart[1]]),
+                                setNW([e.clientX - canvasStart[0], e.clientY - canvasStart[1]]),
                                 editMode === "drawingMode" && changeColor(i, j),
                                 editMode === "fillMode" && fillFunc(i, j, convertToRGBA(e.target.style.backgroundColor)),
                                 editMode === "colorPicker" && dispatch(dispatchSelectedColor(convertToRGBA(e.target.style.backgroundColor))),

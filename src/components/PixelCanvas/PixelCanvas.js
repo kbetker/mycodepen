@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { dispatchSelectedColor } from "../../store/pixelDrawing"
+import { dispatchEditMode, dispatchSelectedColor } from "../../store/pixelDrawing"
 import "./PixelCanvas.css"
 import transparent2 from "./transparent2.png"
 import cursor2 from "./cursor2.png"
@@ -11,55 +11,21 @@ function PixelCanvas() {
     const dispatch = useDispatch()
     const selectedColor = useSelector(state => state.pixelDrawing.selectedColor)
     const isMouseDown = useSelector(state => state.pixelDrawing.mouseDown)
-    const whatKeyPressed = useSelector(state => state.pixelDrawing.keyPressed)
+    const editMode = useSelector(state => state.pixelDrawing.editMode)
     const [currentCanvas, setCurrentCanvas] = useState([])
-    const [editMode, setEditMode] = useState("drawingMode")
     const [undo, setUndo] = useState([[]])
     const [redo, setRedo] = useState([])
 
-    const [rectX, setRectX] = useState(0)
-    const [rectY, setRectY] = useState(0)
-    const [rectW, setRectW] = useState(0)
-    const [rectH, setRectH] = useState(0)
-    const [validRectangle, setValidRectangle] = useState(true)
-
-
     const NW = useRef("0-0")
-
     const SE = useRef("0-0")
 
     const canvas = useRef('')
     const mouseDownXY = useRef([0, 0]);
     const mouseUpXY = useRef([0, 0]);
     const arrayBg = "rgba(0, 0, 0, 0)"
-    const pixel = 10
-    const rows = 40
+    const [pixel, setPixel] = useState(13)
+    const rows = 70
     const columns = 40
-
-    useEffect(() => {
-        let left = canvas.current.getBoundingClientRect().left
-        let top = canvas.current.getBoundingClientRect().top
-    }, [])
-
-
-    // ======================   Listens for keypress   ======================
-    useEffect(() => {
-        if (whatKeyPressed.key === "d") {
-            setEditMode('drawingMode')
-        } else if (whatKeyPressed.key === "f") {
-            setEditMode('fillMode')
-        } else if (whatKeyPressed.key === "c") {
-            setEditMode('colorPicker')
-        } else if (whatKeyPressed.key === "r") {
-            setEditMode('rectangleMode')
-        }
-        else if (whatKeyPressed.ctrlKey && whatKeyPressed.key === "z") {
-            handleUndo()
-        } else if (whatKeyPressed.ctrlKey && whatKeyPressed.key === "y") {
-            handleRedo()
-        }
-
-    }, [whatKeyPressed])
 
 
     // ======================   initializes array to transparent background   ======================
@@ -134,11 +100,15 @@ function PixelCanvas() {
     }
 
 
-    //======================   change bgColor when drawing   ======================
-    function changeColor(row, column) {
+    //======================   change bgColor when drawing REFACTORED   ======================
+    function changeColorArray() {
         let newArr = draw_fill_helper()
         //=== changes value then set the currentCanvas ===
-        newArr[row][column] = selectedColor
+        let pixels = document.querySelectorAll(".pixel")
+        for (let i = 0; i < pixels.length; i++) {
+            let id = pixels[i].id.split("-")
+            newArr[id[0]][id[1]] = convertToRGBA(pixels[i].style.backgroundColor)
+        }
         setCurrentCanvas(newArr)
     }
 
@@ -193,13 +163,12 @@ function PixelCanvas() {
         }
 
         else if (upX - downX >= 0 && upY - downY < -0) {
-            [downX, downY, upX, upY] = [downX, upY, upX, downY]
+            [downY, upY] = [upY, downY]
         }
 
         else if (upX - downX < -0 && upY - downY >= 0) {
-            [downX, downY, upX, upY] = [upX, downY, downX, upY]
+            [downX, upX] = [upX, downX]
         }
-
 
         let numY = upX - downX;
         let numX = upY - downY;
@@ -266,22 +235,31 @@ function PixelCanvas() {
         }
     }
 
+     //====================== Handles Zoom ======================
+    function handleZoom(method){
+        if(method === "zoomIn" && pixel <= 50){
+            setPixel(pixel => pixel + 1)
+        } else if (method === "zoomOut" && pixel  >= 3){
+            setPixel(pixel => pixel - 1)
+        } else  if (method === "zoomAll"){
+            setPixel(10)
+        } else{
+            return
+        }
+    }
 
-
+    useEffect(()=>{
+        editMode === "undo" && handleUndo();
+        editMode === "redo" && handleRedo();
+        editMode === "clearCanvas" && clearCanvas();
+        if(editMode.startsWith("zoom")){
+            handleZoom(editMode)
+            dispatch(dispatchEditMode(''))
+        }
+    },[editMode])
 
     return (
         <>
-            <div className="editButtons" >
-                <button onClick={() => setEditMode('drawingMode')}>&#40;D&#41;raw Mode</button>
-                <button onClick={() => setEditMode('fillMode')}>&#40;F&#41;ill Mode</button>
-                <button onClick={() => setEditMode('colorPicker')}>&#40;C&#41;olor Picker</button>
-                <button onClick={() => clearCanvas()}>Clear Canvas</button>
-                <button onClick={() => handleUndo()}>Undo</button>
-                <button onClick={() => handleRedo()}>Redo</button>
-                <button onClick={() => setEditMode('rectangleMode')}>&#40;R&#41;ectangle Tool</button>
-                <span style={{ color: "white", marginLeft: "10px" }}>{editMode}</span>
-            </div>
-
             <div
                 className="canvas"
                 ref={canvas}
@@ -308,7 +286,6 @@ function PixelCanvas() {
                             className={
                                 (editMode === "drawingMode" || editMode === "fillMode") ? "pixel"
                                     : (editMode === "rectangleMode" && !isMouseDown) ? "rectangleMarkerHover" : undefined
-                                // : (editMode === "rectangleMode" && isMouseDown && validRectangle) ? "rectangleMarkerDown" : undefined
                             }
                             id={`${i}-${j}`}
                             key={`key-${i}-${j}`}
@@ -316,36 +293,36 @@ function PixelCanvas() {
                                 height: `${pixel}px`,
                                 width: `${pixel}px`,
                                 backgroundColor: currentCanvas[i][j],
-                                borderColor: `${validRectangle ? `white` : `rgba(0,0,0,0)`}`,
-
                             }}
 
                             onMouseDown={(e) => [
                                 handleHistory(),
                                 mouseDownXY.current = [i, j],
                                 NW.current = e.target,
-                                editMode === "drawingMode" && changeColor(i, j),
+                                editMode === "drawingMode" && (e.target.style.backgroundColor = `${convertToRGBA(selectedColor)}`),
                                 editMode === "fillMode" && fillFunc(i, j, convertToRGBA(e.target.style.backgroundColor)),
                                 editMode === "colorPicker" && dispatch(dispatchSelectedColor(convertToRGBA(e.target.style.backgroundColor))),
-
                             ]}
 
                             onMouseLeave={(e) => [
-
                                 isMouseDown && editMode === "rectangleMode" && handleRectangleOutline(e, "remove"),
                             ]
                             }
+
                             onMouseEnter={(e) => [
                                 SE.current = e.target,
-                                isMouseDown && editMode === "drawingMode" && changeColor(i, j),
+                                isMouseDown && editMode === "drawingMode" && (e.target.style.backgroundColor = `${convertToRGBA(selectedColor)}`),
                                 isMouseDown && editMode === "rectangleMode" && handleRectangleOutline(e, "add"),
                             ]
                             }
+
                             onMouseUp={(e) => [
                                 mouseUpXY.current = [i, j],
+                                editMode === "drawingMode" && changeColorArray(),
                                 editMode === "rectangleMode" && handleRectangle(mouseDownXY.current, mouseUpXY.current),
                             ]}
                         >
+
                         </div>
 
                     )

@@ -4,14 +4,35 @@ import { useDispatch } from "react-redux";
 import "./App.css"
 import Colors from "./components/Colors/Colors";
 import PixelCanvas from "./components/PixelCanvas"
-import { dispatchKeyPressed, dispatchMouseDown } from "./store/pixelDrawing";
+import Tools from "./components/Tools/Tools";
+import {dispatchMouseDown, dispatchEditMode } from "./store/pixelDrawing";
 
 
 function App() {
   const dispatch = useDispatch()
 
   function handleKeyPress(e) {
-    dispatch(dispatchKeyPressed({ "key": e.key, "ctrlKey": e.ctrlKey }))
+    if (e.key === "d") {
+         dispatch(dispatchEditMode('drawingMode'))
+    } else if (e.key === "f") {
+         dispatch(dispatchEditMode(('fillMode')))
+    } else if (e.key === "c") {
+         dispatch(dispatchEditMode(('colorPicker')))
+    } else if (e.key === "r") {
+         dispatch(dispatchEditMode(('rectangleMode')))
+    } else if (e.ctrlKey && e.key === "z") {
+         dispatch(dispatchEditMode("undo"))
+    } else if (e.ctrlKey && e.key === "y") {
+         dispatch(dispatchEditMode("redo"))
+    } else if (e.code === "Equal" || e.key === "+") {
+         dispatch(dispatchEditMode("zoomIn"))
+    } else if (e.code === "Minus" || e.key === "-") {
+         dispatch(dispatchEditMode("zoomOut"))
+    } else if (e.ctrlKey && e.key === "a") {
+         dispatch(dispatchEditMode("zoomAll"))
+    } else if (e.ctrlKey && e.key === "x") {
+      dispatch(dispatchEditMode("clearCanvas"))
+ }
   }
 
 
@@ -31,15 +52,11 @@ function App() {
 
 
   return (
-    <div
-      className="wrapper"
-    // role="button"
-    // tabIndex="0"
-    // onKeyDown={(e) => handleKeyPress(e)}
-    // onMouseDown={()=> [dispatch(dispatchMouseDown(true)), console.log("click")]}
-    // onMouseUp={()=> [dispatch(dispatchMouseDown(false)), console.log("unClick")] }
-    >
-      <Colors />
+    <div className="wrapper">
+      <div className="Tools">
+        <Colors />
+        <Tools />
+      </div>
       <PixelCanvas />
     </div>
   );

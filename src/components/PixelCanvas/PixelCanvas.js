@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { dispatchSelectedColor } from "../../store/pixelDrawing"
 import "./PixelCanvas.css"
@@ -17,10 +17,28 @@ function PixelCanvas() {
     const [editMode, setEditMode] = useState("drawingMode")
     const [undo, setUndo] = useState([[]])
     const [redo, setRedo] = useState([])
+
+    const [rectX, setRectX] = useState(0)
+    const [rectY, setRectY] = useState(0)
+    const [rectW, setRectW] = useState(0)
+    const [rectH, setRectH] = useState(0)
+    const [rectStart, setRectStart] = useState(0)
+    const [validRectangle, setValidRectangle] = useState(true)
+
+    const[canvasStart, setCanvasStart] = useState(30)
+    const canvas = useRef('')
+    const mouseDownXY = useRef([0,0]);
+    const mouseUpXY = useRef([0,0]);
     const arrayBg = "rgba(0, 0, 0, 0)"
-    const pixel = 14
-    const rows = 40
-    const columns = 40
+    const pixel = 20
+    const rows = 20
+    const columns = 20
+
+    useEffect(()=>{
+        let left = canvas.current.getBoundingClientRect().left
+        let top = canvas.current.getBoundingClientRect().top
+        setCanvasStart([left, top])
+    },[])
 
 
     // ======================   Listens for keypress   ======================
@@ -31,9 +49,12 @@ function PixelCanvas() {
             setEditMode('fillMode')
         } else if (whatKeyPressed.key === "c") {
             setEditMode('colorPicker')
-        } else if (whatKeyPressed.ctrlKey && whatKeyPressed.key === "z") {
+        }   else if (whatKeyPressed.key === "r") {
+            setEditMode('rectangleMode')
+        }
+        else if (whatKeyPressed.ctrlKey && whatKeyPressed.key === "z") {
             handleUndo()
-        } else if (whatKeyPressed.ctrlKey && whatKeyPressed.key === "y") {
+        }  else if (whatKeyPressed.ctrlKey && whatKeyPressed.key === "y") {
             handleRedo()
         }
 
@@ -158,6 +179,48 @@ function PixelCanvas() {
         setCurrentCanvas(initArray())
     }
 
+
+    //====================== Fills in the rectangle ======================
+    const handleRectangle = (mouseDownXY, mouseUpXy) => {
+      if ( mouseUpXy[0] - mouseDownXY[0] < 0 ){return}
+       let numY = mouseUpXy[0] - mouseDownXY[0];
+       let numX = mouseUpXy[1] - mouseDownXY[1];
+       let newArr = draw_fill_helper()
+
+       for(let i = 0; i <= numY; i++) {
+           for(let j = 0; j <= numX; j++){
+               newArr[i + mouseDownXY[0]][mouseUpXy[1] - j] = selectedColor
+           }
+       }
+       setCurrentCanvas(newArr)
+    }
+
+    //====================== Handles rectangle outline ======================
+    const handleRectangleOutline =(e) =>{
+        let width =  parseInt((e.clientX - rectStart[0] - canvasStart[0] + pixel) / 20, 10) * 20
+        let height = parseInt((e.clientY - rectStart[1] - canvasStart[1] + pixel) / 20, 10) * 20
+
+        if(width <= -0 || height <= -0){
+        setValidRectangle(false)
+        } else {
+        setValidRectangle(true)
+        setRectX(parseInt(rectStart[0]/ 20, 10) * 20)
+        setRectY(parseInt(rectStart[1]/ 20, 10) * 20)
+        setRectW(width)
+        setRectH(height)
+        }
+    }
+
+    //====================== resets rectangle ======================
+    const clearRectangle = (e) => {
+        setValidRectangle(true)
+        setRectX(0)
+        setRectY(0)
+        setRectW(0)
+        setRectH(0)
+    }
+
+
     return (
         <>
             <div className="editButtons" >
@@ -167,50 +230,85 @@ function PixelCanvas() {
                 <button onClick={() => clearCanvas()}>Clear Canvas</button>
                 <button onClick={() => handleUndo()}>Undo</button>
                 <button onClick={() => handleRedo()}>Redo</button>
+                <button onClick={() => setEditMode('rectangleMode')}>&#40;R&#41;ectangle Tool</button>
                 <span style={{ color: "white", marginLeft: "10px" }}>{editMode}</span>
             </div>
 
             <div
                 className="canvas"
+                ref={canvas}
                 style={{
                     width: `${rows * pixel}px`,
                     height: `${columns * pixel}px`,
                     backgroundImage: `url(${transparent2})`,
                     cursor:
-                        editMode === 'drawingMode' ? `url( ${cursor2}) 10 10, auto`
-                            : editMode === 'colorPicker' ? `url( ${colorPicker}) 0 20, auto`
-                                : editMode === "fillMode" && `url( ${bucketFill}) 0 20, auto`
+                          editMode === 'drawingMode' ? `url( ${cursor2}) 10 10, auto`
+                        : editMode === 'colorPicker' ? `url( ${colorPicker}) 0 20, auto`
+                        : editMode === "fillMode" ? `url( ${bucketFill}) 0 20, auto`
+                        : editMode === "rectangleMode" && `none`
                 }}
-                onMouseDown={() =>
-                    (editMode === 'drawingMode' || editMode === "fillMode") && handleHistory
-                }
+                onMouseDown={(e) => [
+                    (editMode === 'drawingMode' || editMode === "fillMode") && handleHistory,
 
+                ]
+                }
             >
+
                 {currentCanvas.map((e, i) =>
                     e.map((e2, j) =>
                         <div
-                            className="pixel"
+                            className={
+                            (editMode === "drawingMode" ||  editMode === "fillMode") ? "pixel"
+                            : (editMode === "rectangleMode" && !isMouseDown) ? "rectangleMarkerHover"
+                            : (editMode === "rectangleMode" && isMouseDown && validRectangle) ? "rectangleMarkerDown" : undefined
+                            }
                             id={`${i}-${j}`}
                             key={`key-${i}-${j}`}
                             style={{
                                 height: `${pixel}px`,
                                 width: `${pixel}px`,
-                                backgroundColor: currentCanvas[i][j]
+                                backgroundColor: currentCanvas[i][j],
+                                borderColor: `${validRectangle ? `white` : `rgba(0,0,0,0)`}`,
+                                // boxShadow: `${validRectangle && 'none'}`
+
                             }}
                             onMouseDown={(e) => [
                                 handleHistory(),
+                                mouseDownXY.current = [i, j],
+                                setRectStart([e.clientX - canvasStart[0], e.clientY - canvasStart[1]]),
                                 editMode === "drawingMode" && changeColor(i, j),
                                 editMode === "fillMode" && fillFunc(i, j, convertToRGBA(e.target.style.backgroundColor)),
                                 editMode === "colorPicker" && dispatch(dispatchSelectedColor(convertToRGBA(e.target.style.backgroundColor))),
+
                             ]}
 
-                            onMouseOver={() =>
-                                isMouseDown && editMode === "drawingMode" && changeColor(i, j)
+                            onMouseEnter={(e) => [
+                                isMouseDown && editMode === "drawingMode" && changeColor(i, j),
+                                isMouseDown && editMode === "rectangleMode" && handleRectangleOutline(e)
+                            ]
                             }
+                            onMouseUp={(e) => [
+                                mouseUpXY.current = [i, j],
+                                editMode === "rectangleMode" && handleRectangle(mouseDownXY.current, mouseUpXY.current),
+                                clearRectangle(e),
+                            ]}
                         >
                         </div>
+
                     )
                 )}
+
+
+                 <div className="rectangle" style={{
+                     top: `${rectY}px`,
+                     left: `${rectX}px`,
+                     width: `${rectW}.px`,
+                     height: `${rectH}px`,
+                     boxShadow: `3px 3px 4px -3px black inset`,
+                     opacity: `${validRectangle ? 1 : 0}`
+                 }}></div>
+
+
             </div>
         </>
     )

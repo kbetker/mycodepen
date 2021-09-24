@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from "react"
 import "./Colors.css"
-import { dispatchSelectedColor } from "../../store/pixelDrawing"
+import { dispatchEditMode, dispatchSelectedColor } from "../../store/pixelDrawing"
 import { useDispatch, useSelector } from "react-redux"
 import transparent from "./transparent.png"
 
 function Colors() {
       const pickedColor = useSelector(state => state.pixelDrawing.selectedColor)
+      const editMode = useSelector(state => state.pixelDrawing.editMode)
       const knobRed = useRef(0)
       const knobRedPOS = useRef(0)
       const knobGreen = useRef()
@@ -14,6 +15,7 @@ function Colors() {
       const knobBluePOS = useRef(0)
       const knobAlpha = useRef(0)
       const knobAlphaPOS = useRef(255)
+
 
       const leftMarker = useRef()
 
@@ -24,6 +26,25 @@ function Colors() {
       const [blue, setBlue] = useState(0)
       const [alpha, setAlpha] = useState(255)
 
+      // useEffect(()=>{
+      //       function eraseMode(){
+      //             if(editMode === "eraseMode"){
+      //              knobRedPOS.current = 0;
+      //              knobGreenPOS.current = 0;
+      //              knobBluePOS.current = 0;
+      //              knobAlphaPOS.current = 0;
+
+      //              setRed(0)
+      //              setGreen(0)
+      //              setBlue(0)
+      //              setAlpha(0)
+
+      //              dispatch(dispatchEditMode("drawingMode"))
+      //             }
+      //       }
+      //       eraseMode()
+      // }, [editMode])
+
       function stopDrag() {
             document.onmouseup = null; // stop moving when mouse button is released:
             document.onmousemove = null;
@@ -31,6 +52,7 @@ function Colors() {
 
       useEffect(() => {
             // console.log(pickedColor)
+            console.log(pickedColor, "WTFWTFWTFWTFWTFWTWFTWF")
             let grabColors = pickedColor.slice(5, pickedColor.indexOf(")")).split(", ")
             let red = grabColors[0]
             let green = grabColors[1]
@@ -141,7 +163,7 @@ function Colors() {
 
                               <div className="slider"
                                     style={{ backgroundImage: `linear-gradient(to right, rgba(${red}, ${green}, ${blue}, 0), rgba(${red}, ${green}, ${blue}, 1))` }}>
-                                    <div className="knob Alpha" ref={knobAlpha} id="alpha" draggable="true" style={{ left: "255px", backgroundImage: `url(${transparent})` }}></div>
+                                    <div className="knob Alpha" ref={knobAlpha} id="alpha" draggable="true" style={{ backgroundImage: `url(${transparent})` }}></div>
                               </div>
                         </div>
 

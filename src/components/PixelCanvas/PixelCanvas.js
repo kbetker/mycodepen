@@ -62,11 +62,11 @@ function PixelCanvas() {
         if (row === null
             || column === null
             || newArr[row][column] !== currBgColor
-            || selectedColor === currBgColor
+            || convertToRGBA(selectedColor) == currBgColor
         ) return newArr;
 
 
-        newArr[row][column] = selectedColor
+        newArr[row][column] = convertToRGBA(selectedColor)
         let up = row - 1 >= 0 ? row - 1 : null
         let down = row + 1 < newArr.length ? row + 1 : null
         let left = column - 1 >= 0 ? column - 1 : null
@@ -248,10 +248,37 @@ function PixelCanvas() {
         }
     }
 
+    // thanks CesMak: https://gist.github.com/CesMak
+    // from GitHub https://gist.github.com/liabru/11263260
+    function download(filename, text) {
+        var element = document.createElement('a');
+        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(text)));
+        element.setAttribute('download', filename);
+
+        element.style.display = 'none';
+        document.body.appendChild(element);
+
+        element.click();
+
+        document.body.removeChild(element);
+      }
+
+      // Start file download.
+
+
+
+
     useEffect(()=>{
-        editMode === "undo" && handleUndo();
-        editMode === "redo" && handleRedo();
+        if (editMode === "undo"){
+            handleUndo()
+            dispatch(dispatchEditMode(''))
+        };
+        if (editMode === "redo") {
+            handleRedo()
+            dispatch(dispatchEditMode(''))
+        };
         editMode === "clearCanvas" && clearCanvas();
+        editMode === "printToConsole" && download("hello.txt",`${currentCanvas}`);
         if(editMode.startsWith("zoom")){
             handleZoom(editMode)
             dispatch(dispatchEditMode(''))
@@ -273,11 +300,11 @@ function PixelCanvas() {
                                 : editMode === "fillMode" ? `url( ${bucketFill}) 0 20, auto`
                                     : editMode === "rectangleMode" && `none`
                 }}
-                onMouseDown={(e) => [
-                    (editMode === 'drawingMode' || editMode === "fillMode") && handleHistory,
+                // onMouseDown={(e) => [
+                //     (editMode === 'drawingMode' || editMode === "fillMode") && handleHistory(),
 
-                ]
-                }
+                // ]
+                // }
             >
 
                 {currentCanvas.map((e, i) =>

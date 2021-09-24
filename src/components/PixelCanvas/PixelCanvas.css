@@ -43,19 +43,30 @@
     position: absolute;
     pointer-events: none;
 }
+
 .NW{
     border-left: solid 1px rgb(255, 255, 255);
     border-top: solid 1px rgb(255, 255, 255);
+    box-sizing: border-box;
+    box-shadow: 3px 3px 4px -3px black inset;
 }
+
 .NE{
     border-right: solid 1px rgb(255, 255, 255);
     border-top: solid 1px rgb(255, 255, 255);
+    box-sizing: border-box;
+    box-shadow: -3px 3px 4px -3px black inset;
 }
+
 .SW{
     border-left: solid 1px rgb(255, 255, 255);
     border-bottom: solid 1px rgb(255, 255, 255);
+    box-sizing: border-box;
+    box-shadow: 3px -3px 4px -3px black inset;
 }
+
 .SE{
     border-bottom: solid 1px rgb(255, 255, 255);
     border-right: solid 1px rgb(255, 255, 255);
+    box-sizing: border-box;
 }

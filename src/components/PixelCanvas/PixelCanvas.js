@@ -29,33 +29,33 @@ function PixelCanvas() {
     const SE = useRef("0-0")
 
     const canvas = useRef('')
-    const mouseDownXY = useRef([0,0]);
-    const mouseUpXY = useRef([0,0]);
+    const mouseDownXY = useRef([0, 0]);
+    const mouseUpXY = useRef([0, 0]);
     const arrayBg = "rgba(0, 0, 0, 0)"
     const pixel = 20
     const rows = 20
     const columns = 20
 
-    useEffect(()=>{
+    useEffect(() => {
         let left = canvas.current.getBoundingClientRect().left
         let top = canvas.current.getBoundingClientRect().top
-    },[])
+    }, [])
 
 
     // ======================   Listens for keypress   ======================
-    useEffect(()=>{
+    useEffect(() => {
         if (whatKeyPressed.key === "d") {
             setEditMode('drawingMode')
         } else if (whatKeyPressed.key === "f") {
             setEditMode('fillMode')
         } else if (whatKeyPressed.key === "c") {
             setEditMode('colorPicker')
-        }   else if (whatKeyPressed.key === "r") {
+        } else if (whatKeyPressed.key === "r") {
             setEditMode('rectangleMode')
         }
         else if (whatKeyPressed.ctrlKey && whatKeyPressed.key === "z") {
             handleUndo()
-        }  else if (whatKeyPressed.ctrlKey && whatKeyPressed.key === "y") {
+        } else if (whatKeyPressed.ctrlKey && whatKeyPressed.key === "y") {
             handleRedo()
         }
 
@@ -114,7 +114,7 @@ function PixelCanvas() {
     }
 
     //======================  helper function to DRY up the code a bit  ======================
-    function draw_fill_helper(){
+    function draw_fill_helper() {
         //=== resets redo history ===
         setRedo([])
 
@@ -183,27 +183,38 @@ function PixelCanvas() {
 
     //====================== Fills in the rectangle ======================
     const handleRectangle = (mouseDownXY, mouseUpXy) => {
-      if ( mouseUpXy[0] - mouseDownXY[0] < 0 ){
-          let temp;
-          temp = mouseUpXy
-          mouseUpXy = mouseDownXY
-          mouseDownXY = temp
+        let downX = mouseDownXY[0]
+        let downY = mouseDownXY[1]
+        let upX = mouseUpXy[0]
+        let upY = mouseUpXy[1]
+
+        if (upX - downX < -0 && upY - downY < -0) {
+            [downX, downY, upX, upY] = [upX, upY, downX, downY]
         }
 
-       let numY = mouseUpXy[0] - mouseDownXY[0];
-       let numX = mouseUpXy[1] - mouseDownXY[1];
-       let newArr = draw_fill_helper()
+        else if (upX - downX >= 0 && upY - downY < -0) {
+            [downX, downY, upX, upY] = [downX, upY, upX, downY]
+        }
 
-       for(let i = 0; i <= numY; i++) {
-           for(let j = 0; j <= numX; j++){
-               newArr[i + mouseDownXY[0]][mouseUpXy[1] - j] = selectedColor
-           }
-       }
-       setCurrentCanvas(newArr)
+        else if (upX - downX < -0 && upY - downY >= 0) {
+            [downX, downY, upX, upY] = [upX, downY, downX, upY]
+        }
+
+
+        let numY = upX - downX;
+        let numX = upY - downY;
+        let newArr = draw_fill_helper()
+
+        for (let i = 0; i <= numY; i++) {
+            for (let j = 0; j <= numX; j++) {
+                newArr[i + downX][upY - j] = selectedColor
+            }
+        }
+        setCurrentCanvas(newArr)
     }
 
     //====================== Handles rectangle outline ======================
-    const handleRectangleOutline =(e, add) =>{
+    const handleRectangleOutline = (e, add) => {
         let classNameNW = "NW"
         let classNameSW = "SW"
         let classNameNE = "NE"
@@ -215,23 +226,21 @@ function PixelCanvas() {
         let columnDiff = southEast[0] - northWest[0]
         let rowDiff = southEast[1] - northWest[1]
 
-        console.log(columnDiff, rowDiff)
-
-        if(columnDiff < -0 && rowDiff < -0){
+        if (columnDiff < -0 && rowDiff < -0) {
             classNameNW = "SE"
             classNameSW = "NE"
             classNameNE = "SW"
             classNameSE = "NW"
         }
 
-        if(columnDiff >= 0 && rowDiff < -0){
+        if (columnDiff >= 0 && rowDiff < -0) {
             classNameNW = "NE"
             classNameSW = "SE"
             classNameNE = "NW"
             classNameSE = "SW"
         }
 
-        if(columnDiff < -0 && rowDiff >= 0){
+        if (columnDiff < -0 && rowDiff >= 0) {
             classNameNW = "SW"
             classNameSW = "NW"
             classNameNE = "SE"
@@ -243,7 +252,7 @@ function PixelCanvas() {
         let divNE = document.getElementById(`${northWest[0]}-${southEast[1]}`)
         let divSE = document.getElementById(SE.current.id)
 
-        if(add === "add"){
+        if (add === "add") {
             divSW.classList.add(classNameSW)
             divNE.classList.add(classNameNE)
             divNW.classList.add(classNameNW)
@@ -281,10 +290,10 @@ function PixelCanvas() {
                     height: `${columns * pixel}px`,
                     backgroundImage: `url(${transparent2})`,
                     cursor:
-                          editMode === 'drawingMode' ? `url( ${cursor2}) 10 10, auto`
-                        : editMode === 'colorPicker' ? `url( ${colorPicker}) 0 20, auto`
-                        : editMode === "fillMode" ? `url( ${bucketFill}) 0 20, auto`
-                        : editMode === "rectangleMode" && `none`
+                        editMode === 'drawingMode' ? `url( ${cursor2}) 10 10, auto`
+                            : editMode === 'colorPicker' ? `url( ${colorPicker}) 0 20, auto`
+                                : editMode === "fillMode" ? `url( ${bucketFill}) 0 20, auto`
+                                    : editMode === "rectangleMode" && `none`
                 }}
                 onMouseDown={(e) => [
                     (editMode === 'drawingMode' || editMode === "fillMode") && handleHistory,
@@ -297,9 +306,9 @@ function PixelCanvas() {
                     e.map((e2, j) =>
                         <div
                             className={
-                            (editMode === "drawingMode" ||  editMode === "fillMode") ? "pixel"
-                            : (editMode === "rectangleMode" && !isMouseDown) ? "rectangleMarkerHover" : undefined
-                            // : (editMode === "rectangleMode" && isMouseDown && validRectangle) ? "rectangleMarkerDown" : undefined
+                                (editMode === "drawingMode" || editMode === "fillMode") ? "pixel"
+                                    : (editMode === "rectangleMode" && !isMouseDown) ? "rectangleMarkerHover" : undefined
+                                // : (editMode === "rectangleMode" && isMouseDown && validRectangle) ? "rectangleMarkerDown" : undefined
                             }
                             id={`${i}-${j}`}
                             key={`key-${i}-${j}`}

@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux"
 import { dispatchSelectedColor } from "../../store/pixelDrawing"
 import "./PixelCanvas.css"
 import transparent2 from "./transparent2.png"
-// import paintCursor from "./paintCursor.png"
 import cursor2 from "./cursor2.png"
 import colorPicker from "./colorPicker.png"
 import bucketFill from "./bucketFill.png"
@@ -22,10 +21,13 @@ function PixelCanvas() {
     const [rectY, setRectY] = useState(0)
     const [rectW, setRectW] = useState(0)
     const [rectH, setRectH] = useState(0)
-    const [rectStart, setRectStart] = useState(0)
     const [validRectangle, setValidRectangle] = useState(true)
 
-    const[canvasStart, setCanvasStart] = useState(30)
+
+    const NW = useRef("0-0")
+
+    const SE = useRef("0-0")
+
     const canvas = useRef('')
     const mouseDownXY = useRef([0,0]);
     const mouseUpXY = useRef([0,0]);
@@ -37,7 +39,6 @@ function PixelCanvas() {
     useEffect(()=>{
         let left = canvas.current.getBoundingClientRect().left
         let top = canvas.current.getBoundingClientRect().top
-        setCanvasStart([left, top])
     },[])
 
 
@@ -182,7 +183,13 @@ function PixelCanvas() {
 
     //====================== Fills in the rectangle ======================
     const handleRectangle = (mouseDownXY, mouseUpXy) => {
-      if ( mouseUpXy[0] - mouseDownXY[0] < 0 ){return}
+      if ( mouseUpXy[0] - mouseDownXY[0] < 0 ){
+          let temp;
+          temp = mouseUpXy
+          mouseUpXy = mouseDownXY
+          mouseDownXY = temp
+        }
+
        let numY = mouseUpXy[0] - mouseDownXY[0];
        let numX = mouseUpXy[1] - mouseDownXY[1];
        let newArr = draw_fill_helper()
@@ -196,29 +203,61 @@ function PixelCanvas() {
     }
 
     //====================== Handles rectangle outline ======================
-    const handleRectangleOutline =(e) =>{
-        let width =  parseInt((e.clientX - rectStart[0] - canvasStart[0] + pixel) / 20, 10) * 20
-        let height = parseInt((e.clientY - rectStart[1] - canvasStart[1] + pixel) / 20, 10) * 20
+    const handleRectangleOutline =(e, add) =>{
+        let classNameNW = "NW"
+        let classNameSW = "SW"
+        let classNameNE = "NE"
+        let classNameSE = "SE"
 
-        if(width <= -0 || height <= -0){
-        setValidRectangle(false)
+        let northWest = NW.current.id.split("-")
+        let southEast = SE.current.id.split("-")
+
+        let columnDiff = southEast[0] - northWest[0]
+        let rowDiff = southEast[1] - northWest[1]
+
+        console.log(columnDiff, rowDiff)
+
+        if(columnDiff < -0 && rowDiff < -0){
+            classNameNW = "SE"
+            classNameSW = "NE"
+            classNameNE = "SW"
+            classNameSE = "NW"
+        }
+
+        if(columnDiff >= 0 && rowDiff < -0){
+            classNameNW = "NE"
+            classNameSW = "SE"
+            classNameNE = "NW"
+            classNameSE = "SW"
+        }
+
+        if(columnDiff < -0 && rowDiff >= 0){
+            classNameNW = "SW"
+            classNameSW = "NW"
+            classNameNE = "SE"
+            classNameSE = "NE"
+        }
+
+        let divNW = document.getElementById(NW.current.id)
+        let divSW = document.getElementById(`${southEast[0]}-${northWest[1]}`)
+        let divNE = document.getElementById(`${northWest[0]}-${southEast[1]}`)
+        let divSE = document.getElementById(SE.current.id)
+
+        if(add === "add"){
+            divSW.classList.add(classNameSW)
+            divNE.classList.add(classNameNE)
+            divNW.classList.add(classNameNW)
+            divSE.classList.add(classNameSE)
+
         } else {
-        setValidRectangle(true)
-        setRectX(parseInt(rectStart[0]/ 20, 10) * 20)
-        setRectY(parseInt(rectStart[1]/ 20, 10) * 20)
-        setRectW(width)
-        setRectH(height)
+            divSW.classList.remove(classNameSW)
+            divNE.classList.remove(classNameNE)
+            divNW.classList.remove(classNameNW)
+            divSE.classList.remove(classNameSE)
         }
     }
 
-    //====================== resets rectangle ======================
-    const clearRectangle = (e) => {
-        setValidRectangle(true)
-        setRectX(0)
-        setRectY(0)
-        setRectW(0)
-        setRectH(0)
-    }
+
 
 
     return (
@@ -259,8 +298,8 @@ function PixelCanvas() {
                         <div
                             className={
                             (editMode === "drawingMode" ||  editMode === "fillMode") ? "pixel"
-                            : (editMode === "rectangleMode" && !isMouseDown) ? "rectangleMarkerHover"
-                            : (editMode === "rectangleMode" && isMouseDown && validRectangle) ? "rectangleMarkerDown" : undefined
+                            : (editMode === "rectangleMode" && !isMouseDown) ? "rectangleMarkerHover" : undefined
+                            // : (editMode === "rectangleMode" && isMouseDown && validRectangle) ? "rectangleMarkerDown" : undefined
                             }
                             id={`${i}-${j}`}
                             key={`key-${i}-${j}`}
@@ -269,44 +308,39 @@ function PixelCanvas() {
                                 width: `${pixel}px`,
                                 backgroundColor: currentCanvas[i][j],
                                 borderColor: `${validRectangle ? `white` : `rgba(0,0,0,0)`}`,
-                                // boxShadow: `${validRectangle && 'none'}`
 
                             }}
+
                             onMouseDown={(e) => [
                                 handleHistory(),
                                 mouseDownXY.current = [i, j],
-                                setRectStart([e.clientX - canvasStart[0], e.clientY - canvasStart[1]]),
+                                NW.current = e.target,
                                 editMode === "drawingMode" && changeColor(i, j),
                                 editMode === "fillMode" && fillFunc(i, j, convertToRGBA(e.target.style.backgroundColor)),
                                 editMode === "colorPicker" && dispatch(dispatchSelectedColor(convertToRGBA(e.target.style.backgroundColor))),
 
                             ]}
 
+                            onMouseLeave={(e) => [
+
+                                isMouseDown && editMode === "rectangleMode" && handleRectangleOutline(e, "remove"),
+                            ]
+                            }
                             onMouseEnter={(e) => [
+                                SE.current = e.target,
                                 isMouseDown && editMode === "drawingMode" && changeColor(i, j),
-                                isMouseDown && editMode === "rectangleMode" && handleRectangleOutline(e)
+                                isMouseDown && editMode === "rectangleMode" && handleRectangleOutline(e, "add"),
                             ]
                             }
                             onMouseUp={(e) => [
                                 mouseUpXY.current = [i, j],
                                 editMode === "rectangleMode" && handleRectangle(mouseDownXY.current, mouseUpXY.current),
-                                clearRectangle(e),
                             ]}
                         >
                         </div>
 
                     )
                 )}
-
-
-                 <div className="rectangle" style={{
-                     top: `${rectY}px`,
-                     left: `${rectX}px`,
-                     width: `${rectW}.px`,
-                     height: `${rectH}px`,
-                     boxShadow: `3px 3px 4px -3px black inset`,
-                     opacity: `${validRectangle ? 1 : 0}`
-                 }}></div>
 
 
             </div>

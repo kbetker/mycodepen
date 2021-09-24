@@ -13,15 +13,14 @@
     /* border: solid 1px rgba(128, 128, 128, 0.137); */
 }
 
-.rectangleMarkerHover:hover{
-    cursor: none;
+.rectangleMarkerDown:hover{
     border-right: solid 1px rgb(255, 255, 255);
     border-bottom: solid 1px rgb(255, 255, 255);
     box-shadow: -3px -3px 4px -3px black inset;
     box-sizing: border-box;
 }
 
-.rectangleMarkerDown:hover{
+.rectangleMarkerHover:hover{
     cursor: none;
     border-top: solid 1px rgb(255, 255, 255);
     border-left: solid 1px rgb(255, 255, 255);

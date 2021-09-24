@@ -13,7 +13,6 @@ function PixelCanvas() {
     const selectedColor = useSelector(state => state.pixelDrawing.selectedColor)
     const isMouseDown = useSelector(state => state.pixelDrawing.mouseDown)
     const whatKeyPressed = useSelector(state => state.pixelDrawing.keyPressed)
-    // const handleRectangle = useRef('')
     const [currentCanvas, setCurrentCanvas] = useState([])
     const [editMode, setEditMode] = useState("drawingMode")
     const [undo, setUndo] = useState([[]])
@@ -50,9 +49,12 @@ function PixelCanvas() {
             setEditMode('fillMode')
         } else if (whatKeyPressed.key === "c") {
             setEditMode('colorPicker')
-        } else if (whatKeyPressed.ctrlKey && whatKeyPressed.key === "z") {
+        }   else if (whatKeyPressed.key === "r") {
+            setEditMode('rectangleMode')
+        }
+        else if (whatKeyPressed.ctrlKey && whatKeyPressed.key === "z") {
             handleUndo()
-        } else if (whatKeyPressed.ctrlKey && whatKeyPressed.key === "y") {
+        }  else if (whatKeyPressed.ctrlKey && whatKeyPressed.key === "y") {
             handleRedo()
         }
 
@@ -178,17 +180,9 @@ function PixelCanvas() {
     }
 
 
-
+    //====================== Fills in the rectangle ======================
     const handleRectangle = (mouseDownXY, mouseUpXy) => {
-
-      if ( mouseUpXy[0] - mouseDownXY[0] < 0 ){
-       return
-        //   let temp;
-        //   temp = mouseUpXy
-        //   mouseUpXy = mouseDownXY
-        //   mouseDownXY = temp
-      }
-
+      if ( mouseUpXy[0] - mouseDownXY[0] < 0 ){return}
        let numY = mouseUpXy[0] - mouseDownXY[0];
        let numX = mouseUpXy[1] - mouseDownXY[1];
        let newArr = draw_fill_helper()
@@ -201,15 +195,13 @@ function PixelCanvas() {
        setCurrentCanvas(newArr)
     }
 
+    //====================== Handles rectangle outline ======================
     const handleRectangleOutline =(e) =>{
-        // setRectX(e.clientX)
-        // setRectY(e.clientY)
         let width =  parseInt((e.clientX - rectStart[0] - canvasStart[0] + pixel) / 20, 10) * 20
         let height = parseInt((e.clientY - rectStart[1] - canvasStart[1] + pixel) / 20, 10) * 20
 
         if(width <= -0 || height <= -0){
         setValidRectangle(false)
-        // console.log("WTFWTFWTW")
         } else {
         setValidRectangle(true)
         setRectX(parseInt(rectStart[0]/ 20, 10) * 20)
@@ -217,16 +209,15 @@ function PixelCanvas() {
         setRectW(width)
         setRectH(height)
         }
-        console.log(rectX, rectY, rectW, rectH)
     }
 
+    //====================== resets rectangle ======================
     const clearRectangle = (e) => {
         setValidRectangle(true)
         setRectX(0)
         setRectY(0)
         setRectW(0)
         setRectH(0)
-
     }
 
 
@@ -239,7 +230,7 @@ function PixelCanvas() {
                 <button onClick={() => clearCanvas()}>Clear Canvas</button>
                 <button onClick={() => handleUndo()}>Undo</button>
                 <button onClick={() => handleRedo()}>Redo</button>
-                <button onClick={() => setEditMode('rectangleMode')}>Rectangle Tool</button>
+                <button onClick={() => setEditMode('rectangleMode')}>&#40;R&#41;ectangle Tool</button>
                 <span style={{ color: "white", marginLeft: "10px" }}>{editMode}</span>
             </div>
 
@@ -251,25 +242,25 @@ function PixelCanvas() {
                     height: `${columns * pixel}px`,
                     backgroundImage: `url(${transparent2})`,
                     cursor:
-                        editMode === 'drawingMode' ? `url( ${cursor2}) 10 10, auto`
-                            : editMode === 'colorPicker' ? `url( ${colorPicker}) 0 20, auto`
-                                : editMode === "fillMode" && `url( ${bucketFill}) 0 20, auto`
+                          editMode === 'drawingMode' ? `url( ${cursor2}) 10 10, auto`
+                        : editMode === 'colorPicker' ? `url( ${colorPicker}) 0 20, auto`
+                        : editMode === "fillMode" ? `url( ${bucketFill}) 0 20, auto`
+                        : editMode === "rectangleMode" && `none`
                 }}
                 onMouseDown={(e) => [
                     (editMode === 'drawingMode' || editMode === "fillMode") && handleHistory,
 
                 ]
                 }
-
-
             >
+
                 {currentCanvas.map((e, i) =>
                     e.map((e2, j) =>
                         <div
                             className={
                             (editMode === "drawingMode" ||  editMode === "fillMode") ? "pixel"
-                            : (editMode === "rectangleMode" && isMouseDown) ? "rectangleMarkerHover"
-                            : (editMode === "rectangleMode" && !isMouseDown) && "rectangleMarkerDown"
+                            : (editMode === "rectangleMode" && !isMouseDown) ? "rectangleMarkerHover"
+                            : (editMode === "rectangleMode" && isMouseDown && validRectangle) ? "rectangleMarkerDown" : undefined
                             }
                             id={`${i}-${j}`}
                             key={`key-${i}-${j}`}
@@ -278,14 +269,13 @@ function PixelCanvas() {
                                 width: `${pixel}px`,
                                 backgroundColor: currentCanvas[i][j],
                                 borderColor: `${validRectangle ? `white` : `rgba(0,0,0,0)`}`,
-                                boxShadow: `${!validRectangle && 'none'}`
+                                // boxShadow: `${validRectangle && 'none'}`
 
                             }}
                             onMouseDown={(e) => [
                                 handleHistory(),
                                 mouseDownXY.current = [i, j],
                                 setRectStart([e.clientX - canvasStart[0], e.clientY - canvasStart[1]]),
-                                console.log([e.clientX - canvasStart[0], e.clientY - canvasStart[1]]),
                                 editMode === "drawingMode" && changeColor(i, j),
                                 editMode === "fillMode" && fillFunc(i, j, convertToRGBA(e.target.style.backgroundColor)),
                                 editMode === "colorPicker" && dispatch(dispatchSelectedColor(convertToRGBA(e.target.style.backgroundColor))),

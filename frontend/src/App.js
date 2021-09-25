@@ -1,15 +1,27 @@
-// import { useSelector } from "react-redux";
-import { useEffect } from "react";
+import React, { useState, useEffect } from "react";
+// import { Route, Switch } from "react-router-dom";
+
 import { useDispatch } from "react-redux";
 import "./App.css"
 import Colors from "./components/Colors/Colors";
 import PixelCanvas from "./components/PixelCanvas"
 import Tools from "./components/Tools/Tools";
 import { dispatchMouseDown, dispatchEditMode, dispatchSelectedColor } from "./store/pixelDrawing";
+import LogInForm from "./components/LogInForm";
+import SignupFormPage from "./components/SignupFormPage";
+import * as sessionActions from "./store/session";
+import Navigation from "./components/Navigation";
+import { Route, Switch } from "react-router";
+
 
 
 function App() {
-     const dispatch = useDispatch()
+     const dispatch = useDispatch();
+     const [isLoaded, setIsLoaded] = useState(false);
+     useEffect(() => {
+          dispatch(sessionActions.restoreUser()).then(() => setIsLoaded(true));
+     }, [dispatch]);
+
 
      function handleKeyPress(e) {
           if (e.key === "d") {
@@ -54,14 +66,30 @@ function App() {
 
 
 
-     return (
-          <div className="wrapper">
-               <div className="Tools">
-                    <Colors />
-                    <Tools />
-               </div>
-               <PixelCanvas />
-          </div>
+     return isLoaded && (
+          <>
+          <Navigation isLoaded={isLoaded} />
+          {isLoaded &&
+          <Switch>
+               <Route path="/login">
+                    <LogInForm />
+               </Route>
+               <Route path="/signup">
+                    <SignupFormPage />
+               </Route>
+
+               <Route path="/pixelpad">
+                    <div className="wrapper">
+                         <div className="Tools">
+                              <Colors />
+                              <Tools />
+                         </div>
+                         <PixelCanvas />
+                    </div>
+               </Route>
+          </Switch>
+          }
+          </>
      );
 }
 

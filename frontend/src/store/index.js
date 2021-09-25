@@ -1,10 +1,12 @@
 import { createStore, combineReducers, applyMiddleware, compose } from "redux";
 import thunk from "redux-thunk";
 import pixelDrawingReducer from "./pixelDrawing"
+import sessionReducer from "./session";
 
 
 const rootReducer = combineReducers({
-  pixelDrawing: pixelDrawingReducer
+  pixelDrawing: pixelDrawingReducer,
+  session: sessionReducer,
 });
 
 let enhancer;

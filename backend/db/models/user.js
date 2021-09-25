@@ -47,7 +47,8 @@ module.exports = (sequelize, DataTypes) => {
     },
   });
   User.associate = function(models) {
-    // associations can be defined here
+   User.hasMany(models.Drawing, { foreignKey: "owner_id", onDelete: 'CASCADE', hooks: "true"})
+   User.hasMany(models.Preference, { foreignKey: "owner_id", onDelete: 'CASCADE', hooks: "true"})
   };
 
   User.getCurrentUserById = async function (id) {

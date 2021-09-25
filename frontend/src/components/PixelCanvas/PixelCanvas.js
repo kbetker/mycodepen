@@ -23,9 +23,9 @@ function PixelCanvas() {
     const mouseDownXY = useRef([0, 0]);
     const mouseUpXY = useRef([0, 0]);
     const arrayBg = "rgba(0, 0, 0, 0)"
-    const [pixel, setPixel] = useState(13)
-    const rows = 70
-    const columns = 40
+    const [pixel, setPixel] = useState(10)
+    const rows = 60
+    const columns = 35
 
 
     // ======================   initializes array to transparent background   ======================

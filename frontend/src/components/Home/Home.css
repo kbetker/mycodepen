@@ -1,0 +1,5 @@
+.canvasPreview{
+    width: 600px;
+    display: flex;
+    flex-wrap: wrap;
+}

@@ -21,7 +21,7 @@ function Navigation({ isLoaded }){
       <>
         <NavLink className="navElement" to="/login">Log In</NavLink>
         <NavLink className="navElement" to="/signup">Sign Up</NavLink>
-       <NavLink className="navElement" to="/login">Demo</NavLink>
+       <NavLink className="navElement" to="/login/demo">Demo</NavLink>
       </>
     );
   }

@@ -12,6 +12,7 @@ import SignupFormPage from "./components/SignupFormPage";
 import * as sessionActions from "./store/session";
 import Navigation from "./components/Navigation";
 import { Route, Switch } from "react-router";
+import Home from "./components/Home"
 
 
 
@@ -71,9 +72,15 @@ function App() {
           <Navigation isLoaded={isLoaded} />
           {isLoaded &&
           <Switch>
+
+               <Route path="/login/:demo">
+                    <LogInForm />
+               </Route>
+
                <Route path="/login">
                     <LogInForm />
                </Route>
+
                <Route path="/signup">
                     <SignupFormPage />
                </Route>
@@ -87,6 +94,11 @@ function App() {
                          <PixelCanvas />
                     </div>
                </Route>
+
+               <Route path="/">
+                    <Home />
+               </Route>
+
           </Switch>
           }
           </>

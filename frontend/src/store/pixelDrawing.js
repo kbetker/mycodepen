@@ -2,6 +2,8 @@ const SELECTED_COLOR = 'pixelDrawing/SELECTED_COLOR';
 const KEY_PRESSED = 'pixelDrawing/KEY_PRESSED';
 const MOUSE_DOWN = 'pixelDrawing/MOUSE_DOWN';
 const EDIT_MODE = 'pixelDrawing/EDIT_MODE';
+const ALL_DRAWINGS = 'pixelDrawing/ALL_DRAWINGS';
+
 
 
 export const loadSelectedColor = (selectedColor) => {
@@ -10,25 +12,28 @@ export const loadSelectedColor = (selectedColor) => {
         selectedColor
     };
 };
-
 export const loadKeyPressed = (keyPressed) => {
     return {
         type: KEY_PRESSED,
         keyPressed
     };
 };
-
 export const loadMouseDown = (mouseDown) => {
     return {
         type: MOUSE_DOWN,
         mouseDown
     };
 };
-
 export const loadEditMode = (editMode) => {
     return {
         type: EDIT_MODE,
         editMode
+    };
+};
+export const loadAllDrawings = (allDrawings) => {
+    return {
+        type: ALL_DRAWINGS,
+        allDrawings
     };
 };
 
@@ -39,22 +44,33 @@ export const dispatchSelectedColor = (selectedColor) => async (dispatch) => {
 export const dispatchKeyPressed = (keyPressed) => async (dispatch) => {
     dispatch(loadKeyPressed(keyPressed));
 };
-
 export const dispatchMouseDown = (mouseDown) => async (dispatch) => {
     dispatch(loadMouseDown(mouseDown));
 };
-
 export const dispatchEditMode = (editMode) => async (dispatch) => {
     dispatch(loadEditMode(editMode));
 };
+export const fetchAllDrawings = () => async (dispatch) => {
+    const response = await fetch("/api/drawings/all");
+    if (response.ok) {
+        const data = await response.json();
+        dispatch(loadAllDrawings(data.allDrawings));
+        return data
+    } else {
+        // const data = await response.json
+        return response
+    }
+};
+
 
 
 export const initialState = {
     selectedColor: "rgba(0, 0, 0, 1)",
-    keyPressed: {"key": '', "ctrlKey": false},
+    keyPressed: { "key": '', "ctrlKey": false },
     mouseDown: false,
     editMode: 'drawingMode',
     drawing: [],
+    allDrawings: [],
 }
 
 const pixelDrawingReducer = (state = initialState, action) => {
@@ -75,6 +91,10 @@ const pixelDrawingReducer = (state = initialState, action) => {
         case EDIT_MODE:
             newState = Object.assign({}, state);
             newState.editMode = action.editMode
+            return newState;
+        case ALL_DRAWINGS:
+            newState = Object.assign({}, state);
+            newState.allDrawings = action.allDrawings
             return newState;
         default:
             return state;

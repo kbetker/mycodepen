@@ -50,8 +50,9 @@ function Home(){
     <div className="homePageWrapper">
         { allDrawings.map(e =>
 
-            <div key={`picId-${e.id}`}>
-            <div className="drawingTitleAndName"><span className="justTitle"> &ldquo;{e.name}&rdquo;</span> by {e.User.username}</div>
+            <div key={`picId-${e.id}`} className="artwork">
+            <div className="homeTitle"> &ldquo;{e.name}&rdquo;</div>
+            <div className="byName">by {e.User.username}</div>
 
 
             <div className="canvasPreview">

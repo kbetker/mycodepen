@@ -11,13 +11,14 @@ function Home(){
     function makeCanvasArray(theCanvas){
         let newArr = [[]]
         try {
-            const canvas_array = JSON.parse(theCanvas)
-            newArr = JSON.parse(canvas_array)
+            return JSON.parse(theCanvas)
+            // newArr = JSON.parse(canvas_array)
 
         }
         catch(err){
             console.log(err)
         }
+        console.log(newArr, "WTFWTWFTWFWTFWFTWFTWTF")
         return newArr
     }
 
@@ -27,17 +28,35 @@ function Home(){
     }, [])
 
 
+    // const waitAMoment = (milliseconds) => { return new Promise(resolve => setTimeout(resolve, milliseconds)) }
+    // async function fade() {
+    //     let thePixels = document.querySelectorAll(".homePixels")
+    //     for(let i = 0; i < Math.floor(thePixels.length / 2); i++){
+    //             await waitAMoment(0.1)
+    //             thePixels[i].style.backgroundColor = thePixels[i].id
+    //             thePixels[thePixels.length - i - 1].style.backgroundColor = thePixels[thePixels.length - i - 1].id
+    //         }
+    // }
 
-    return (<>
+
+
+
+    // useEffect(()=>{
+    //         fade()
+    // }, [allDrawings])
+
+
+    return (
+    <div className="homePageWrapper">
         { allDrawings.map(e =>
 
-            <div>
-            <div>{e.name}</div>
+            <div key={`picId-${e.id}`}>
+            <div className="drawingTitleAndName"><span className="justTitle"> &ldquo;{e.name}&rdquo;</span> by {e.User.username}</div>
+
 
             <div className="canvasPreview">
-            {makeCanvasArray(e.canvas_array).map(i =>
-                <div key={`column-${i}`} style={{width: "10px", height: "10px", backgroundColor: `${i}`}}> </div>
-
+            {makeCanvasArray(e.canvas_array).map((i, int) => <>
+                 <div className="homePixels" key={`column$-${int}`} style={{backgroundColor: `${i}`}}> </div> </>
             )}
         </div>
 
@@ -45,7 +64,7 @@ function Home(){
             </div>
         )}
 
-    </>)
+    </div>)
 }
 
 

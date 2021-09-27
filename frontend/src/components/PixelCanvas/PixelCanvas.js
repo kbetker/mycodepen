@@ -62,7 +62,7 @@ function PixelCanvas() {
         if (row === null
             || column === null
             || newArr[row][column] !== currBgColor
-            || convertToRGBA(selectedColor) == currBgColor
+            || convertToRGBA(selectedColor) === currBgColor
         ) return newArr;
 
 

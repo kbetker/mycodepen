@@ -29,7 +29,7 @@ function Navigation({ isLoaded }){
   return (
     <div className="navbarWrapper">
 
-        <NavLink className="navElement" exact to="/">Home</NavLink>
+        <NavLink className="navElement logo" exact to="/">PixelPad</NavLink>
 
         {isLoaded && sessionLinks}
 

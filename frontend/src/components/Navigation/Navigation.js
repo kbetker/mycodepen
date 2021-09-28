@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import ProfileButton from './ProfileButton';
@@ -29,7 +29,7 @@ function Navigation({ isLoaded }){
   return (
     <div className="navbarWrapper">
 
-        <NavLink className="navElement logo" exact to="/">PixelPad</NavLink>
+        <NavLink className={`navElement logo`} exact to="/">DrawingPad</NavLink>
 
         {isLoaded && sessionLinks}
 

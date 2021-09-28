@@ -1,3 +1,12 @@
+.Tools{
+    display: flex;
+    padding: 5px;
+    background-color: rgb(77, 70, 167);
+    border-top: solid 3px white;
+    border-bottom: solid 3px rgb(184, 184, 184);
+    /* margin-bottom: 10px; */
+}
+
 .editButtons{
     width: 100%;
     display: flex;
@@ -5,8 +14,47 @@
     flex-wrap: wrap;
     justify-content: space-evenly;
 }
+.dropDownToolMenu{
+    background-color: black;
+    padding: 20px;
+    color: white;
+    position: absolute;
+    top: 100px;
+    z-index: 900;
+}
 
+.toolMenuDropdown--element{
+    padding: 8px;
+    cursor: pointer;
+}
 
+.toolMenuDropdown--element:hover{
+background-color: grey;
+}
+
+.toolMenu{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 200px;
+    padding: 5px;
+    background-color: rgb(128, 128, 128);
+    border-top: 3px solid rgb(255, 255, 255);
+    border-left: 3px solid rgb(180, 180, 180);
+    border-bottom: 3px solid rgb(58, 58, 58);
+    border-right: 3px solid rgb(15, 26, 0);
+    cursor: pointer;
+}
+.toolMenu:hover{
+    background-color: rgb(161, 161, 161);
+}
+.toolMenu:active{
+    background-color: rgb(71, 71, 71);
+    border-bottom: 3px solid rgb(255, 255, 255);
+    border-right: 3px solid rgb(180, 180, 180);
+    border-top: 3px solid rgb(58, 58, 58);
+    border-left: 3px solid rgb(15, 26, 0);
+}
 
 
 .tooldiv, .tooldivActive{
@@ -15,7 +63,7 @@
     cursor: pointer;
     width: 160px;
     background-color: rgb(128, 128, 128);
-    height: 40px;
+    height: 30px;
     border-top: 3px solid rgb(255, 255, 255);
     border-left: 3px solid rgb(180, 180, 180);
     border-bottom: 3px solid rgb(58, 58, 58);
@@ -25,6 +73,7 @@
     justify-content: space-evenly;
     align-items: center;
     margin-bottom: 5px;
+    flex-basis: 15%;
 }
 .tooldiv:hover{
     background-color: rgb(51, 51, 51);

@@ -19,6 +19,7 @@ import Home from "./components/Home"
 function App() {
      const dispatch = useDispatch();
      const [isLoaded, setIsLoaded] = useState(false);
+
      useEffect(() => {
           dispatch(sessionActions.restoreUser()).then(() => setIsLoaded(true));
      }, [dispatch]);
@@ -36,7 +37,6 @@ function App() {
           } else if (e.ctrlKey && e.key === "z") {
                dispatch(dispatchEditMode("undo"))
           } else if (e.key === "e") {
-               // dispatch(dispatchEditMode("eraseMode"))
                dispatch(dispatchSelectedColor("rgba(0, 0, 0, 0)"))
           } else if (e.ctrlKey && e.key === "y") {
                dispatch(dispatchEditMode("redo"))
@@ -69,38 +69,41 @@ function App() {
 
      return isLoaded && (
           <>
-          <Navigation isLoaded={isLoaded} />
-          {isLoaded &&
+
           <Switch>
 
                <Route path="/login/:demo">
+                    <Navigation isLoaded={isLoaded} />
                     <LogInForm />
                </Route>
 
                <Route path="/login">
+                    <Navigation isLoaded={isLoaded} />
                     <LogInForm />
                </Route>
 
                <Route path="/signup">
+                    <Navigation isLoaded={isLoaded} />
                     <SignupFormPage />
                </Route>
 
                <Route path="/pixelpad">
                     <div className="wrapper">
-                         <PixelCanvas />
-                         <div className="Tools">
-                              <Colors />
+
                               <Tools />
-                         </div>
+
+                         <PixelCanvas />
+                              <Colors />
                     </div>
                </Route>
 
                <Route path="/">
+                     <Navigation isLoaded={isLoaded} />
                     <Home />
                </Route>
 
           </Switch>
-          }
+
           </>
      );
 }

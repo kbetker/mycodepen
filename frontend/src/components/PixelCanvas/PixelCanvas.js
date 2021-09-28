@@ -286,7 +286,7 @@ function PixelCanvas() {
     },[editMode])
 
     return (
-        <>
+        <div className="canvasWrapper">
             <div
                 className="canvas"
                 ref={canvas}
@@ -357,7 +357,7 @@ function PixelCanvas() {
 
 
             </div>
-        </>
+        </div>
     )
 }
 

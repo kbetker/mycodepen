@@ -7,9 +7,9 @@
     border-right: 3px solid rgb(97, 97, 97);
     border-bottom: 3px solid rgb(0, 0, 0);
     /* box-shadow: 3px 3px 10px black; */
-    width: 420px;
+    width: 470px;
     height: 105px;
-    padding: 20px;
+    padding: 10px;
     background-color: rgb(41, 41, 41);
 }
 .color-columnsTop,.color-columnsBottom{
@@ -40,7 +40,7 @@
     margin-right: 10px;
 }
 
-.IneedToWorkOnMyNamingConventions{
+.slidersAndSelectedColor{
     display: flex;
 }
 
@@ -49,9 +49,20 @@
     height: 100%;
     /* background-color: red; */
 }
+.sliderAndInput{
+    width: 325px;
+    display: flex;
+}
+.sliderInput{
+    width: 40px;
+    height: 13px;
+    font-size: 15px;
+    margin-left: 5px;
+    font-family: 'Turret Road',  Verdana, Geneva, Tahoma, sans-serif;
+}
 
 .slider{
-    width: 265px;
+    width: 270px;
     height: 20px;
     /* border-top: 3px solid black; */
     border-bottom: 5px solid rgb(41, 41, 41);

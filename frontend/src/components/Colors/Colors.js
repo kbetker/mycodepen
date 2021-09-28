@@ -20,30 +20,12 @@ function Colors() {
       const leftMarker = useRef()
 
       const dispatch = useDispatch();
-      // const [color, setColor] = useState('rgba(0, 0, 0, 0,)')
       const [red, setRed] = useState(0)
       const [green, setGreen] = useState(0)
       const [blue, setBlue] = useState(0)
       const [alpha, setAlpha] = useState(255)
 
-      // useEffect(()=>{
-      //       function eraseMode(){
-      //             if(editMode === "eraseMode"){
-      //              knobRedPOS.current = 0;
-      //              knobGreenPOS.current = 0;
-      //              knobBluePOS.current = 0;
-      //              knobAlphaPOS.current = 0;
 
-      //              setRed(0)
-      //              setGreen(0)
-      //              setBlue(0)
-      //              setAlpha(0)
-
-      //              dispatch(dispatchEditMode("drawingMode"))
-      //             }
-      //       }
-      //       eraseMode()
-      // }, [editMode])
 
       function stopDrag() {
             document.onmouseup = null; // stop moving when mouse button is released:
@@ -51,8 +33,6 @@ function Colors() {
       }
 
       useEffect(() => {
-            // console.log(pickedColor)
-            console.log(pickedColor, "WTFWTFWTFWTFWTFWTWFTWF")
             let grabColors = pickedColor.slice(5, pickedColor.indexOf(")")).split(", ")
             let red = grabColors[0]
             let green = grabColors[1]
@@ -135,7 +115,25 @@ function Colors() {
             }
       }, [])
 
-
+      function handleInput(e) {
+            if(e.target.id === "alpha"){
+                  if(e.target.value > 1){
+                        return 1
+                  } else if (e.target.value < 0){
+                        return 0
+                  } else {
+                        return e.target.value
+                  }
+            } else {
+                  if(e.target.value > 255) {
+                        return 255
+                  } else if (e.target.value < 0) {
+                        return 0
+                  } else {
+                        return e.target.value
+                  }
+            }
+      }
 
 
 
@@ -143,28 +141,62 @@ function Colors() {
             <div className="colorsContainer">
 
 
-                  <div className="IneedToWorkOnMyNamingConventions">
+                  <div className="slidersAndSelectedColor">
                         <div className="leftMarker" ref={leftMarker}></div>
                         <div className="slidersContainer" style={{ backgroundImage: `url(${transparent})` }} onMouseLeave={() => dispatch(dispatchSelectedColor(`rgba(${red}, ${green}, ${blue}, ${alpha})`))}>
-                              <div className="slider"
-                                    style={{ backgroundImage: `linear-gradient(to right, rgba(0, ${green}, ${blue}, ${alpha}), rgba(255, ${green}, ${blue}, ${alpha}))` }} >
-                                    <div className="knob Red" ref={knobRed} id="red" draggable="true"></div>
+
+                              <div className="sliderAndInput">
+                                    <div className="slider"
+                                          style={{ backgroundImage: `linear-gradient(to right, rgba(0, ${green}, ${blue}, ${alpha}), rgba(255, ${green}, ${blue}, ${alpha}))` }} >
+                                          <div className="knob Red" ref={knobRed} id="red" draggable="true"></div>
+                                    </div>
+                                    <input
+                                          className="sliderInput"
+                                          id="red"
+                                          onChange={(e) => dispatch(dispatchSelectedColor(`rgba(${handleInput(e)}, ${green}, ${blue}, ${alpha})`))}
+                                          value={red}>
+                                    </input>
                               </div>
 
-                              <div className="slider"
-                                    style={{ backgroundImage: `linear-gradient(to right, rgba(${red}, 0, ${blue}, ${alpha}), rgba(${red}, 255, ${blue}, ${alpha}))` }}>
-                                    <div className="knob Green" ref={knobGreen} id="green" draggable="true"></div>
+                              <div className="sliderAndInput">
+                                    <div className="slider"
+                                          style={{ backgroundImage: `linear-gradient(to right, rgba(${red}, 0, ${blue}, ${alpha}), rgba(${red}, 255, ${blue}, ${alpha}))` }}>
+                                          <div className="knob Green" ref={knobGreen} id="green" draggable="true"></div>
+                                    </div>
+                                    <input
+                                          className="sliderInput"
+                                          id="green"
+                                          onChange={(e) => dispatch(dispatchSelectedColor(`rgba(${red}, ${handleInput(e)}, ${blue}, ${alpha})`))}
+                                          value={green}>
+
+                                    </input>
                               </div>
 
-                              <div className="slider"
-                                    style={{ backgroundImage: `linear-gradient(to right, rgba(${red}, ${green}, 0, ${alpha}), rgba(${red}, ${green}, 255, ${alpha}))` }}>
-                                    <div className="knob Blue" ref={knobBlue} id="blue" draggable="true"></div>
+                              <div className="sliderAndInput">
+                                    <div className="slider"
+                                          style={{ backgroundImage: `linear-gradient(to right, rgba(${red}, ${green}, 0, ${alpha}), rgba(${red}, ${green}, 255, ${alpha}))` }}>
+                                          <div className="knob Blue" ref={knobBlue} id="blue" draggable="true"></div>
+                                    </div>
+                                    <input
+                                          className="sliderInput"
+                                          id="blue"
+                                          onChange={(e) => dispatch(dispatchSelectedColor(`rgba(${red}, ${green}, ${handleInput(e)}, ${alpha})`))}
+                                          value={blue}>
+                                    </input>
                               </div>
 
-                              <div className="slider"
-                                    style={{ backgroundImage: `linear-gradient(to right, rgba(${red}, ${green}, ${blue}, 0), rgba(${red}, ${green}, ${blue}, 1))` }}>
-                                    <div className="knob Alpha" ref={knobAlpha} id="alpha" draggable="true" style={{ backgroundImage: `url(${transparent})` }}></div>
+                              <div className="sliderAndInput">
+                                    <div className="slider"
+                                          style={{ backgroundImage: `linear-gradient(to right, rgba(${red}, ${green}, ${blue}, 0), rgba(${red}, ${green}, ${blue}, 1))` }}>
+                                          <div className="knob Alpha" ref={knobAlpha} id="alpha" draggable="true" style={{ backgroundImage: `url(${transparent})` }}></div>
+                                    </div>
+                                    <input className="sliderInput"
+                                          id="alpha"
+                                          onChange={(e) => dispatch(dispatchSelectedColor(`rgba(${red}, ${green}, ${blue}, ${handleInput(e)})`))}
+                                          value={alpha}>
+                                    </input>
                               </div>
+
                         </div>
 
                   </div>

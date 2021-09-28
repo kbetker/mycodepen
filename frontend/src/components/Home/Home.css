@@ -1,6 +1,6 @@
 .canvasPreview{
-    width: 720px;
-    height: 420px;
+    width: 300px;
+    height: 175px;
     display: flex;
     flex-wrap: wrap;
     overflow: hidden;
@@ -8,36 +8,45 @@
     border-left: 5px solid rgb(179, 179, 179);
     border-right: 8px solid rgb(94, 94, 94);
     border-bottom: 11px solid rgb(7, 7, 7);
-    /* position: relative; */
 }
 .homePageWrapper{
     display: flex;
-    justify-content: center;
+    justify-content: space-evenly;
     align-items: center;
-    height: 80vh;;
-    /* background-color: red; */
+    margin-top: 66px;
+    flex-wrap: wrap;
 }
 
 .homePixels{
-/* position: relative; */
-/* bottom: -400px; */
+
 transition: all 0.05s linear;
-width: 12px;
-height: 12px;
-/* background-color: rgba(0, 0, 0, 0) */
+width: 5px;
+height: 5px;
 }
 
-.homePixelsFadeIn{
+/* .homePixelsFadeIn{ */
     /* bottom: 0; */
     /* width: 10px; */
     /* height: 10px; */
-}
-.drawingTitleAndName{
+/* } */
+
+.byName, .homeTitle{
     color: white;
-    margin-bottom: 20px;
     text-shadow: 5px 5px 0 black;
-    font-size: 16px;
 }
-.justTitle{
-    font-size: 28px;
+.byName{
+    margin-bottom: 10px;
+    font-size: 12px;
+}
+.homeTitle{
+    margin-bottom: 7px;
+    font-size: 20px;
+}
+
+.artwork{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 30px
 }

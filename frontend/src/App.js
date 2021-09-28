@@ -87,11 +87,11 @@ function App() {
 
                <Route path="/pixelpad">
                     <div className="wrapper">
+                         <PixelCanvas />
                          <div className="Tools">
                               <Colors />
                               <Tools />
                          </div>
-                         <PixelCanvas />
                     </div>
                </Route>
 

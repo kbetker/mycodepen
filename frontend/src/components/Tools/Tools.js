@@ -1,16 +1,40 @@
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useHistory } from 'react-router'
 import { dispatchEditMode, dispatchSelectedColor } from '../../store/pixelDrawing'
 import "./Tools.css"
 
 function Tools() {
     const editMode = useSelector(state => state.pixelDrawing.editMode)
     const dispatch = useDispatch();
+    const  [menuDropdown, setMenuDropdown] = useState(false)
+    const menuTimeOut = useRef('');
+    const history = useHistory();
+
+
+    function setMenuTimeout(){
+        menuTimeOut.current = setTimeout(() => {
+            setMenuDropdown(false)
+        }, 1000);
+    }
+
+
     return (
-        <>
+        <div className="Tools">
+            <div className="toolMenu" onClick={()=> setMenuDropdown(true)}>
+                <div >Menu</div>
+            </div>
+
+
+           {menuDropdown &&
+           <div className="dropDownToolMenu" onMouseLeave={()=>setMenuTimeout()} onMouseEnter={()=>clearTimeout(menuTimeOut.current)}>
+                <div className="toolMenuDropdown--element">Save Drawing</div>
+                <div className="toolMenuDropdown--element" onClick={()=> history.push("/")}>Exit</div>
+            </div>}
+
+
             <div className="editButtons" >
                 {/* <div className="left"> */}
-
                 <div className={editMode === "drawingMode" ? "tooldivActive" : "tooldiv"} onClick={() => dispatch(dispatchEditMode('drawingMode'))}>&#40;D&#41;raw Mode</div>
                 <div className={editMode === "fillMode" ? "tooldivActive" : "tooldiv"} onClick={() => dispatch(dispatchEditMode('fillMode'))}>&#40;F&#41;ill Mode</div>
                 <div className={editMode === "colorPicker" ? "tooldivActive" : "tooldiv"} onClick={() => dispatch(dispatchEditMode('colorPicker'))}>
@@ -61,7 +85,7 @@ function Tools() {
 
                 {/* </div> */}
             </div>
-        </>
+        </div>
     )
 }
 

@@ -5,7 +5,7 @@ body{
     margin: 0;
 }
 
-.wrapper{
+/* .wrapper{
     height: 85vh;
     display: flex;
     flex-direction: column;
@@ -16,16 +16,14 @@ body{
     border: none;
     background: none;
     outline: none;
+} */
 
+.wrapper{
+    display: grid;
+    grid-template-rows: 100px 1fr 100px;
+    height: 95vh;
 }
-.Tools{
-    display: flex;
-    padding: 10px;
-    background-color: rgb(77, 70, 167);
-    border-top: solid 3px white;
-    border-bottom: solid 3px rgb(184, 184, 184);
-    margin-bottom: 10px;
-}
+
 
 .form{
     display: flex;
@@ -50,6 +48,17 @@ body{
     border-bottom: 5px solid rgb(7, 7, 7);
     padding: 15px;
 }
+.formButton:hover{
+    background-color: rgb(158, 158, 158);
+}
+.formButton:active{
+    border-bottom: 3px solid white;
+    border-right: 3px solid rgb(179, 179, 179);
+    border-left: 5px solid rgb(94, 94, 94);
+    border-top: 5px solid rgb(7, 7, 7);
+    background-color: rgb(80, 80, 80);
+}
+
 .formContainer{
     display: flex;
     justify-content: center;

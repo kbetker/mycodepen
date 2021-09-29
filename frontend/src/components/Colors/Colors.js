@@ -1,14 +1,16 @@
 import React, { useEffect, useRef, useState } from "react"
 import "./Colors.css"
-import { dispatchEditMode, dispatchSelectedColor } from "../../store/pixelDrawing"
+import { dispatchHideTools, dispatchSelectedColor } from "../../store/pixelDrawing"
 import { useDispatch, useSelector } from "react-redux"
 import transparent from "./transparent.png"
 import { defaultColors, grayscale, reds, blues, greens, yellows, magentas, cyans } from "./colorSchemes.js"
 
 function Colors() {
       const pickedColor = useSelector(state => state.pixelDrawing.selectedColor)
+      const hideColors = useSelector(state => state.pixelDrawing.hideTools.colors)
       const [colorScheme, setColorScheme] = useState(defaultColors)
       const [active, setActive] = useState('defaultColors')
+      // const [hideColors, setHideColors] = useState(true)
       const knobRed = useRef(0)
       const knobRedPOS = useRef(0)
       const knobGreen = useRef()
@@ -162,8 +164,12 @@ function Colors() {
 
 
       return (
-            <div className="colorsContainer">
-                  <div className="sliderSelectedColorContainer">
+            <div className="colorsContainer" style={{height: `${hideColors ? "18px" : "145px"}`, alignSelf: `${hideColors && "flex-end"}`}}>
+
+                  {hideColors && <div className="showHideColors" onClick={()=>dispatch(dispatchHideTools({"colors": false}))} style={{paddingTop: "0px", paddingBottom: "0px"}}>&#9650;</div>}
+                  {!hideColors && <div className="showHideColors" onClick={()=>dispatch(dispatchHideTools({"colors": true}))} style={{paddingTop: "40px", paddingBottom: "40px"}}>&#9660;</div>}
+
+                  <div className="sliderSelectedColorContainer" style={{display: `${hideColors ? "none" : "flex"}`}}>
 
 
                         <div className="slidersAndSelectedColor">
@@ -236,7 +242,7 @@ function Colors() {
 
                   </div>
 
-                  <div className="colorScheme">
+                  <div className="colorScheme" style={{display: `${hideColors ? "none" : "flex"}`}}>
                         {colorScheme.map(el =>
                               <div
                                     style={{ backgroundColor: `${el}` }}
@@ -248,7 +254,7 @@ function Colors() {
 
 
 
-                  <div className="schemeSelector">
+                  <div className="schemeSelector" style={{display: `${hideColors ? "none" : "flex"}`}}>
                         <div className="schemeList">
                               {Object.keys(colorSchemeArray).map((key, i) =>
                                     <div

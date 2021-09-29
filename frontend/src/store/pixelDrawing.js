@@ -3,6 +3,8 @@ const KEY_PRESSED = 'pixelDrawing/KEY_PRESSED';
 const MOUSE_DOWN = 'pixelDrawing/MOUSE_DOWN';
 const EDIT_MODE = 'pixelDrawing/EDIT_MODE';
 const ALL_DRAWINGS = 'pixelDrawing/ALL_DRAWINGS';
+const HIDE_TOOLS = 'pixelDrawing/HIDE_TOOLS';
+
 
 
 
@@ -36,6 +38,13 @@ export const loadAllDrawings = (allDrawings) => {
         allDrawings
     };
 };
+export const loadHideTools = (hideTools) => {
+    return {
+        type: HIDE_TOOLS,
+        hideTools
+    };
+};
+
 
 
 export const dispatchSelectedColor = (selectedColor) => async (dispatch) => {
@@ -49,6 +58,9 @@ export const dispatchMouseDown = (mouseDown) => async (dispatch) => {
 };
 export const dispatchEditMode = (editMode) => async (dispatch) => {
     dispatch(loadEditMode(editMode));
+};
+export const dispatchHideTools = (hideTools) => async (dispatch) => {
+    dispatch(loadHideTools(hideTools));
 };
 export const fetchAllDrawings = () => async (dispatch) => {
     const response = await fetch("/api/drawings/all");
@@ -71,6 +83,7 @@ export const initialState = {
     editMode: 'drawingMode',
     drawing: [],
     allDrawings: [],
+    hideTools: {"colors": false, "tools": false}
 }
 
 const pixelDrawingReducer = (state = initialState, action) => {
@@ -96,6 +109,14 @@ const pixelDrawingReducer = (state = initialState, action) => {
             newState = Object.assign({}, state);
             newState.allDrawings = action.allDrawings
             return newState;
+        case HIDE_TOOLS:
+            newState = Object.assign({}, state);
+            // console.log(action, "WTFWTFWTW")
+            let key = Object.keys(action.hideTools)[0]
+            let value = action.hideTools[key]
+            // console.log(key, ":", value, "WTFWTFWTW")
+            newState.hideTools[key] = value
+            // return newState;
         default:
             return state;
 

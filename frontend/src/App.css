@@ -20,8 +20,8 @@ body{
 
 .wrapper{
     display: grid;
-    grid-template-rows: 100px 1fr 145px;
-    height: 97vh;
+    /* grid-template-rows: 100px 1fr 158px; */
+    height: 99vh;
 }
 
 

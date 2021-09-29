@@ -23,7 +23,7 @@ function PixelCanvas() {
     const mouseDownXY = useRef([0, 0]);
     const mouseUpXY = useRef([0, 0]);
     const arrayBg = "rgba(0, 0, 0, 0)"
-    const [pixel, setPixel] = useState(10)
+    const [pixel, setPixel] = useState(13)
     const rows = 60
     const columns = 35
 
@@ -242,7 +242,7 @@ function PixelCanvas() {
         } else if (method === "zoomOut" && pixel  >= 3){
             setPixel(pixel => pixel - 1)
         } else  if (method === "zoomAll"){
-            setPixel(10)
+            setPixel(13)
         } else{
             return
         }

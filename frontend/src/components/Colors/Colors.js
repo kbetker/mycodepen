@@ -164,7 +164,7 @@ function Colors() {
 
 
       return (
-            <div className="colorsContainer" style={{height: `${hideColors ? "18px" : "145px"}`, alignSelf: `${hideColors && "flex-end"}`}}>
+            <div className="colorsContainer" style={{height: `${hideColors ? "18px" : "145px"}`}}>
 
                   {hideColors && <div className="showHideColors" onClick={()=>dispatch(dispatchHideTools({"colors": false}))} style={{paddingTop: "0px", paddingBottom: "0px"}}>&#9650;</div>}
                   {!hideColors && <div className="showHideColors" onClick={()=>dispatch(dispatchHideTools({"colors": true}))} style={{paddingTop: "40px", paddingBottom: "40px"}}>&#9660;</div>}
@@ -243,11 +243,13 @@ function Colors() {
                   </div>
 
                   <div className="colorScheme" style={{display: `${hideColors ? "none" : "flex"}`}}>
-                        {colorScheme.map(el =>
+                        {colorScheme.map((el, i) =>
                               <div
                                     style={{ backgroundColor: `${el}` }}
                                     className="coloreSchemeColor"
-                                    onClick={(e) => dispatch(dispatchSelectedColor(convertToRGBA(el)))}>
+                                    onClick={(e) => dispatch(dispatchSelectedColor(convertToRGBA(el)))}
+                                    key={`color-${i}`}>
+
                               </div>
                         )}
                   </div>
@@ -259,6 +261,7 @@ function Colors() {
                               {Object.keys(colorSchemeArray).map((key, i) =>
                                     <div
                                           className={`selectItem ${active === `${key}` && "selectItemActive"}`}
+                                          key={`schemeName-${i}`}
                                           onClick={() => [setColorScheme(colorSchemeArray[key]), setActive(`${key}`)]}>
                                           {key}
                                     </div>

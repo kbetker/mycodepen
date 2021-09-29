@@ -5,6 +5,7 @@
     background-color: rgb(77, 70, 167);
     padding: 5px;
     border-top: solid 3px rgb(184, 184, 184);
+    align-self: flex-end;
 
 }
 

@@ -26,7 +26,7 @@ function make2d(theArray){
 
 
   let finalArray = JSON.stringify(newArray)
-  console.log(finalArray)
+  // console.log(finalArray)
   return finalArray
 }
 

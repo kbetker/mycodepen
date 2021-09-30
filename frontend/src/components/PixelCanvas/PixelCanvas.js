@@ -41,10 +41,11 @@ function PixelCanvas() {
         return columnsArr
     }
 
-    //======================   sets currentCanvas to initial array and initializes first color   ======================
+    //======================   sets currentCanvas to initial array and initializes first color and selects drawing tool   ======================
     useEffect(() => {
         setCurrentCanvas(initArray())
         dispatch(dispatchSelectedColor("rgba(0, 0, 0, 1.00)"))
+        dispatch(dispatchEditMode("drawingMode"))
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 

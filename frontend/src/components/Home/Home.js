@@ -11,6 +11,7 @@ function Home(){
     function makeCanvasArray(theCanvas){
         let newArr = [[]]
         try {
+            console.log(JSON.parse(theCanvas), "WTFWTWFTWFWTFWFTWFTWTF")
             return JSON.parse(theCanvas)
             // newArr = JSON.parse(canvas_array)
 
@@ -18,7 +19,6 @@ function Home(){
         catch(err){
             console.log(err)
         }
-        console.log(newArr, "WTFWTWFTWFWTFWFTWFTWTF")
         return newArr
     }
 
@@ -56,8 +56,10 @@ function Home(){
 
 
             <div className="canvasPreview">
-            {makeCanvasArray(e.canvas_array).map((i, int) => <>
-                 <div className="homePixels" key={`column$-${int}`} style={{backgroundColor: `${i}`}}> </div> </>
+            {makeCanvasArray(e.canvas_array).map((div, int) => <>
+            {div.map((pixel, int2) => <div className="homePixels" key={`pix-${int2}`} style={{backgroundColor: `${pixel}`}}> </div> )}
+
+                 </>
             )}
         </div>
 

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 // import { Route, Switch } from "react-router-dom";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import "./App.css"
 import Colors from "./components/Colors/Colors";
 import PixelCanvas from "./components/PixelCanvas"
@@ -19,6 +19,7 @@ import Home from "./components/Home"
 function App() {
      const dispatch = useDispatch();
      const [isLoaded, setIsLoaded] = useState(false);
+     const editMode = useSelector(state=>state.pixelDrawing.editMode)
 
      useEffect(() => {
           dispatch(sessionActions.restoreUser()).then(() => setIsLoaded(true));
@@ -26,7 +27,9 @@ function App() {
 
 
      function handleKeyPress(e) {
-          if (e.key === "d") {
+          if(editMode === "saveDrawing") return
+
+          if (e.key === "d" ) {
                dispatch(dispatchEditMode('drawingMode'))
           } else if (e.key === "f") {
                dispatch(dispatchEditMode(('fillMode')))
@@ -52,7 +55,13 @@ function App() {
      }
 
 
+
      useEffect(() => {
+
+          window.removeEventListener('mousedown', () => { dispatch(dispatchMouseDown(true)) });
+          window.removeEventListener('mouseup', () => { dispatch(dispatchMouseDown(false)) });
+          window.removeEventListener('keypress', handleKeyPress)
+
           window.addEventListener('mousedown', () => { dispatch(dispatchMouseDown(true)); });
           window.addEventListener('mouseup', () => { dispatch(dispatchMouseDown(false)) });
           window.addEventListener('keypress', handleKeyPress)
@@ -63,7 +72,7 @@ function App() {
                window.removeEventListener('keypress', handleKeyPress)
           };
           // eslint-disable-next-line react-hooks/exhaustive-deps
-     }, [])
+     }, [editMode])
 
 
 

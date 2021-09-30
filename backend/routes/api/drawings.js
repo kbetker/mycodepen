@@ -19,4 +19,23 @@ router.get("/all", async(req, res) => {
     res.json({allDrawings})
 })
 
+
+router.post('/new', async (req, res) => {
+    // const wat = await Spot.findAll()
+    const { owner_id, name, canvas_array } = req.body;
+    console.log(name, owner_id, "============================================= TEST!?!?!?!! =============================================")
+    const drawing = await Drawing.create({
+        owner_id,
+        name,
+        canvas_array
+    });
+
+    return res.json({ drawing });
+});
+
+
+
+
+
+
 module.exports = router

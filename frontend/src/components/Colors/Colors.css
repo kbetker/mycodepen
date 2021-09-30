@@ -187,25 +187,3 @@
     background-color: rgb(0, 0, 0);
     color: white;
 }
-
-.showHideColors{
-    background-color: rgb(124, 124, 124);
-    border-top: 2px solid white;
-    border-left: 2px solid rgb(196, 196, 196);
-    border-right: 2px solid rgb(97, 97, 97);
-    border-bottom: 2px solid rgb(0, 0, 0);
-    cursor: pointer;
-    padding-left: 40px;
-    padding-right: 40px;
-}
-.showHideColors:hover{
-    background-color: rgb(165, 165, 165);
-}
-
-.showHideColors:active{
-    background-color: rgb(63, 63, 63);
-    border-bottom: 2px solid white;
-    border-right: 2px solid rgb(196, 196, 196);
-    border-left: 2px solid rgb(97, 97, 97);
-    border-top: 2px solid rgb(0, 0, 0);
-}

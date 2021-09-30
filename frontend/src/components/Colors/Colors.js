@@ -164,12 +164,22 @@ function Colors() {
 
 
       return (
-            <div className="colorsContainer" style={{height: `${hideColors ? "18px" : "145px"}`}}>
+            <div className="colorsContainer" style={{ height: `${hideColors ? "18px" : "145px"}` }}>
 
-                  {hideColors && <div className="showHideColors" onClick={()=>dispatch(dispatchHideTools({"colors": false}))} style={{paddingTop: "0px", paddingBottom: "0px"}}>&#9650;</div>}
-                  {!hideColors && <div className="showHideColors" onClick={()=>dispatch(dispatchHideTools({"colors": true}))} style={{paddingTop: "40px", paddingBottom: "40px"}}>&#9660;</div>}
+                  {hideColors &&
+                        <div
+                              className="showHideButton"
+                              onClick={() => dispatch(dispatchHideTools({ "colors": false }))}
+                              style={{height: "100%", width: "150px"}}>&#9650;
+                        </div>}
+                  {!hideColors &&
+                        <div
+                              className="showHideButton"
+                              onClick={() => dispatch(dispatchHideTools({ "colors": true }))}
+                              style={{ height: "100%", width: "25px" }}>&#9660;
+                        </div>}
 
-                  <div className="sliderSelectedColorContainer" style={{display: `${hideColors ? "none" : "flex"}`}}>
+                  <div className="sliderSelectedColorContainer" style={{ display: `${hideColors ? "none" : "flex"}` }}>
 
 
                         <div className="slidersAndSelectedColor">
@@ -242,7 +252,7 @@ function Colors() {
 
                   </div>
 
-                  <div className="colorScheme" style={{display: `${hideColors ? "none" : "flex"}`}}>
+                  <div className="colorScheme" style={{ display: `${hideColors ? "none" : "flex"}` }}>
                         {colorScheme.map((el, i) =>
                               <div
                                     style={{ backgroundColor: `${el}` }}
@@ -256,7 +266,7 @@ function Colors() {
 
 
 
-                  <div className="schemeSelector" style={{display: `${hideColors ? "none" : "flex"}`}}>
+                  <div className="schemeSelector" style={{ display: `${hideColors ? "none" : "flex"}` }}>
                         <div className="schemeList">
                               {Object.keys(colorSchemeArray).map((key, i) =>
                                     <div

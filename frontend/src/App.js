@@ -27,7 +27,7 @@ function App() {
 
 
      function handleKeyPress(e) {
-          if(editMode === "saveDrawing") return
+          if(editMode === "ignoreKeyPress" || editMode === "saveDrawing") return
 
           if (e.key === "d" ) {
                dispatch(dispatchEditMode('drawingMode'))

@@ -142,7 +142,7 @@ export const yellows = [
 
 
 export const magentas = [
-    "rgba(6, 0, 6 1.00)",
+    "rgba(6, 0, 6, 1.00)",
     "rgba(13, 0, 13, 1.00)",
     "rgba(27, 0, 27, 1.00)",
     "rgba(40, 0, 40, 1.00)",

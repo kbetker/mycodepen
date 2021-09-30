@@ -1,9 +1,11 @@
+import { csrfFetch } from "./csrf"
 const SELECTED_COLOR = 'pixelDrawing/SELECTED_COLOR';
 const KEY_PRESSED = 'pixelDrawing/KEY_PRESSED';
 const MOUSE_DOWN = 'pixelDrawing/MOUSE_DOWN';
 const EDIT_MODE = 'pixelDrawing/EDIT_MODE';
 const ALL_DRAWINGS = 'pixelDrawing/ALL_DRAWINGS';
 const HIDE_TOOLS = 'pixelDrawing/HIDE_TOOLS';
+const SAVED_DRAWING = 'pixelDrawing/SAVED_DRAWING';
 
 
 
@@ -45,6 +47,13 @@ export const loadHideTools = (hideTools) => {
     };
 };
 
+export const loadSavedDrawing = (drawing) => {
+    return {
+        type: SAVED_DRAWING,
+        drawing
+    };
+};
+
 
 
 export const dispatchSelectedColor = (selectedColor) => async (dispatch) => {
@@ -62,6 +71,14 @@ export const dispatchEditMode = (editMode) => async (dispatch) => {
 export const dispatchHideTools = (hideTools) => async (dispatch) => {
     dispatch(loadHideTools(hideTools));
 };
+
+export const dispatchSavedDrawing = (drawing) => async (dispatch) => {
+    dispatch(loadHideTools(drawing));
+};
+
+
+
+
 export const fetchAllDrawings = () => async (dispatch) => {
     const response = await fetch("/api/drawings/all");
     if (response.ok) {
@@ -71,6 +88,22 @@ export const fetchAllDrawings = () => async (dispatch) => {
     } else {
         // const data = await response.json
         return response
+    }
+};
+
+
+export const dispatchPostDrawing = (payload) => async (dispatch) => {
+    const response = await csrfFetch(`/api/drawings/new`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(payload)
+
+    });
+    if(response.ok){
+        const data = await response.json();
+        dispatch(loadSavedDrawing(data.drawing));
+        console.log(data.drawing)
+        return data.drawing
     }
 };
 
@@ -111,12 +144,14 @@ const pixelDrawingReducer = (state = initialState, action) => {
             return newState;
         case HIDE_TOOLS:
             newState = Object.assign({}, state);
-            // console.log(action, "WTFWTFWTW")
             let key = Object.keys(action.hideTools)[0]
             let value = action.hideTools[key]
-            // console.log(key, ":", value, "WTFWTFWTW")
             newState.hideTools[key] = value
-            // return newState;
+            return newState;
+        case SAVED_DRAWING:
+            newState = Object.assign({}, state);
+            newState.drawing = action.drawing
+            return newState;
         default:
             return state;
 

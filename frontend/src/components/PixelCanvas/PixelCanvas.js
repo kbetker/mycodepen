@@ -6,15 +6,19 @@ import transparent2 from "./transparent2.png"
 import cursor2 from "./cursor2.png"
 import colorPicker from "./colorPicker.png"
 import bucketFill from "./bucketFill.png"
+import { dispatchPostDrawing } from "../../store/pixelDrawing"
 
 function PixelCanvas() {
     const dispatch = useDispatch()
     const selectedColor = useSelector(state => state.pixelDrawing.selectedColor)
     const isMouseDown = useSelector(state => state.pixelDrawing.mouseDown)
     const editMode = useSelector(state => state.pixelDrawing.editMode)
+    const user = useSelector(state => state.session.user)
     const [currentCanvas, setCurrentCanvas] = useState([])
     const [undo, setUndo] = useState([[]])
     const [redo, setRedo] = useState([])
+    const [drawingName, setDrawingName] = useState('')
+    const [saveDrawing, setSaveDrawing] = useState('')
 
     const NW = useRef("0-0")
     const SE = useRef("0-0")
@@ -235,15 +239,19 @@ function PixelCanvas() {
         }
     }
 
-     //====================== Handles Zoom ======================
-    function handleZoom(method){
-        if(method === "zoomIn" && pixel <= 50){
+    //====================== Handles Zoom ======================
+    function handleZoom(method) {
+        if (method === "zoomIn" && pixel <= 50) {
             setPixel(pixel => pixel + 1)
-        } else if (method === "zoomOut" && pixel  >= 3){
+            dispatch(dispatchEditMode(''))
+        } else if (method === "zoomOut" && pixel >= 3) {
             setPixel(pixel => pixel - 1)
-        } else  if (method === "zoomAll"){
+            dispatch(dispatchEditMode(''))
+        } else if (method === "zoomAll") {
             setPixel(13)
-        } else{
+        } else if (method === "zoomSave") {
+            setPixel(10)
+        } else {
             return
         }
     }
@@ -261,15 +269,13 @@ function PixelCanvas() {
         element.click();
 
         document.body.removeChild(element);
-      }
+    }
 
-      // Start file download.
-
-
+    // Start file download.
 
 
-    useEffect(()=>{
-        if (editMode === "undo"){
+    useEffect(() => {
+        if (editMode === "undo") {
             handleUndo()
             dispatch(dispatchEditMode(''))
         };
@@ -278,15 +284,36 @@ function PixelCanvas() {
             dispatch(dispatchEditMode(''))
         };
         editMode === "clearCanvas" && clearCanvas();
-        editMode === "printToConsole" && download("hello.txt",`${currentCanvas}`);
-        if(editMode.startsWith("zoom")){
+        editMode === "printToConsole" && download("hello.txt", `${currentCanvas}`);
+        if (editMode.startsWith("zoom")) {
             handleZoom(editMode)
-            dispatch(dispatchEditMode(''))
         }
-    },[editMode])
+    }, [editMode])
+
+    async function handelSubmit(e) {
+        e.preventDefault()
+        let canvas_array = await JSON.stringify(currentCanvas)
+        const payload = {
+            "owner_id": user.id,
+            "name": drawingName,
+            canvas_array
+        }
+        let data = await dispatch(dispatchPostDrawing(payload))
+        console.log(data)
+    }
 
     return (
         <div className="canvasWrapper">
+            {editMode === "saveDrawing" &&
+                <div className="saveFormContainer">
+                    <form onSubmit={handelSubmit} className="form saveForm">
+                        <div className="formElement">Name</div>
+                        <input className="formInput formElement" value={drawingName} onChange={(e)=>setDrawingName(e.target.value)}></input>
+                        <button type="submit" className="formButton formElement">Save Drawing</button>
+                        <button className="formButton formElement" onClick={()=>dispatch(dispatchEditMode(""))}>Cancel</button>
+                    </form>
+                </div>
+            }
             <div
                 className="canvas"
                 ref={canvas}
@@ -300,11 +327,11 @@ function PixelCanvas() {
                                 : editMode === "fillMode" ? `url( ${bucketFill}) 0 20, auto`
                                     : editMode === "rectangleMode" && `none`
                 }}
-                // onMouseDown={(e) => [
-                //     (editMode === 'drawingMode' || editMode === "fillMode") && handleHistory(),
+            // onMouseDown={(e) => [
+            //     (editMode === 'drawingMode' || editMode === "fillMode") && handleHistory(),
 
-                // ]
-                // }
+            // ]
+            // }
             >
 
                 {currentCanvas.map((e, i) =>

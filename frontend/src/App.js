@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 // import { Route, Switch } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -107,7 +107,16 @@ function App() {
                     <div className="wrapper">
 
                               <Tools />
+                         <PixelCanvas />
+                              <Colors />
+                    </div>
+               </Route>
 
+
+               <Route path="/pixelpad/">
+                    <div className="wrapper">
+
+                              <Tools />
                          <PixelCanvas />
                               <Colors />
                     </div>

@@ -24,39 +24,22 @@ function Home() {
 
     useEffect(() => {
         dispatch(fetchAllDrawings())
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
-
-
-    // const waitAMoment = (milliseconds) => { return new Promise(resolve => setTimeout(resolve, milliseconds)) }
-    // async function fade() {
-    //     let thePixels = document.querySelectorAll(".homePixels")
-    //     for(let i = 0; i < Math.floor(thePixels.length / 2); i++){
-    //             await waitAMoment(0.1)
-    //             thePixels[i].style.backgroundColor = thePixels[i].id
-    //             thePixels[thePixels.length - i - 1].style.backgroundColor = thePixels[thePixels.length - i - 1].id
-    //         }
-    // }
-
-
-
-
-    // useEffect(()=>{
-    //         fade()
-    // }, [allDrawings])
 
 
     return (
         <div className="homePageWrapper">
-            {allDrawings.map(e =>
+            {allDrawings.map((e, eInt) =>
 
-                <div key={`picId-${e.id}`} className="artwork">
+                <div key={`picId-${e.id}${eInt}`} className="artwork">
                     <div className="homeTitle"> &ldquo;{e.name}&rdquo;</div>
                     <div className="byName">by {e.User.username}</div>
 
 
                     <div className="canvasPreview">
                         {makeCanvasArray(e.canvas_array).map((div, int) => <>
-                            {div.map((pixel, int2) => <div className="homePixels" key={`pix-${int2}`} style={{ backgroundColor: `${pixel}` }}> </div>)}
+                            {div.map((pixel, int2) => <div className="homePixels" key={`pix-${int2}${int}`} style={{ backgroundColor: `${pixel}` }}> </div>)}
 
                         </>
                         )}

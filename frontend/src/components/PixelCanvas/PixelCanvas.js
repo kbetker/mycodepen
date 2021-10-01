@@ -7,10 +7,11 @@ import cursor2 from "./cursor2.png"
 import colorPicker from "./colorPicker.png"
 import bucketFill from "./bucketFill.png"
 import { dispatchPostDrawing } from "../../store/pixelDrawing"
-import { useParams } from "react-router"
+import { useParams, useHistory } from "react-router"
 
 function PixelCanvas() {
     const dispatch = useDispatch()
+    const history = useHistory()
     const selectedColor = useSelector(state => state.pixelDrawing.selectedColor)
     const isMouseDown = useSelector(state => state.pixelDrawing.mouseDown)
     const editMode = useSelector(state => state.pixelDrawing.editMode)
@@ -20,7 +21,7 @@ function PixelCanvas() {
     const [undo, setUndo] = useState([[]])
     const [redo, setRedo] = useState([])
     const [drawingName, setDrawingName] = useState('')
-    const {id} = useParams()
+    const { id } = useParams()
     // const [saveDrawing, setSaveDrawing] = useState('')
 
     const NW = useRef("0-0")
@@ -52,8 +53,7 @@ function PixelCanvas() {
         dispatch(dispatchSelectedColor("rgba(0, 0, 0, 1.00)"))
         dispatch(dispatchEditMode("drawingMode"))
 
-        if(id){
-            console.log(id)
+        if (id) {
             dispatch(fetchEditMyDrawing(parseInt(id)))
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -73,9 +73,12 @@ function PixelCanvas() {
         return newArr
     }
 
-    useEffect(()=>{
-        setCurrentCanvas(makeCanvasArray(editDrawing.canvas_array))
-
+    useEffect(() => {
+        if (id) {
+            setCurrentCanvas(makeCanvasArray(editDrawing.canvas_array))
+            setDrawingName(editDrawing.name)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [editDrawing])
 
 
@@ -318,10 +321,13 @@ function PixelCanvas() {
         if (editMode.startsWith("zoom")) {
             handleZoom(editMode)
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [editMode])
 
     async function handelSubmit(e) {
         e.preventDefault()
+
+
         let canvas_array = await JSON.stringify(currentCanvas)
         const payload = {
             "owner_id": user.id,
@@ -329,18 +335,23 @@ function PixelCanvas() {
             canvas_array
         }
         let data = await dispatch(dispatchPostDrawing(payload))
-        console.log(data)
+       if(data.errors){
+           alert(data.errors)
+       } else{
+           dispatch(dispatchEditMode("drawingMode"))
+           history.push(`/pixelpad/${data.id}`)
+       }
     }
 
     return (
         <div className="canvasWrapper">
-            {editMode === "saveDrawing" &&
+            {(editMode === "saveDrawing" || editMode === "updateDrawing") &&
                 <div className="saveFormContainer">
                     <form onSubmit={handelSubmit} className="form saveForm">
                         <div className="formElement">Name</div>
-                        <input className="formInput formElement" value={drawingName} onChange={(e)=>setDrawingName(e.target.value)}></input>
-                        <button type="submit" className="formButton formElement">Save Drawing</button>
-                        <button className="formButton formElement" onClick={()=>dispatch(dispatchEditMode(""))}>Cancel</button>
+                        <input className="formInput formElement" value={drawingName} onChange={(e) => setDrawingName(e.target.value)}></input>
+                        <button type="submit" className="formButton formElement">{editMode === "saveDrawing" ? "Save as..." : "Save Drawing"}</button>
+                        <button className="formButton formElement" onClick={() => dispatch(dispatchEditMode(""))}>Cancel</button>
                     </form>
                 </div>
             }

@@ -150,6 +150,8 @@ export const dispatchPostDrawing = (payload) => async (dispatch) => {
         dispatch(loadSavedDrawing(data.drawing));
         console.log(data.drawing)
         return data.drawing
+    } else{
+        return response
     }
 };
 

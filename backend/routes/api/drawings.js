@@ -30,7 +30,6 @@ router.get("/all", async(req, res) => {
 
 router.get("/edit/:id", async(req, res) => {
     const id = req.params.id
-    console.log("W?!?!?!??!?!?!?!?!??!?")
     const drawing = await Drawing.findOne({
         where: {id: id},
     })
@@ -48,7 +47,6 @@ router.post('/new', async (req, res) => {
         name,
         canvas_array
     });
-
     return res.json({ drawing });
 });
 

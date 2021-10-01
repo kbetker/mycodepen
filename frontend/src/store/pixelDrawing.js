@@ -7,6 +7,8 @@ const ALL_DRAWINGS = 'pixelDrawing/ALL_DRAWINGS';
 const HIDE_TOOLS = 'pixelDrawing/HIDE_TOOLS';
 const SAVED_DRAWING = 'pixelDrawing/SAVED_DRAWING';
 const ALL_MY_DRAWINGS = 'pixelDrawing/ALL_MY_DRAWINGS';
+const EDIT_DRAWING = 'pixelDrawing/EDIT_DRAWING';
+
 
 
 
@@ -63,6 +65,13 @@ export const loadSavedDrawing = (drawing) => {
     };
 };
 
+export const loadEditDrawing = (drawing) => {
+    return {
+        type: EDIT_DRAWING,
+        drawing
+    };
+};
+
 
 
 export const dispatchSelectedColor = (selectedColor) => async (dispatch) => {
@@ -83,6 +92,19 @@ export const dispatchHideTools = (hideTools) => async (dispatch) => {
 
 export const dispatchSavedDrawing = (drawing) => async (dispatch) => {
     dispatch(loadHideTools(drawing));
+};
+
+
+export const fetchEditMyDrawing = (id) => async (dispatch) => {
+    const response = await fetch(`/api/drawings/edit/${id}`);
+    if (response.ok) {
+        const data = await response.json();
+        dispatch(loadEditDrawing(data.drawing));
+        return data
+    } else {
+        // const data = await response.json
+        return response
+    }
 };
 
 
@@ -180,6 +202,10 @@ const pixelDrawingReducer = (state = initialState, action) => {
         case ALL_MY_DRAWINGS:
             newState = Object.assign({}, state);
             newState.allMYDrawings = action.allMYDrawings
+            return newState;
+        case EDIT_DRAWING:
+            newState = Object.assign({}, state);
+            newState.drawing = action.drawing
             return newState;
         default:
             return state;

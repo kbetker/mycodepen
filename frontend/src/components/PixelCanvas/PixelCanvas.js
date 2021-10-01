@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { dispatchEditMode, dispatchSelectedColor } from "../../store/pixelDrawing"
+import { dispatchEditMode, dispatchSelectedColor, fetchEditMyDrawing } from "../../store/pixelDrawing"
 import "./PixelCanvas.css"
 import transparent2 from "./transparent2.png"
 import cursor2 from "./cursor2.png"
 import colorPicker from "./colorPicker.png"
 import bucketFill from "./bucketFill.png"
 import { dispatchPostDrawing } from "../../store/pixelDrawing"
+import { useParams } from "react-router"
 
 function PixelCanvas() {
     const dispatch = useDispatch()
@@ -14,11 +15,13 @@ function PixelCanvas() {
     const isMouseDown = useSelector(state => state.pixelDrawing.mouseDown)
     const editMode = useSelector(state => state.pixelDrawing.editMode)
     const user = useSelector(state => state.session.user)
+    const editDrawing = useSelector(state => state.pixelDrawing.drawing)
     const [currentCanvas, setCurrentCanvas] = useState([])
     const [undo, setUndo] = useState([[]])
     const [redo, setRedo] = useState([])
     const [drawingName, setDrawingName] = useState('')
-    const [saveDrawing, setSaveDrawing] = useState('')
+    const {id} = useParams()
+    // const [saveDrawing, setSaveDrawing] = useState('')
 
     const NW = useRef("0-0")
     const SE = useRef("0-0")
@@ -30,6 +33,8 @@ function PixelCanvas() {
     const [pixel, setPixel] = useState(13)
     const rows = 60
     const columns = 35
+
+
 
 
     // ======================   initializes array to transparent background   ======================
@@ -46,8 +51,32 @@ function PixelCanvas() {
         setCurrentCanvas(initArray())
         dispatch(dispatchSelectedColor("rgba(0, 0, 0, 1.00)"))
         dispatch(dispatchEditMode("drawingMode"))
+
+        if(id){
+            console.log(id)
+            dispatch(fetchEditMyDrawing(parseInt(id)))
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+
+    function makeCanvasArray(theCanvas) {
+        let newArr = [[]]
+        try {
+            return JSON.parse(theCanvas)
+            // newArr = JSON.parse(canvas_array)
+
+        }
+        catch (err) {
+            console.log(err)
+        }
+        return newArr
+    }
+
+    useEffect(()=>{
+        setCurrentCanvas(makeCanvasArray(editDrawing.canvas_array))
+
+    }, [editDrawing])
 
 
     //======================  converts to rgba if not already  ======================
@@ -390,17 +419,3 @@ function PixelCanvas() {
 }
 
 export default PixelCanvas
-
-
-
-
-
-
-    //DON'T DELETE - this will allow you to continue editing a saved picture
-    // useEffect(() => {
-    //     let pixelBg = document.querySelectorAll(`.pixel`)
-    //     for (let i = 0; i < pixelBg.length; i++) {
-    //         let arr = pixelBg[i].id.split("-")
-    //         pixelBg[i].style.backgroundColor = `${currentCanvas[arr[0]][arr[1]]}`
-    //     }
-    // }, [])

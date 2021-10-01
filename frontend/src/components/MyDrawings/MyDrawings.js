@@ -1,13 +1,25 @@
 import React, { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { dispatchEditMode, fetchAllMYDrawings } from "../../store/pixelDrawing"
+import { useHistory } from "react-router-dom"
+import "./MyDrawings.css"
 
-function MyDrawings(){
-   const allDrawings = [[]]
-   const dispatch = useDispatch()
-    const user = useSelector(state=> state.session.user.id)
+function MyDrawings() {
+    const allDrawings = [[]]
+    const dispatch = useDispatch()
+    const user = useSelector(state => state.session.user)
     const myDrawings = useSelector(state => state.pixelDrawing.allMYDrawings)
+    const history = useHistory()
 
+
+    if (!user) {
+        history.push("/login")
+    }
+
+    useEffect(() => {
+        dispatch(fetchAllMYDrawings(user?.id))
+        console.log(myDrawings)
+    }, [])
 
     function makeCanvasArray(theCanvas) {
         let newArr = [[]]
@@ -22,10 +34,7 @@ function MyDrawings(){
         return newArr
     }
 
-    useEffect(()=>{
-        dispatch(fetchAllMYDrawings(user))
-        console.log(myDrawings)
-    }, [])
+
 
     return (
         <div className="homePageWrapper">
@@ -43,8 +52,16 @@ function MyDrawings(){
                         </>
                         )}
                     </div>
-
-
+                    <div className="editDeleteContainer">
+                        <button
+                        className="formButton myDrawingsBtn"
+                        onClick={()=> history.push(`/pixelpad/${e.id}`)}
+                        >Edit</button>
+                        <button
+                        className="formButton myDrawingsBtn deleteBtn"
+                        onClick={()=> history.push(`/edit/${e.id}`)}
+                        >Delete</button>
+                    </div>
                 </div>
             )}
 

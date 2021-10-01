@@ -1,0 +1,12 @@
+.editDeleteContainer{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
+.myDrawingsBtn{
+    width: 105px;
+    margin: 10px 20px;
+}
+.deleteBtn{
+    filter: sepia() saturate(10) hue-rotate(-40deg) brightness(0.6);
+}

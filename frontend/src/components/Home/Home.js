@@ -4,26 +4,25 @@ import { fetchAllDrawings } from "../../store/pixelDrawing";
 import "./Home.css"
 
 
-function Home(){
+function Home() {
     const dispatch = useDispatch()
     const allDrawings = useSelector(state => state.pixelDrawing.allDrawings)
 
-    function makeCanvasArray(theCanvas){
+    function makeCanvasArray(theCanvas) {
         let newArr = [[]]
         try {
-            console.log(JSON.parse(theCanvas), "WTFWTWFTWFWTFWFTWFTWTF")
             return JSON.parse(theCanvas)
             // newArr = JSON.parse(canvas_array)
 
         }
-        catch(err){
+        catch (err) {
             console.log(err)
         }
         return newArr
     }
 
 
-    useEffect(()=>{
+    useEffect(() => {
         dispatch(fetchAllDrawings())
     }, [])
 
@@ -47,27 +46,27 @@ function Home(){
 
 
     return (
-    <div className="homePageWrapper">
-        { allDrawings.map(e =>
+        <div className="homePageWrapper">
+            {allDrawings.map(e =>
 
-            <div key={`picId-${e.id}`} className="artwork">
-            <div className="homeTitle"> &ldquo;{e.name}&rdquo;</div>
-            <div className="byName">by {e.User.username}</div>
+                <div key={`picId-${e.id}`} className="artwork">
+                    <div className="homeTitle"> &ldquo;{e.name}&rdquo;</div>
+                    <div className="byName">by {e.User.username}</div>
 
 
-            <div className="canvasPreview">
-            {makeCanvasArray(e.canvas_array).map((div, int) => <>
-            {div.map((pixel, int2) => <div className="homePixels" key={`pix-${int2}`} style={{backgroundColor: `${pixel}`}}> </div> )}
+                    <div className="canvasPreview">
+                        {makeCanvasArray(e.canvas_array).map((div, int) => <>
+                            {div.map((pixel, int2) => <div className="homePixels" key={`pix-${int2}`} style={{ backgroundColor: `${pixel}` }}> </div>)}
 
-                 </>
+                        </>
+                        )}
+                    </div>
+
+
+                </div>
             )}
-        </div>
 
-
-            </div>
-        )}
-
-    </div>)
+        </div>)
 }
 
 

@@ -12,7 +12,7 @@ function Navigation({ isLoaded }){
     sessionLinks = (
       <>
       <NavLink className="navElement" exact to="/pixelpad">New Drawing</NavLink>
-      <NavLink className="navElement" exact to="/pixelpad">My Drawings</NavLink>
+      <NavLink className="navElement" exact to="/mydrawings">My Drawings</NavLink>
       <ProfileButton user={sessionUser} />
       </>
     );

@@ -13,6 +13,7 @@ import * as sessionActions from "./store/session";
 import Navigation from "./components/Navigation";
 import { Route, Switch } from "react-router";
 import Home from "./components/Home"
+import MyDrawings from "./components/MyDrawings";
 
 
 
@@ -94,6 +95,12 @@ function App() {
                <Route path="/signup">
                     <Navigation isLoaded={isLoaded} />
                     <SignupFormPage />
+               </Route>
+
+
+               <Route path="/mydrawings">
+                    <Navigation isLoaded={isLoaded} />
+                    <MyDrawings />
                </Route>
 
                <Route path="/pixelpad">

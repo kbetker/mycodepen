@@ -350,7 +350,7 @@ function PixelCanvas() {
                     <form onSubmit={handelSubmit} className="form saveForm">
                         <div className="formElement">Name</div>
                         <input className="formInput formElement" value={drawingName} onChange={(e) => setDrawingName(e.target.value)}></input>
-                        <button type="submit" className="formButton formElement">{editMode === "saveDrawing" ? "Save as..." : "Save Drawing"}</button>
+                        <button type="submit" className="formButton formElement">{editMode === "saveDrawing" ? "Save as New..." : "Save Drawing"}</button>
                         <button className="formButton formElement" onClick={() => dispatch(dispatchEditMode(""))}>Cancel</button>
                     </form>
                 </div>

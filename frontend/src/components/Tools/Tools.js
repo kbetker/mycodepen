@@ -66,7 +66,7 @@ function Tools() {
             {menuDropdown &&
                 <div className="dropDownToolMenu" style={{ top: `${hideTools ? "41px" : "107px"}` }} onMouseLeave={() => setMenuTimeout(1000)} onMouseEnter={() => clearTimeout(menuTimeOut.current)}>
                     {continueEdit && <div className="toolMenuDropdown--element" onClick={()=>handleUpdate()}>Save Drawing</div>}
-                    <div className="toolMenuDropdown--element" onClick={()=>handleSave()}>{continueEdit ? "Save as..." : "Save Drawing"}</div>
+                    <div className="toolMenuDropdown--element" onClick={()=>handleSave()}>{continueEdit ? "Save as New..." : "Save Drawing"}</div>
                     <div className="toolMenuDropdown--element" onClick={() => history.push("/")}>Exit</div>
                 </div>}
 

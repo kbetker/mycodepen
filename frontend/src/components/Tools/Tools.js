@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router'
 import { dispatchEditMode, dispatchSelectedColor, dispatchHideTools } from '../../store/pixelDrawing'
+import { useParams } from "react-router"
 import "./Tools.css"
 
 function Tools() {
@@ -11,6 +12,8 @@ function Tools() {
     const [menuDropdown, setMenuDropdown] = useState(false)
     const menuTimeOut = useRef('');
     const history = useHistory();
+    const [continueEdit, setContinueEdit] = useState(false)
+    const { id } = useParams()
 
 
     function setMenuTimeout(time) {
@@ -19,12 +22,24 @@ function Tools() {
         }, time);
     }
 
-    async function handleSave(){
+     function handleSave(){
         setMenuDropdown(false)
-        await dispatch(dispatchEditMode("zoomSave"))
-        await dispatch(dispatchEditMode("saveDrawing"))
+        //  dispatch(dispatchEditMode("zoomSave"))
+         dispatch(dispatchEditMode("saveDrawing"))
     }
 
+     function handleUpdate(){
+        setMenuDropdown(false)
+        // await dispatch(dispatchEditMode("zoomSave"))
+         dispatch(dispatchEditMode("updateDrawing"))
+    }
+
+
+    useEffect(() => {
+        if (id) {
+            setContinueEdit(true)
+        }
+    }, [id])
 
     return (
         <div className="Tools" style={{ height: `${hideTools ? "25px" : "90px"}` }}>
@@ -50,7 +65,8 @@ function Tools() {
 
             {menuDropdown &&
                 <div className="dropDownToolMenu" style={{ top: `${hideTools ? "41px" : "107px"}` }} onMouseLeave={() => setMenuTimeout(1000)} onMouseEnter={() => clearTimeout(menuTimeOut.current)}>
-                    <div className="toolMenuDropdown--element" onClick={()=>handleSave()}>Save Drawing</div>
+                    {continueEdit && <div className="toolMenuDropdown--element" onClick={()=>handleUpdate()}>Save Drawing</div>}
+                    <div className="toolMenuDropdown--element" onClick={()=>handleSave()}>{continueEdit ? "Save as..." : "Save Drawing"}</div>
                     <div className="toolMenuDropdown--element" onClick={() => history.push("/")}>Exit</div>
                 </div>}
 

@@ -1,11 +1,10 @@
 import React, { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { dispatchEditMode, fetchAllMYDrawings } from "../../store/pixelDrawing"
+import { fetchAllMYDrawings } from "../../store/pixelDrawing"
 import { useHistory } from "react-router-dom"
 import "./MyDrawings.css"
 
 function MyDrawings() {
-    const allDrawings = [[]]
     const dispatch = useDispatch()
     const user = useSelector(state => state.session.user)
     const myDrawings = useSelector(state => state.pixelDrawing.allMYDrawings)
@@ -18,7 +17,7 @@ function MyDrawings() {
 
     useEffect(() => {
         dispatch(fetchAllMYDrawings(user?.id))
-        console.log(myDrawings)
+       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     function makeCanvasArray(theCanvas) {

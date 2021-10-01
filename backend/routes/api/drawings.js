@@ -28,6 +28,15 @@ router.get("/all", async(req, res) => {
     res.json({allDrawings})
 })
 
+router.get("/edit/:id", async(req, res) => {
+    const id = req.params.id
+    console.log("W?!?!?!??!?!?!?!?!??!?")
+    const drawing = await Drawing.findOne({
+        where: {id: id},
+    })
+    res.json({drawing})
+})
+
 
 
 

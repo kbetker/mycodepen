@@ -103,7 +103,7 @@ function App() {
                     <MyDrawings />
                </Route>
 
-               <Route path="/pixelpad">
+               <Route path="/pixelpad/:id">
                     <div className="wrapper">
 
                               <Tools />

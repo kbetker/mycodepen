@@ -23,7 +23,7 @@ module.exports = {
         email: "kevin@fakeemail.com",
         username: 'Kevin Betker',
         is_admin: true,
-        hashedPassword: bcrypt.hashSync(faker.internet.password()),
+        hashedPassword: bcrypt.hashSync("ne14dnd"),
       },
 
       {

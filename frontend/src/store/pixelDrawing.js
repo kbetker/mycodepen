@@ -6,6 +6,7 @@ const EDIT_MODE = 'pixelDrawing/EDIT_MODE';
 const ALL_DRAWINGS = 'pixelDrawing/ALL_DRAWINGS';
 const HIDE_TOOLS = 'pixelDrawing/HIDE_TOOLS';
 const SAVED_DRAWING = 'pixelDrawing/SAVED_DRAWING';
+const ALL_MY_DRAWINGS = 'pixelDrawing/ALL_MY_DRAWINGS';
 
 
 
@@ -40,6 +41,14 @@ export const loadAllDrawings = (allDrawings) => {
         allDrawings
     };
 };
+
+export const loadAllMYDrawings = (allMYDrawings) => {
+    return {
+        type: ALL_MY_DRAWINGS,
+        allMYDrawings
+    };
+};
+
 export const loadHideTools = (hideTools) => {
     return {
         type: HIDE_TOOLS,
@@ -75,6 +84,21 @@ export const dispatchHideTools = (hideTools) => async (dispatch) => {
 export const dispatchSavedDrawing = (drawing) => async (dispatch) => {
     dispatch(loadHideTools(drawing));
 };
+
+
+
+export const fetchAllMYDrawings = (owner_id) => async (dispatch) => {
+    const response = await fetch(`/api/drawings/all/${owner_id}`);
+    if (response.ok) {
+        const data = await response.json();
+        dispatch(loadAllMYDrawings(data.allMYDrawings));
+        return data
+    } else {
+        // const data = await response.json
+        return response
+    }
+};
+
 
 
 
@@ -116,6 +140,7 @@ export const initialState = {
     editMode: 'drawingMode',
     drawing: [],
     allDrawings: [],
+    allMYDrawings: [],
     hideTools: {"colors": false, "tools": false}
 }
 
@@ -151,6 +176,10 @@ const pixelDrawingReducer = (state = initialState, action) => {
         case SAVED_DRAWING:
             newState = Object.assign({}, state);
             newState.drawing = action.drawing
+            return newState;
+        case ALL_MY_DRAWINGS:
+            newState = Object.assign({}, state);
+            newState.allMYDrawings = action.allMYDrawings
             return newState;
         default:
             return state;

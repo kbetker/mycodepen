@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import * as sessionActions from '../../store/session';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect, useParams } from 'react-router-dom';
+import { dispatchEditMode } from '../../store/pixelDrawing';
 
 function LoginForm() {
   const dispatch = useDispatch();
@@ -20,6 +21,10 @@ function LoginForm() {
       setPassword('')
     }
   },[isDemo])
+
+  useEffect(()=>{
+    dispatch(dispatchEditMode("ignoreKeyPress"))
+  },[])
 
 
   if (sessionUser) return (

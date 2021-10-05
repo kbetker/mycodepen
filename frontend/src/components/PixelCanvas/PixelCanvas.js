@@ -324,7 +324,7 @@ function PixelCanvas() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [editMode])
 
-    async function handelSubmit(e) {
+    async function handleSubmit(e) {
         e.preventDefault()
 
 
@@ -347,7 +347,7 @@ function PixelCanvas() {
         <div className="canvasWrapper">
             {(editMode === "saveDrawing" || editMode === "updateDrawing") &&
                 <div className="saveFormContainer">
-                    <form onSubmit={handelSubmit} className="form saveForm">
+                    <form onSubmit={handleSubmit} className="form saveForm">
                         <div className="formElement">Name</div>
                         <input className="formInput formElement" value={drawingName} onChange={(e) => setDrawingName(e.target.value)}></input>
                         <button type="submit" className="formButton formElement">{editMode === "saveDrawing" ? "Save as New..." : "Save Drawing"}</button>

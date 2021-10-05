@@ -51,6 +51,18 @@ router.post('/new', async (req, res) => {
 });
 
 
+router.delete('/delete/:id', async (req, res) => {
+    const id = req.params.id
+
+    const drawing = await Drawing.destroy({
+       where: {id: id}
+    });
+
+
+    return res.json({ id });
+});
+
+
 
 
 

@@ -61,7 +61,7 @@ function MyDrawings() {
                 {(editMode === "deleteDrawing") &&
                 <div className="saveFormContainer">
                     <form onSubmit={handleDelete} className="form saveForm">
-                        <div className="formElement">Name</div>
+                        <div className="formElement">Are you sure you want to delete?</div>
 
                         <button type="submit" className="formButton formElement deleteBtn">Delete Drawing</button>
                         <button className="formButton formElement" onClick={() => dispatch(dispatchEditMode(""))}>Cancel</button>
@@ -74,9 +74,10 @@ function MyDrawings() {
             {myDrawings?.map(e =>
 
                 <div key={`picId-${e.id}`} className="artwork">
+                    <div className="nameTitleContainer">
                     <div className="homeTitle"> &ldquo;{e.name}&rdquo;</div>
                     <div className="byName">by {e.User.username}</div>
-
+                    </div>
 
                     <div className="canvasPreview">
                         {makeCanvasArray(e.canvas_array).map((div, int) => <>

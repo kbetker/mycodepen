@@ -165,6 +165,24 @@ export const dispatchPostDrawing = (payload) => async (dispatch) => {
 };
 
 
+export const dispatchUpdateDrawing = (payload, id) => async (dispatch) => {
+    const response = await csrfFetch(`/api/drawings/edit/${id}`, {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(payload)
+
+    });
+    if(response.ok){
+        const data = await response.json();
+        dispatch(loadSavedDrawing(data.drawing));
+        return data.drawing
+    } else{
+        return response
+    }
+};
+
+
+
 export const dispatchDeleteDrawing = (id) => async (dispatch) => {
     const response = await csrfFetch(`/api/drawings/delete/${id}`, {
         method: 'DELETE',
@@ -186,7 +204,7 @@ export const initialState = {
     selectedColor: "rgba(0, 0, 0, 1)",
     keyPressed: { "key": '', "ctrlKey": false },
     mouseDown: false,
-    editMode: 'drawingMode',
+    editMode: 'ignoreKeyPress',
     drawing: [],
     allDrawings: [],
     allMYDrawings: [],

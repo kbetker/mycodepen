@@ -4,9 +4,9 @@
     display: flex;
     flex-wrap: wrap;
     overflow: hidden;
-    border-top: 5px solid white;
-    border-left: 5px solid rgb(179, 179, 179);
-    border-right: 8px solid rgb(94, 94, 94);
+    border-top: 5px solid rgb(189, 189, 189);
+    border-left: 5px solid rgb(128, 128, 128);
+    border-right: 8px solid rgb(58, 58, 58);
     border-bottom: 11px solid rgb(7, 7, 7);
 }
 .homePageWrapper{
@@ -19,7 +19,7 @@
 
 .homePixels{
 
-transition: all 0.05s linear;
+/* transition: all 0.05s linear; */
 width: 5px;
 height: 5px;
 }
@@ -29,18 +29,33 @@ height: 5px;
     /* width: 10px; */
     /* height: 10px; */
 /* } */
+.nameTitleContainer{
+    background-color: rgb(32, 32, 32);
+    width: 313px;
+    padding-top: 10px;
+    box-sizing: border-box;
+    border-top: 3px solid rgb(216, 216, 216);
+    border-left: 3px solid rgb(141, 141, 141);
+    border-right: 6px solid rgb(56, 56, 56);
+    border-bottom: 9px solid rgb(7, 7, 7);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
 
 .byName, .homeTitle{
-    color: white;
+    text-align: center;
+    color: rgb(148, 148, 148);
     text-shadow: 5px 5px 0 black;
 }
 .byName{
     margin-bottom: 10px;
-    font-size: 12px;
+    font-size: 10px;
 }
 .homeTitle{
     margin-bottom: 7px;
-    font-size: 20px;
+    font-size: 15px;
 }
 
 .artwork{

@@ -1,12 +1,13 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAllDrawings } from "../../store/pixelDrawing";
+import { fetchAllDrawings, dispatchDeleteDrawing } from "../../store/pixelDrawing";
 import "./Home.css"
 
 
 function Home() {
     const dispatch = useDispatch()
     const allDrawings = useSelector(state => state.pixelDrawing.allDrawings)
+    const user = useSelector(state => state.session.user)
 
     function makeCanvasArray(theCanvas) {
         let newArr = [[]]
@@ -21,6 +22,17 @@ function Home() {
         return newArr
     }
 
+    function handleDelete(deleteId) {
+        // e.preventDefault()
+        let deltaco = dispatch(dispatchDeleteDrawing(deleteId))
+        if (deltaco.errors) {
+            alert(deltaco.errors)
+        } else {
+            console.log("Cool Beings")
+        }
+
+    }
+
 
     useEffect(() => {
         dispatch(fetchAllDrawings())
@@ -33,19 +45,20 @@ function Home() {
             {allDrawings.map((e, eInt) =>
 
                 <div key={`picId-${e.id}${eInt}`} className="artwork">
-                    <div className="homeTitle"> &ldquo;{e.name}&rdquo;</div>
-                    <div className="byName">by {e.User.username}</div>
-
+                    <div className="nameTitleContainer">
+                        <div className="homeTitle"> &ldquo;{e.name}&rdquo;</div>
+                        <div className="byName">by {e.User.username}</div>
+                    </div>
 
                     <div className="canvasPreview">
-                        {makeCanvasArray(e.canvas_array).map((div, int) => <>
+                        {makeCanvasArray(e.canvas_array).map((div, int) => <div style={{display: "flex"}} key={`canvasKey-${int}`}>
                             {div.map((pixel, int2) => <div className="homePixels" key={`pix-${int2}${int}`} style={{ backgroundColor: `${pixel}` }}> </div>)}
 
-                        </>
+                        </div>
                         )}
                     </div>
 
-
+                    {user?.is_admin && <button className="formButton formElement deleteBtn" onClick={() => handleDelete(e.id)}>Delete Drawing</button>}
                 </div>
             )}
 

@@ -6,7 +6,7 @@ import transparent2 from "./transparent2.png"
 import cursor2 from "./cursor2.png"
 import colorPicker from "./colorPicker.png"
 import bucketFill from "./bucketFill.png"
-import { dispatchPostDrawing } from "../../store/pixelDrawing"
+import { dispatchPostDrawing, dispatchUpdateDrawing } from "../../store/pixelDrawing"
 import { useParams, useHistory } from "react-router"
 
 function PixelCanvas() {
@@ -324,10 +324,8 @@ function PixelCanvas() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [editMode])
 
-    async function handleSubmit(e) {
+    async function handleSave(e) {
         e.preventDefault()
-
-
         let canvas_array = await JSON.stringify(currentCanvas)
         const payload = {
             "owner_id": user.id,
@@ -343,11 +341,28 @@ function PixelCanvas() {
        }
     }
 
+    async function handleUpdate(e) {
+        e.preventDefault()
+        let canvas_array = await JSON.stringify(currentCanvas)
+        const payload = {
+            // "owner_id": user.id,
+            "name": drawingName,
+            canvas_array
+        }
+        let data = await dispatch(dispatchUpdateDrawing(payload, id))
+       if(data.errors){
+           alert(data.errors)
+       } else{
+           dispatch(dispatchEditMode("drawingMode"))
+           history.push(`/pixelpad/${data.id}`)
+       }
+    }
+
     return (
         <div className="canvasWrapper">
             {(editMode === "saveDrawing" || editMode === "updateDrawing") &&
                 <div className="saveFormContainer">
-                    <form onSubmit={handleSubmit} className="form saveForm">
+                    <form onSubmit={editMode === "saveDrawing" ? handleSave : handleUpdate } className="form saveForm">
                         <div className="formElement">Name</div>
                         <input className="formInput formElement" value={drawingName} onChange={(e) => setDrawingName(e.target.value)}></input>
                         <button type="submit" className="formButton formElement">{editMode === "saveDrawing" ? "Save as New..." : "Save Drawing"}</button>

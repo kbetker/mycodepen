@@ -30,6 +30,7 @@ module.exports = (sequelize, DataTypes) => {
         len: [60, 60]
       },
     },
+    is_admin: DataTypes.BOOLEAN
   },
   {
     defaultScope: {
@@ -56,8 +57,8 @@ module.exports = (sequelize, DataTypes) => {
    };
 
   User.prototype.toSafeObject = function() { // remember, this cannot be an arrow function
-    const { id, username, email } = this; // context will be the User instance
-    return { id, username, email };
+    const { id, username, email, is_admin } = this; // context will be the User instance
+    return { id, username, email, is_admin };
   };
 
   User.prototype.validatePassword = function (password) {

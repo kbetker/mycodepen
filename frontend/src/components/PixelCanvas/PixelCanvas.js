@@ -60,12 +60,12 @@ function PixelCanvas() {
     }, [])
 
 
+     //====================== Parses the array from the database  ======================
     function makeCanvasArray(theCanvas) {
         let newArr = [[]]
         try {
             return JSON.parse(theCanvas)
             // newArr = JSON.parse(canvas_array)
-
         }
         catch (err) {
             console.log(err)
@@ -73,6 +73,7 @@ function PixelCanvas() {
         return newArr
     }
 
+     //====================== Sets the canvas if editing from a save drawing ======================
     useEffect(() => {
         if (id) {
             setCurrentCanvas(makeCanvasArray(editDrawing.canvas_array))
@@ -307,6 +308,7 @@ function PixelCanvas() {
     // Start file download.
 
 
+     //====================== listens to the Tool buttons and keypress ======================
     useEffect(() => {
         if (editMode === "undo") {
             handleUndo()
@@ -324,6 +326,7 @@ function PixelCanvas() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [editMode])
 
+     //====================== Handles Saveing the drawing ======================
     async function handleSave(e) {
         e.preventDefault()
         let canvas_array = await JSON.stringify(currentCanvas)
@@ -341,6 +344,7 @@ function PixelCanvas() {
        }
     }
 
+     //====================== Handles Updating the drawing ======================
     async function handleUpdate(e) {
         e.preventDefault()
         let canvas_array = await JSON.stringify(currentCanvas)

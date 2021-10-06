@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 // import { Route, Switch } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -20,7 +20,7 @@ import MyDrawings from "./components/MyDrawings";
 function App() {
      const dispatch = useDispatch();
      const [isLoaded, setIsLoaded] = useState(false);
-     const editMode = useSelector(state=>state.pixelDrawing.editMode)
+     const editMode = useSelector(state => state.pixelDrawing.editMode)
 
      useEffect(() => {
           dispatch(sessionActions.restoreUser()).then(() => setIsLoaded(true));
@@ -28,9 +28,9 @@ function App() {
 
 
      function handleKeyPress(e) {
-          if(editMode === "ignoreKeyPress" || editMode === "saveDrawing") return
+          if (editMode === "ignoreKeyPress" || editMode === "saveDrawing") return
 
-          if (e.key === "d" ) {
+          if (e.key === "d") {
                dispatch(dispatchEditMode('drawingMode'))
           } else if (e.key === "f") {
                dispatch(dispatchEditMode(('fillMode')))
@@ -55,21 +55,24 @@ function App() {
           }
      }
 
+     function handleClick(e) {
+          console.log(editMode, "WAT!?!?!?!??!?!?!?!?!?!?")
+          if (editMode === "ignoreKeyPress" || editMode === "saveDrawing") return
+
+          if (e) {
+               dispatch(dispatchMouseDown(true))
+          } else {
+               dispatch(dispatchMouseDown(false))
+          }
+     }
+
 
 
      useEffect(() => {
-
-          window.removeEventListener('mousedown', () => { dispatch(dispatchMouseDown(true)) });
-          window.removeEventListener('mouseup', () => { dispatch(dispatchMouseDown(false)) });
           window.removeEventListener('keypress', handleKeyPress)
-
-          window.addEventListener('mousedown', () => { dispatch(dispatchMouseDown(true)); });
-          window.addEventListener('mouseup', () => { dispatch(dispatchMouseDown(false)) });
           window.addEventListener('keypress', handleKeyPress)
 
           return () => {
-               window.removeEventListener('mousedown', () => { dispatch(dispatchMouseDown(true)) });
-               window.removeEventListener('mouseup', () => { dispatch(dispatchMouseDown(false)) });
                window.removeEventListener('keypress', handleKeyPress)
           };
           // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -80,45 +83,62 @@ function App() {
      return isLoaded && (
           <>
 
-          <Switch>
+               <Switch>
 
-               <Route path="/login/:demo">
-                    <Navigation isLoaded={isLoaded} />
-                    <LogInForm />
-               </Route>
+                    <Route path="/login/:demo">
+                         <Navigation isLoaded={isLoaded} />
+                         <LogInForm />
+                    </Route>
 
-               <Route path="/login">
-                    <Navigation isLoaded={isLoaded} />
-                    <LogInForm />
-               </Route>
+                    <Route path="/login">
+                         <Navigation isLoaded={isLoaded} />
+                         <LogInForm />
+                    </Route>
 
-               <Route path="/signup">
-                    <Navigation isLoaded={isLoaded} />
-                    <SignupFormPage />
-               </Route>
+                    <Route path="/signup">
+                         <Navigation isLoaded={isLoaded} />
+                         <SignupFormPage />
+                    </Route>
 
 
-               <Route path="/mydrawings">
-                    <Navigation isLoaded={isLoaded} />
-                    <MyDrawings />
-               </Route>
+                    <Route path="/mydrawings">
+                         <Navigation isLoaded={isLoaded} />
+                         <MyDrawings />
+                    </Route>
 
-               <Route path="/pixelpad">
-                    <div className="wrapper">
+                    <Route path="/pixelpad/:id">
+                         <div
+                              className="wrapper"
+                              onMouseDown={() => handleClick(true)}
+                              onMouseUp={() => handleClick(false)}
+                         >
 
                               <Tools />
-
-                         <PixelCanvas />
+                              <PixelCanvas />
                               <Colors />
-                    </div>
-               </Route>
+                         </div>
+                    </Route>
 
-               <Route path="/">
-                     <Navigation isLoaded={isLoaded} />
-                    <Home />
-               </Route>
 
-          </Switch>
+                    <Route path="/pixelpad/">
+                         <div
+                              className="wrapper"
+                              onMouseDown={() => handleClick(true)}
+                              onMouseUp={() => handleClick(false)}
+                         >
+
+                              <Tools />
+                              <PixelCanvas />
+                              <Colors />
+                         </div>
+                    </Route>
+
+                    <Route path="/">
+                         <Navigation isLoaded={isLoaded} />
+                         <Home />
+                    </Route>
+
+               </Switch>
 
           </>
      );

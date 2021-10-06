@@ -7,6 +7,10 @@ const ALL_DRAWINGS = 'pixelDrawing/ALL_DRAWINGS';
 const HIDE_TOOLS = 'pixelDrawing/HIDE_TOOLS';
 const SAVED_DRAWING = 'pixelDrawing/SAVED_DRAWING';
 const ALL_MY_DRAWINGS = 'pixelDrawing/ALL_MY_DRAWINGS';
+const EDIT_DRAWING = 'pixelDrawing/EDIT_DRAWING';
+const DELETE_DRAWING = 'pixelDrawing/DELETE_DRAWING';
+
+
 
 
 
@@ -63,6 +67,20 @@ export const loadSavedDrawing = (drawing) => {
     };
 };
 
+export const loadEditDrawing = (drawing) => {
+    return {
+        type: EDIT_DRAWING,
+        drawing
+    };
+};
+
+export const loadDeleteDrawing = (drawing) => {
+    return {
+        type: DELETE_DRAWING,
+        drawing
+    };
+};
+
 
 
 export const dispatchSelectedColor = (selectedColor) => async (dispatch) => {
@@ -83,6 +101,20 @@ export const dispatchHideTools = (hideTools) => async (dispatch) => {
 
 export const dispatchSavedDrawing = (drawing) => async (dispatch) => {
     dispatch(loadHideTools(drawing));
+};
+
+
+
+export const fetchEditMyDrawing = (id) => async (dispatch) => {
+    const response = await fetch(`/api/drawings/edit/${id}`);
+    if (response.ok) {
+        const data = await response.json();
+        dispatch(loadEditDrawing(data.drawing));
+        return data
+    } else {
+        // const data = await response.json
+        return response
+    }
 };
 
 
@@ -126,8 +158,43 @@ export const dispatchPostDrawing = (payload) => async (dispatch) => {
     if(response.ok){
         const data = await response.json();
         dispatch(loadSavedDrawing(data.drawing));
-        console.log(data.drawing)
         return data.drawing
+    } else{
+        return response
+    }
+};
+
+
+export const dispatchUpdateDrawing = (payload, id) => async (dispatch) => {
+    const response = await csrfFetch(`/api/drawings/edit/${id}`, {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(payload)
+
+    });
+    if(response.ok){
+        const data = await response.json();
+        dispatch(loadSavedDrawing(data.drawing));
+        return data.drawing
+    } else{
+        return response
+    }
+};
+
+
+
+export const dispatchDeleteDrawing = (id) => async (dispatch) => {
+    const response = await csrfFetch(`/api/drawings/delete/${id}`, {
+        method: 'DELETE',
+        headers: {'Content-Type': 'application/json'},
+    });
+    if(response.ok){
+        const data = await response.json();
+        dispatch(loadDeleteDrawing(data.id));
+        console.log(data, "WHAT US THIS DATA?!?!?!?")
+        return data.id
+    } else{
+        return response
     }
 };
 
@@ -137,7 +204,7 @@ export const initialState = {
     selectedColor: "rgba(0, 0, 0, 1)",
     keyPressed: { "key": '', "ctrlKey": false },
     mouseDown: false,
-    editMode: 'drawingMode',
+    editMode: 'ignoreKeyPress',
     drawing: [],
     allDrawings: [],
     allMYDrawings: [],
@@ -180,6 +247,17 @@ const pixelDrawingReducer = (state = initialState, action) => {
         case ALL_MY_DRAWINGS:
             newState = Object.assign({}, state);
             newState.allMYDrawings = action.allMYDrawings
+            return newState;
+        case EDIT_DRAWING:
+            newState = Object.assign({}, state);
+            newState.drawing = action.drawing
+            return newState;
+        case DELETE_DRAWING:
+            newState = Object.assign({}, state);
+            let filtered = newState.allMYDrawings.filter(el => el.id !== Number(action.drawing) )
+            // console.log(filtered, action, "?!?!?!?!?!??!?!?!?!?!??!?!?!?")
+            newState.allMYDrawings = filtered
+            // newState.drawing = action.drawing
             return newState;
         default:
             return state;

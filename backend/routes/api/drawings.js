@@ -28,6 +28,14 @@ router.get("/all", async(req, res) => {
     res.json({allDrawings})
 })
 
+router.get("/edit/:id", async(req, res) => {
+    const id = req.params.id
+    const drawing = await Drawing.findOne({
+        where: {id: id},
+    })
+    res.json({drawing})
+})
+
 
 
 
@@ -39,8 +47,35 @@ router.post('/new', async (req, res) => {
         name,
         canvas_array
     });
+    return res.json({ drawing });
+});
+
+
+router.put('/edit/:id', async (req, res) => {
+    // const wat = await Spot.findAll()
+    const id = req.params.id
+    const { name, canvas_array } = req.body;
+    const drawing = await Drawing.findOne({
+        where: {id: id}
+    })
+    await drawing.update({
+        name,
+        canvas_array
+    })
 
     return res.json({ drawing });
+});
+
+
+router.delete('/delete/:id', async (req, res) => {
+    const id = req.params.id
+
+    const drawing = await Drawing.destroy({
+       where: {id: id}
+    });
+
+
+    return res.json({ id });
 });
 
 

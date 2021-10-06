@@ -7,15 +7,15 @@ function ProfileButton({ user }) {
   const dispatch = useDispatch();
   const [showMenu, setShowMenu] = useState(false);
   const svgMenu = useRef()
+  const test1 = svgMenu.current
+
+
 
   const openMenu = () => {
     if (showMenu) return;
     setShowMenu(true);
   };
 
-  function changeColor(e){
-    e.target.style.fill = '#FF0000'
-  }
 
 
   useEffect(() => {
@@ -38,12 +38,7 @@ function ProfileButton({ user }) {
   return (
     <>
       <div onClick={openMenu} className="menuBtn navElement">
-      {/* <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" height="30px" fill="#FFFFFF" onMouseOver={(e) => changeColor(e)}>
-        <path d="M0 0h24v24H0V0z" fill="none"/>
-        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
-        </svg> */}
-
-        <img src={menu} ref={svgMenu} draggable="false" style={{width: "40px"}} fill='00FF00' onMouseOver={(e) => changeColor(e)} />
+        <img className="theSVG" src={menu} ref={svgMenu} draggable="false" style={{width: "40px"}} alt=""/>
       </div>
       {showMenu && (
         <div className="profile-dropdown">

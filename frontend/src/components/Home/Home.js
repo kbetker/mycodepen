@@ -1,12 +1,13 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAllDrawings } from "../../store/pixelDrawing";
+import { fetchAllDrawings, dispatchDeleteDrawing } from "../../store/pixelDrawing";
 import "./Home.css"
 
 
 function Home() {
     const dispatch = useDispatch()
     const allDrawings = useSelector(state => state.pixelDrawing.allDrawings)
+    const user = useSelector(state => state.session.user)
 
     function makeCanvasArray(theCanvas) {
         let newArr = [[]]
@@ -21,48 +22,43 @@ function Home() {
         return newArr
     }
 
+    function handleDelete(deleteId) {
+        // e.preventDefault()
+        let deltaco = dispatch(dispatchDeleteDrawing(deleteId))
+        if (deltaco.errors) {
+            alert(deltaco.errors)
+        } else {
+            console.log("Cool Beings")
+        }
+
+    }
+
 
     useEffect(() => {
         dispatch(fetchAllDrawings())
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
-
-
-    // const waitAMoment = (milliseconds) => { return new Promise(resolve => setTimeout(resolve, milliseconds)) }
-    // async function fade() {
-    //     let thePixels = document.querySelectorAll(".homePixels")
-    //     for(let i = 0; i < Math.floor(thePixels.length / 2); i++){
-    //             await waitAMoment(0.1)
-    //             thePixels[i].style.backgroundColor = thePixels[i].id
-    //             thePixels[thePixels.length - i - 1].style.backgroundColor = thePixels[thePixels.length - i - 1].id
-    //         }
-    // }
-
-
-
-
-    // useEffect(()=>{
-    //         fade()
-    // }, [allDrawings])
 
 
     return (
         <div className="homePageWrapper">
-            {allDrawings.map(e =>
+            {allDrawings.map((e, eInt) =>
 
-                <div key={`picId-${e.id}`} className="artwork">
-                    <div className="homeTitle"> &ldquo;{e.name}&rdquo;</div>
-                    <div className="byName">by {e.User.username}</div>
-
+                <div key={`picId-${e.id}${eInt}`} className="artwork">
+                    <div className="nameTitleContainer">
+                        <div className="homeTitle"> &ldquo;{e.name}&rdquo;</div>
+                        <div className="byName">by {e.User.username}</div>
+                    </div>
 
                     <div className="canvasPreview">
-                        {makeCanvasArray(e.canvas_array).map((div, int) => <>
-                            {div.map((pixel, int2) => <div className="homePixels" key={`pix-${int2}`} style={{ backgroundColor: `${pixel}` }}> </div>)}
+                        {makeCanvasArray(e.canvas_array).map((div, int) => <div style={{display: "flex"}} key={`canvasKey-${int}`}>
+                            {div.map((pixel, int2) => <div className="homePixels" key={`pix-${int2}${int}`} style={{ backgroundColor: `${pixel}` }}> </div>)}
 
-                        </>
+                        </div>
                         )}
                     </div>
 
-
+                    {user?.is_admin && <button className="formButton formElement deleteBtn" onClick={() => handleDelete(e.id)}>Delete Drawing</button>}
                 </div>
             )}
 

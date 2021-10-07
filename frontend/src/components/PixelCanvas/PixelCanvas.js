@@ -220,6 +220,62 @@ function PixelCanvas() {
         setCurrentCanvas(newArr)
     }
 
+
+
+     //====================== Handles Rectangle Lines ======================
+     const handleRectangleLine = (mouseDownXY, mouseUpXy) => {
+        let downX = mouseDownXY[0]
+        let downY = mouseDownXY[1]
+        let upX = mouseUpXy[0]
+        let upY = mouseUpXy[1]
+
+        if (upX - downX < -0 && upY - downY < -0) {
+            [downX, downY, upX, upY] = [upX, upY, downX, downY]
+        }
+
+        else if (upX - downX >= 0 && upY - downY < -0) {
+            [downY, upY] = [upY, downY]
+        }
+
+        else if (upX - downX < -0 && upY - downY >= 0) {
+            [downX, upX] = [upX, downX]
+        }
+
+        let numY = upX - downX;
+        let numX = upY - downY;
+        let newArr = draw_fill_helper()
+
+        console.log(downY, upY)
+
+        for(let i = downY; i <= numX+downY; i++){
+           newArr[downX][i] = selectedColor
+        }
+
+        for(let i = downY; i <= numX+downY; i++){
+            newArr[upX][i] = selectedColor
+         }
+
+         for(let i = downX; i <= upX; i++){
+            newArr[i][downY] = selectedColor
+         }
+
+         for(let i = downX; i <= upX; i++){
+            newArr[i][upY] = selectedColor
+         }
+
+
+        // for (let i = 0; i <= numY; i++) {
+        //     for (let j = 0; j <= numX; j++) {
+        //         newArr[i + downX][upY - j] = selectedColor
+        //     }
+        // }
+
+
+
+
+        setCurrentCanvas(newArr)
+    }
+
     //====================== Handles rectangle outline ======================
     const handleRectangleOutline = (e, add) => {
         let classNameNW = "NW"
@@ -385,7 +441,7 @@ function PixelCanvas() {
                         editMode === 'drawingMode' ? `url( ${cursor2}) 10 10, auto`
                             : editMode === 'colorPicker' ? `url( ${colorPicker}) 0 20, auto`
                                 : editMode === "fillMode" ? `url( ${bucketFill}) 0 20, auto`
-                                    : editMode === "rectangleMode" && `none`
+                                    : (editMode === "rectangleMode" || editMode === "rectangleLineMode")  && `none`
                 }}
             // onMouseDown={(e) => [
             //     (editMode === 'drawingMode' || editMode === "fillMode") && handleHistory(),
@@ -399,7 +455,7 @@ function PixelCanvas() {
                         <div
                             className={
                                 (editMode === "drawingMode" || editMode === "fillMode") ? "pixel"
-                                    : (editMode === "rectangleMode" && !isMouseDown) ? "rectangleMarkerHover" : undefined
+                                    : ((editMode === "rectangleMode" || editMode === "rectangleLineMode") && !isMouseDown) ? "rectangleMarkerHover" : undefined
                             }
                             id={`${i}-${j}`}
                             key={`key-${i}-${j}`}
@@ -419,14 +475,14 @@ function PixelCanvas() {
                             ]}
 
                             onMouseLeave={(e) => [
-                                isMouseDown && editMode === "rectangleMode" && handleRectangleOutline(e, "remove"),
+                                isMouseDown && (editMode === "rectangleMode" || editMode === "rectangleLineMode") && handleRectangleOutline(e, "remove"),
                             ]
                             }
 
                             onMouseEnter={(e) => [
                                 SE.current = e.target,
                                 isMouseDown && editMode === "drawingMode" && (e.target.style.backgroundColor = `${convertToRGBA(selectedColor)}`),
-                                isMouseDown && editMode === "rectangleMode" && handleRectangleOutline(e, "add"),
+                                isMouseDown && (editMode === "rectangleMode" || editMode === "rectangleLineMode") && handleRectangleOutline(e, "add"),
                             ]
                             }
 
@@ -434,6 +490,7 @@ function PixelCanvas() {
                                 mouseUpXY.current = [i, j],
                                 editMode === "drawingMode" && changeColorArray(),
                                 editMode === "rectangleMode" && handleRectangle(mouseDownXY.current, mouseUpXY.current),
+                                editMode === "rectangleLineMode" && handleRectangleLine(mouseDownXY.current, mouseUpXY.current),
                             ]}
                         >
 

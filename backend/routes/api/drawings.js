@@ -21,7 +21,7 @@ router.get("/all/:owner_id", async(req, res) => {
 
 router.get("/all", async(req, res) => {
     const allDrawings = await Drawing.findAll({
-        limit: 10,
+        limit: 50,
         include: {model: User}
 
     })

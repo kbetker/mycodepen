@@ -191,7 +191,6 @@ export const dispatchDeleteDrawing = (id) => async (dispatch) => {
     if(response.ok){
         const data = await response.json();
         dispatch(loadDeleteDrawing(data.id));
-        console.log(data, "WHAT US THIS DATA?!?!?!?")
         return data.id
     } else{
         return response

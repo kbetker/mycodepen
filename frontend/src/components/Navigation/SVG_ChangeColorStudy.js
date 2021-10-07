@@ -32,7 +32,7 @@ function ProfileButton({ user }) {
     // Get one of the SVG items by ID;
     // var svgItem = await svgDoc.getElementById("svgItem");
     // Set the colour to something else
-    console.log(svgDoc, "WTFWTFWTF")
+    console.log(svgDoc, "WAT????")
     // await svgItem.setAttribute("fill", "lime");
   }
 

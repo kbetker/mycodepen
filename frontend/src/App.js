@@ -56,7 +56,6 @@ function App() {
      }
 
      function handleClick(e) {
-          console.log(editMode, "WAT!?!?!?!??!?!?!?!?!?!?")
           if (editMode === "ignoreKeyPress" || editMode === "saveDrawing") return
 
           if (e) {

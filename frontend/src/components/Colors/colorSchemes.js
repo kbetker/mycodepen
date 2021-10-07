@@ -21,169 +21,90 @@ export const defaultColors = [
     "rgba(255, 255, 255, 1.00)",
     ]
 
-export const grayscale = [
-    "rgba(0, 0, 0, 1.00)",
-    "rgba(13, 13, 13, 1.00)",
-    "rgba(27, 27, 27, 1.00)",
-    "rgba(40, 40, 40, 1.00)",
-    "rgba(54, 54, 54, 1.00)",
-    "rgba(67, 67, 67, 1.00)",
-    "rgba(80, 80, 80, 1.00)",
-    "rgba(94, 94, 94, 1.00)",
-    "rgba(107, 107, 107, 1.00)",
-    "rgba(121, 121, 121, 1.00)",
-    "rgba(134, 134, 134, 1.00)",
-    "rgba(147, 147, 147, 1.00)",
-    "rgba(161, 161, 161, 1.00)",
-    "rgba(174, 174, 174, 1.00)",
-    "rgba(188, 188, 188, 1.00)",
-    "rgba(201, 201, 201, 1.00)",
-    "rgba(214, 214, 214, 1.00)",
-    "rgba(228, 228, 228, 1.00)",
-    "rgba(242, 242, 242, 1.00)",
-    "rgba(255, 255, 255, 1.00)",
-]
+
+export function grayscale(){
+    let colorArray1 = []
+    let num = 0
+    for(let i = 0; i < 20; i++){
+        colorArray1.push(`rgba(${Math.round(num)}, ${Math.round(num)}, ${Math.round(num)}, 1.00)`)
+        num += 13.4
+    }
+    return colorArray1
+}
 
 
-export const reds = [
-    "rgba(6, 0, 0, 1.00)",
-    "rgba(13, 0, 0, 1.00)",
-    "rgba(27, 0, 0, 1.00)",
-    "rgba(40, 0, 0, 1.00)",
-    "rgba(54, 0, 0, 1.00)",
-    "rgba(67, 0, 0, 1.00)",
-    "rgba(80, 0, 0, 1.00)",
-    "rgba(94, 0, 0, 1.00)",
-    "rgba(107, 0, 0, 1.00)",
-    "rgba(121, 0, 0, 1.00)",
-    "rgba(134, 0, 0, 1.00)",
-    "rgba(147, 0, 0, 1.00)",
-    "rgba(161, 0, 0, 1.00)",
-    "rgba(174, 0, 0, 1.00)",
-    "rgba(188, 0, 0, 1.00)",
-    "rgba(201, 0, 0, 1.00)",
-    "rgba(214, 0, 0, 1.00)",
-    "rgba(228, 0, 0, 1.00)",
-    "rgba(242, 0, 0, 1.00)",
-    "rgba(255, 0, 0, 1.00)",
-]
+export function reds(){
+    let colorArray1 = []
+    let colorArray2 = []
+    let num = 0
+    for(let i = 0; i < 10; i++){
+        colorArray1.push(`rgba(${Math.round(num)}, 0, 0, 1.00)`)
+        colorArray2.push(`rgba(255, ${Math.round(num)}, ${Math.round(num)}, 1.00)`)
+        num += 25
+    }
+    return [...colorArray1, ...colorArray2]
+}
 
 
-export const greens = [
-    "rgba(0, 6, 0, 1.00)",
-    "rgba(0, 13, 0, 1.00)",
-    "rgba(0, 27, 0, 1.00)",
-    "rgba(0, 40, 0, 1.00)",
-    "rgba(0, 54, 0, 1.00)",
-    "rgba(0, 67, 0, 1.00)",
-    "rgba(0, 80, 0, 1.00)",
-    "rgba(0, 94, 0, 1.00)",
-    "rgba(0, 107, 0, 1.00)",
-    "rgba(0, 121, 0, 1.00)",
-    "rgba(0, 134, 0, 1.00)",
-    "rgba(0, 147, 0, 1.00)",
-    "rgba(0, 161, 0, 1.00)",
-    "rgba(0, 174, 0, 1.00)",
-    "rgba(0, 188, 0, 1.00)",
-    "rgba(0, 201, 0, 1.00)",
-    "rgba(0, 214, 0, 1.00)",
-    "rgba(0, 228, 0, 1.00)",
-    "rgba(0, 242, 0, 1.00)",
-    "rgba(0, 255, 0, 1.00)",
-]
+export function greens(){
+    let colorArray1 = []
+    let colorArray2 = []
+    let num = 0
+    for(let i = 0; i < 10; i++){
+        colorArray1.push(`rgba(0, ${Math.round(num)}, 0, 1.00)`)
+        colorArray2.push(`rgba(${Math.round(num)}, 255, ${Math.round(num)}, 1.00)`)
+        num += 25
+    }
+    return [...colorArray1, ...colorArray2]
+}
 
 
-export const blues = [
-    "rgba(0, 0, 6, 1.00)",
-    "rgba(0, 0, 13, 1.00)",
-    "rgba(0, 0, 27, 1.00)",
-    "rgba(0, 0, 40, 1.00)",
-    "rgba(0, 0, 54, 1.00)",
-    "rgba(0, 0, 67, 1.00)",
-    "rgba(0, 0, 80, 1.00)",
-    "rgba(0, 0, 94, 1.00)",
-    "rgba(0, 0, 107, 1.00)",
-    "rgba(0, 0, 121, 1.00)",
-    "rgba(0, 0, 134, 1.00)",
-    "rgba(0, 0, 147, 1.00)",
-    "rgba(0, 0, 161, 1.00)",
-    "rgba(0, 0, 174, 1.00)",
-    "rgba(0, 0, 188, 1.00)",
-    "rgba(0, 0, 201, 1.00)",
-    "rgba(0, 0, 214, 1.00)",
-    "rgba(0, 0, 228, 1.00)",
-    "rgba(0, 0, 242, 1.00)",
-    "rgba(0, 0, 255, 1.00)",
-]
+export function blues(){
+    let colorArray1 = []
+    let colorArray2 = []
+    let num = 0
+    for(let i = 0; i < 10; i++){
+        colorArray1.push(`rgba(0, 0, ${Math.round(num)}, 1.00)`)
+        colorArray2.push(`rgba(${Math.round(num)},  ${Math.round(num)}, 255, 1.00)`)
+        num += 25
+    }
+    return [...colorArray1, ...colorArray2]
+}
 
 
-export const yellows = [
-    "rgba(6, 6, 0, 1.00)",
-    "rgba(13, 13, 0, 1.00)",
-    "rgba(27, 27, 0, 1.00)",
-    "rgba(40, 40, 0, 1.00)",
-    "rgba(54, 54, 0, 1.00)",
-    "rgba(67, 67, 0, 1.00)",
-    "rgba(80, 80, 0, 1.00)",
-    "rgba(94, 94, 0, 1.00)",
-    "rgba(107, 107, 0, 1.00)",
-    "rgba(121, 121, 0, 1.00)",
-    "rgba(134, 134, 0, 1.00)",
-    "rgba(147, 147, 0, 1.00)",
-    "rgba(161, 161, 0, 1.00)",
-    "rgba(174, 174, 0, 1.00)",
-    "rgba(188, 188, 0, 1.00)",
-    "rgba(201, 201, 0, 1.00)",
-    "rgba(214, 214, 0, 1.00)",
-    "rgba(228, 228, 0, 1.00)",
-    "rgba(242, 242, 0, 1.00)",
-    "rgba(255, 255, 0, 1.00)",
-]
+export function yellows(){
+    let colorArray1 = []
+    let colorArray2 = []
+    let num = 0
+    for(let i = 0; i < 10; i++){
+        colorArray1.push(`rgba(${Math.round(num)}, ${Math.round(num)}, 0, 1.00)`)
+        colorArray2.push(`rgba(255, 255, ${Math.round(num)}, 1.00)`)
+        num += 25
+    }
+    return [...colorArray1, ...colorArray2]
+}
 
 
-export const magentas = [
-    "rgba(6, 0, 6, 1.00)",
-    "rgba(13, 0, 13, 1.00)",
-    "rgba(27, 0, 27, 1.00)",
-    "rgba(40, 0, 40, 1.00)",
-    "rgba(54, 0, 54, 1.00)",
-    "rgba(67, 0, 67, 1.00)",
-    "rgba(80, 0, 80, 1.00)",
-    "rgba(94, 0, 94, 1.00)",
-    "rgba(107, 0, 107, 1.00)",
-    "rgba(121, 0, 121, 1.00)",
-    "rgba(134, 0, 134, 1.00)",
-    "rgba(147, 0, 147, 1.00)",
-    "rgba(161, 0, 161, 1.00)",
-    "rgba(174, 0, 174, 1.00)",
-    "rgba(188, 0, 188, 1.00)",
-    "rgba(201, 0, 201, 1.00)",
-    "rgba(214, 0, 214, 1.00)",
-    "rgba(228, 0, 228, 1.00)",
-    "rgba(242, 0, 242, 1.00)",
-    "rgba(255, 0, 255, 1.00)",
-]
+export function magentas(){
+    let colorArray1 = []
+    let colorArray2 = []
+    let num = 0
+    for(let i = 0; i < 10; i++){
+        colorArray1.push(`rgba(${Math.round(num)}, 0, ${Math.round(num)}, 1.00)`)
+        colorArray2.push(`rgba(255, ${Math.round(num)}, 255, 1.00)`)
+        num += 25
+    }
+    return [...colorArray1, ...colorArray2]
+}
 
-
-export const cyans = [
-    "rgba(0, 6, 6, 1.00)",
-    "rgba(0, 13, 13, 1.00)",
-    "rgba(0, 27, 27, 1.00)",
-    "rgba(0, 40, 40, 1.00)",
-    "rgba(0, 54, 54, 1.00)",
-    "rgba(0, 67, 67, 1.00)",
-    "rgba(0, 80, 80, 1.00)",
-    "rgba(0, 94, 94, 1.00)",
-    "rgba(0, 107, 107, 1.00)",
-    "rgba(0, 121, 121, 1.00)",
-    "rgba(0, 134, 134, 1.00)",
-    "rgba(0, 147, 147, 1.00)",
-    "rgba(0, 161, 161, 1.00)",
-    "rgba(0, 174, 174, 1.00)",
-    "rgba(0, 188, 188, 1.00)",
-    "rgba(0, 201, 201, 1.00)",
-    "rgba(0, 214, 214, 1.00)",
-    "rgba(0, 228, 228, 1.00)",
-    "rgba(0, 242, 242, 1.00)",
-    "rgba(0, 255, 255, 1.00)",
-]
+export function cyans(){
+    let colorArray1 = []
+    let colorArray2 = []
+    let num = 0
+    for(let i = 0; i < 10; i++){
+        colorArray1.push(`rgba(0, ${Math.round(num)}, ${Math.round(num)}, 1.00)`)
+        colorArray2.push(`rgba(${Math.round(num)}, 255, 255, 1.00)`)
+        num += 25
+    }
+    return [...colorArray1, ...colorArray2]
+}

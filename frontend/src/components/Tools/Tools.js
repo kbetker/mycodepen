@@ -85,23 +85,23 @@ function Tools() {
                 ]}>
                     <div>&#40;E&#41;rase</div>
                 </div>
+                <div className={editMode === "rectangleMode" ? "tooldivActive" : "tooldiv"} onClick={() => dispatch(dispatchEditMode('rectangleMode'))}>&#40;R&#41;ectangle</div>
+                <div className={editMode === "rectangleLineMode" ? "tooldivActive" : "tooldiv"} onClick={() => dispatch(dispatchEditMode('rectangleLineMode'))}>&#40;H&#41;ollow <div>Rectangle</div></div>
                 <div className={editMode === "clearCanvas" ? "tooldivActive" : "tooldiv"} onClick={() => dispatch(dispatchEditMode("clearCanvas"))}>
                     <div>Clear Canvas</div>
-                    <div>&#40;ctl a&#41;</div>
+                    <div>&#40;ctrl a&#41;</div>
                 </div>
                 <div className={editMode === "handleUndo" ? "tooldivActive" : "tooldiv"} onClick={() => dispatch(dispatchEditMode("handleUndo"))}>
                     <div> Undo</div>
-                    <div>&#40;ctl z&#41;</div>
+                    <div>&#40;ctrl z&#41;</div>
                 </div>
                 {/* </div> */}
                 {/* <div className="right"> */}
                 <div className={editMode === "handleRedo" ? "tooldivActive" : "tooldiv"} onClick={() => dispatch(dispatchEditMode("handleRedo"))}>
                     <div> Redo</div>
-                    <div>&#40;ctl y&#41;</div>
+                    <div>&#40;ctrl y&#41;</div>
 
                 </div>
-                <div className={editMode === "rectangleMode" ? "tooldivActive" : "tooldiv"} onClick={() => dispatch(dispatchEditMode('rectangleMode'))}>&#40;R&#41;ectangle</div>
-                <div className={editMode === "rectangleLineMode" ? "tooldivActive" : "tooldiv"} onClick={() => dispatch(dispatchEditMode('rectangleLineMode'))}>&#40;R&#41;ectangle Line</div>
                 <div className={editMode === "zoomIn" ? "tooldivActive" : "tooldiv"} onClick={() => dispatch(dispatchEditMode("zoomIn"))}>
                     <div> Zoom In</div>
                     <div>&#40; = &#41;</div>
@@ -114,12 +114,17 @@ function Tools() {
 
                 <div className={editMode === "zoomAll" ? "tooldivActive" : "tooldiv"} onClick={() => dispatch(dispatchEditMode("zoomAll"))}>
                     <div> Reset View</div>
-                    <div>&#40;ctl a&#41;</div>
+                    <div>&#40;ctrl a&#41;</div>
                 </div>
 
-                <div className={editMode === "printToConsole" ? "tooldivActive" : "tooldiv"} onClick={() => dispatch(dispatchEditMode("printToConsole"))}>
-                    <div>Print to</div>
-                    <div>Console</div>
+                <div className={editMode === "backupDrawing" ? "tooldivActive" : "tooldiv"} onClick={() => dispatch(dispatchEditMode("backupDrawing"))}>
+                    <div>Backup</div>
+                    <div>Drawing</div>
+                </div>
+
+                <div className={editMode === "restoreBackup" ? "tooldivActive" : "tooldiv"} onClick={() => dispatch(dispatchEditMode("restoreBackup"))}>
+                    <div>Restore</div>
+                    <div>Backup</div>
                 </div>
 
                 {/* </div> */}

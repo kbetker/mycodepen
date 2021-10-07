@@ -29,7 +29,6 @@ function MyDrawings() {
         try {
             return JSON.parse(theCanvas)
             // newArr = JSON.parse(canvas_array)
-
         }
         catch (err) {
             console.log(err)

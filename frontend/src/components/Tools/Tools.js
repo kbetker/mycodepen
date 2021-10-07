@@ -101,6 +101,7 @@ function Tools() {
 
                 </div>
                 <div className={editMode === "rectangleMode" ? "tooldivActive" : "tooldiv"} onClick={() => dispatch(dispatchEditMode('rectangleMode'))}>&#40;R&#41;ectangle</div>
+                <div className={editMode === "rectangleLineMode" ? "tooldivActive" : "tooldiv"} onClick={() => dispatch(dispatchEditMode('rectangleLineMode'))}>&#40;R&#41;ectangle Line</div>
                 <div className={editMode === "zoomIn" ? "tooldivActive" : "tooldiv"} onClick={() => dispatch(dispatchEditMode("zoomIn"))}>
                     <div> Zoom In</div>
                     <div>&#40; = &#41;</div>

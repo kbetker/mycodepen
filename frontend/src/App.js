@@ -52,6 +52,8 @@ function App() {
                dispatch(dispatchEditMode("zoomAll"))
           } else if (e.ctrlKey && e.key === "x") {
                dispatch(dispatchEditMode("clearCanvas"))
+          }  else if (e.key === "h") {
+               dispatch(dispatchEditMode(('rectangleLineMode')))
           }
      }
 

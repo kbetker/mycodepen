@@ -22,6 +22,7 @@ function PixelCanvas() {
     const [redo, setRedo] = useState([])
     const [drawingName, setDrawingName] = useState('')
     const { id } = useParams()
+    const shoText = useRef()
     // const [saveDrawing, setSaveDrawing] = useState('')
 
     const NW = useRef("0-0")
@@ -60,7 +61,7 @@ function PixelCanvas() {
     }, [])
 
 
-     //====================== Parses the array from the database  ======================
+    //====================== Parses the array from the database  ======================
     function makeCanvasArray(theCanvas) {
         let newArr = [[]]
         try {
@@ -73,7 +74,7 @@ function PixelCanvas() {
         return newArr
     }
 
-     //====================== Sets the canvas if editing from a save drawing ======================
+    //====================== Sets the canvas if editing from a save drawing ======================
     useEffect(() => {
         if (id) {
             setCurrentCanvas(makeCanvasArray(editDrawing.canvas_array))
@@ -222,8 +223,8 @@ function PixelCanvas() {
 
 
 
-     //====================== Handles Rectangle Lines ======================
-     const handleRectangleLine = (mouseDownXY, mouseUpXy) => {
+    //====================== Handles Rectangle Lines ======================
+    const handleRectangleLine = (mouseDownXY, mouseUpXy) => {
         let downX = mouseDownXY[0]
         let downY = mouseDownXY[1]
         let upX = mouseUpXy[0]
@@ -245,33 +246,18 @@ function PixelCanvas() {
         let numX = upY - downY;
         let newArr = draw_fill_helper()
 
-        console.log(downY, upY)
-
-        for(let i = downY; i <= numX+downY; i++){
-           newArr[downX][i] = selectedColor
+        for (let i = downY; i <= numX + downY; i++) {
+            newArr[downX][i] = selectedColor
         }
-
-        for(let i = downY; i <= numX+downY; i++){
+        for (let i = downY; i <= numX + downY; i++) {
             newArr[upX][i] = selectedColor
-         }
-
-         for(let i = downX; i <= upX; i++){
+        }
+        for (let i = downX; i <= upX; i++) {
             newArr[i][downY] = selectedColor
-         }
-
-         for(let i = downX; i <= upX; i++){
+        }
+        for (let i = downX; i <= upX; i++) {
             newArr[i][upY] = selectedColor
-         }
-
-
-        // for (let i = 0; i <= numY; i++) {
-        //     for (let j = 0; j <= numX; j++) {
-        //         newArr[i + downX][upY - j] = selectedColor
-        //     }
-        // }
-
-
-
+        }
 
         setCurrentCanvas(newArr)
     }
@@ -346,25 +332,61 @@ function PixelCanvas() {
         }
     }
 
+    //====================== downloads array as text file ======================
     // thanks CesMak: https://gist.github.com/CesMak
     // from GitHub https://gist.github.com/liabru/11263260
     function download(filename, text) {
         var element = document.createElement('a');
         element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(text)));
         element.setAttribute('download', filename);
-
         element.style.display = 'none';
         document.body.appendChild(element);
-
         element.click();
-
         document.body.removeChild(element);
     }
-
     // Start file download.
 
 
-     //====================== listens to the Tool buttons and keypress ======================
+     //====================== uploads textfile and converts to array ======================
+    // thank you Digamber Rawat
+    // from https://dev.to/singhdigamber/read-local-text-file-using-javascript-filereader-api-4i76
+    function showFile() {
+        //    var preview = document.getElementById('show-text');
+        var file = document.querySelector('input[type=file]').files[0];
+        var reader = new FileReader()
+        var textFile = /text.*/;
+
+        if (file.type.match(textFile)) {
+            reader.onload = async function (event) {
+                let canvasString = event.target.result;
+                let canvasArray = canvasString.match(/rgba\([0-9]+, [0-9]+, [0-9]+, [0-9]+\.?([0-9]+)?\)/g)
+                let newArray = [];
+                let indx = 0
+
+                for (let i = 0; i < columns; i++) {
+                    let row = []
+                    for (let j = 0; j < rows; j++) {
+                        row.push(convertToRGBA(canvasArray[indx]))
+                        indx++
+                    }
+                    newArray.push(row)
+                }
+                setCurrentCanvas(newArray)
+                handleHistory()
+                dispatch(dispatchEditMode(""))
+            }
+        } else {
+            //   preview.innerHTML = "<span class='error'>It doesn't seem to be a text file!</span>";
+            alert("It doesn't seem to be a text file!")
+        }
+        reader.readAsText(file);
+    }
+
+
+
+
+
+    //====================== listens to the Tool buttons and keypress ======================
     useEffect(() => {
         if (editMode === "undo") {
             handleUndo()
@@ -375,14 +397,14 @@ function PixelCanvas() {
             dispatch(dispatchEditMode(''))
         };
         editMode === "clearCanvas" && clearCanvas();
-        editMode === "printToConsole" && download("hello.txt", `${currentCanvas}`);
+        editMode === "backupDrawing" && download("myDrawing.txt", `${currentCanvas}`);
         if (editMode.startsWith("zoom")) {
             handleZoom(editMode)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [editMode])
 
-     //====================== Handles Saveing the drawing ======================
+    //====================== Handles Saveing the drawing ======================
     async function handleSave(e) {
         e.preventDefault()
         let canvas_array = await JSON.stringify(currentCanvas)
@@ -392,15 +414,15 @@ function PixelCanvas() {
             canvas_array
         }
         let data = await dispatch(dispatchPostDrawing(payload))
-       if(data.errors){
-           alert(data.errors)
-       } else{
-           dispatch(dispatchEditMode("drawingMode"))
-           history.push(`/pixelpad/${data.id}`)
-       }
+        if (data.errors) {
+            alert(data.errors)
+        } else {
+            dispatch(dispatchEditMode("drawingMode"))
+            history.push(`/pixelpad/${data.id}`)
+        }
     }
 
-     //====================== Handles Updating the drawing ======================
+    //====================== Handles Updating the drawing ======================
     async function handleUpdate(e) {
         e.preventDefault()
         let canvas_array = await JSON.stringify(currentCanvas)
@@ -410,19 +432,30 @@ function PixelCanvas() {
             canvas_array
         }
         let data = await dispatch(dispatchUpdateDrawing(payload, id))
-       if(data.errors){
-           alert(data.errors)
-       } else{
-           dispatch(dispatchEditMode("drawingMode"))
-           history.push(`/pixelpad/${data.id}`)
-       }
+        if (data.errors) {
+            alert(data.errors)
+        } else {
+            dispatch(dispatchEditMode("drawingMode"))
+            history.push(`/pixelpad/${data.id}`)
+        }
     }
 
     return (
         <div className="canvasWrapper">
+            {/* <div id='show-text' ref={shoText}>wat</div> */}
+
+            {editMode === "restoreBackup" &&
+                <div className="saveFormContainer">
+                    <div className="form saveForm">
+                        <div className="formElement">Name</div>
+                        <input type="file" onChange={() => showFile()} style={{padding: "10px"}} />
+                    </div>
+                </div>
+            }
+
             {(editMode === "saveDrawing" || editMode === "updateDrawing") &&
                 <div className="saveFormContainer">
-                    <form onSubmit={editMode === "saveDrawing" ? handleSave : handleUpdate } className="form saveForm">
+                    <form onSubmit={editMode === "saveDrawing" ? handleSave : handleUpdate} className="form saveForm">
                         <div className="formElement">Name</div>
                         <input className="formInput formElement" value={drawingName} onChange={(e) => setDrawingName(e.target.value)}></input>
                         <button type="submit" className="formButton formElement">{editMode === "saveDrawing" ? "Save as New..." : "Save Drawing"}</button>
@@ -441,7 +474,7 @@ function PixelCanvas() {
                         editMode === 'drawingMode' ? `url( ${cursor2}) 10 10, auto`
                             : editMode === 'colorPicker' ? `url( ${colorPicker}) 0 20, auto`
                                 : editMode === "fillMode" ? `url( ${bucketFill}) 0 20, auto`
-                                    : (editMode === "rectangleMode" || editMode === "rectangleLineMode")  && `none`
+                                    : (editMode === "rectangleMode" || editMode === "rectangleLineMode") && `none`
                 }}
             // onMouseDown={(e) => [
             //     (editMode === 'drawingMode' || editMode === "fillMode") && handleHistory(),

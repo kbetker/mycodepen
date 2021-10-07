@@ -60,7 +60,7 @@ function MyDrawings() {
                 {(editMode === "deleteDrawing") &&
                 <div className="saveFormContainer">
                     <form onSubmit={handleDelete} className="form saveForm">
-                        <div className="formElement">Are you sure you want to delete?</div>
+                        <div className="formElement">Are you sure you want to delete? You could make a backup.</div>
 
                         <button type="submit" className="formButton formElement deleteBtn">Delete Drawing</button>
                         <button className="formButton formElement" onClick={() => dispatch(dispatchEditMode(""))}>Cancel</button>

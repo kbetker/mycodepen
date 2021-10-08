@@ -40,6 +40,8 @@ function Home() {
 
 
     return (
+        <>
+            <div className="pageTitle">All Drawings</div>
         <div className="homePageWrapper">
             {allDrawings.map((e, eInt) =>
 
@@ -61,7 +63,7 @@ function Home() {
                 </div>
             )}
 
-        </div>)
+        </div></>)
 }
 
 

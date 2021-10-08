@@ -7,8 +7,6 @@ function ProfileButton({ user }) {
   const dispatch = useDispatch();
   const [showMenu, setShowMenu] = useState(false);
   const svgMenu = useRef()
-  const test1 = svgMenu.current
-
 
 
   const openMenu = () => {

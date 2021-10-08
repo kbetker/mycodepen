@@ -10,7 +10,6 @@ function Colors() {
       const hideColors = useSelector(state => state.pixelDrawing.hideTools.colors)
       const [colorScheme, setColorScheme] = useState(defaultColors)
       const [active, setActive] = useState('defaultColors')
-      // const [hideColors, setHideColors] = useState(true)
       const knobRed = useRef(0)
       const knobRedPOS = useRef(0)
       const knobGreen = useRef()
@@ -82,7 +81,6 @@ function Colors() {
 
       useEffect(() => {
             let leftMarkerPos = leftMarker.current.getBoundingClientRect().left
-            // console.log(leftMarkerPos)
             dragKnob(knobRed.current);
             dragKnob(knobGreen.current);
             dragKnob(knobBlue.current);

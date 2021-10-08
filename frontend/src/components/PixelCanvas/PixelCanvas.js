@@ -22,8 +22,6 @@ function PixelCanvas() {
     const [redo, setRedo] = useState([])
     const [drawingName, setDrawingName] = useState('')
     const { id } = useParams()
-    const shoText = useRef()
-    // const [saveDrawing, setSaveDrawing] = useState('')
 
     const NW = useRef("0-0")
     const SE = useRef("0-0")
@@ -66,7 +64,6 @@ function PixelCanvas() {
         let newArr = [[]]
         try {
             return JSON.parse(theCanvas)
-            // newArr = JSON.parse(canvas_array)
         }
         catch (err) {
             console.log(err)
@@ -74,7 +71,7 @@ function PixelCanvas() {
         return newArr
     }
 
-    //====================== Sets the canvas if editing from a save drawing ======================
+    //====================== Sets the canvas if editing from a saved drawing ======================
     useEffect(() => {
         if (id) {
             setCurrentCanvas(makeCanvasArray(editDrawing.canvas_array))
@@ -84,7 +81,7 @@ function PixelCanvas() {
     }, [editDrawing])
 
 
-    //======================  converts to rgba if not already  ======================
+    //======================  converts to rgba - if it's not already  ======================
     function convertToRGBA(color) {
         if (!color.startsWith("rgba")) {
             let first = color.slice(0, 3)
@@ -119,7 +116,7 @@ function PixelCanvas() {
     }
 
     //======================  helper function to DRY up the code a bit  ======================
-    function draw_fill_helper() {
+    function copyArray_setRedo() {
         //=== resets redo history ===
         setRedo([])
 
@@ -135,13 +132,13 @@ function PixelCanvas() {
     //======================  fill function   ======================
     function fillFunc(row, column, currBgColor) {
         //=== calls helper function ===
-        setCurrentCanvas(fillColorRecurs(row, column, currBgColor, draw_fill_helper()))
+        setCurrentCanvas(fillColorRecurs(row, column, currBgColor, copyArray_setRedo()))
     }
 
 
     //======================   change bgColor when drawing REFACTORED   ======================
     function changeColorArray() {
-        let newArr = draw_fill_helper()
+        let newArr = copyArray_setRedo()
         //=== changes value then set the currentCanvas ===
         let pixels = document.querySelectorAll(".pixel")
         for (let i = 0; i < pixels.length; i++) {
@@ -197,6 +194,7 @@ function PixelCanvas() {
         let upX = mouseUpXy[0]
         let upY = mouseUpXy[1]
 
+        //re-assigns values depending on direction
         if (upX - downX < -0 && upY - downY < -0) {
             [downX, downY, upX, upY] = [upX, upY, downX, downY]
         }
@@ -211,58 +209,37 @@ function PixelCanvas() {
 
         let numY = upX - downX;
         let numX = upY - downY;
-        let newArr = draw_fill_helper()
+        let newArr = copyArray_setRedo()
 
-        for (let i = 0; i <= numY; i++) {
-            for (let j = 0; j <= numX; j++) {
-                newArr[i + downX][upY - j] = selectedColor
+        if (editMode === "rectangleLineMode") {
+            for (let i = downY; i <= numX + downY; i++) {
+                newArr[downX][i] = selectedColor
+            }
+            for (let i = downY; i <= numX + downY; i++) {
+                newArr[upX][i] = selectedColor
+            }
+            for (let i = downX; i <= upX; i++) {
+                newArr[i][downY] = selectedColor
+            }
+            for (let i = downX; i <= upX; i++) {
+                newArr[i][upY] = selectedColor
+            }
+
+        } else {
+            //fills entire rectangle
+            for (let i = 0; i <= numY; i++) {
+                for (let j = 0; j <= numX; j++) {
+                    newArr[i + downX][upY - j] = selectedColor
+                }
             }
         }
-        setCurrentCanvas(newArr)
-    }
-
-
-
-    //====================== Handles Rectangle Lines ======================
-    const handleRectangleLine = (mouseDownXY, mouseUpXy) => {
-        let downX = mouseDownXY[0]
-        let downY = mouseDownXY[1]
-        let upX = mouseUpXy[0]
-        let upY = mouseUpXy[1]
-
-        if (upX - downX < -0 && upY - downY < -0) {
-            [downX, downY, upX, upY] = [upX, upY, downX, downY]
-        }
-
-        else if (upX - downX >= 0 && upY - downY < -0) {
-            [downY, upY] = [upY, downY]
-        }
-
-        else if (upX - downX < -0 && upY - downY >= 0) {
-            [downX, upX] = [upX, downX]
-        }
-
-        let numY = upX - downX;
-        let numX = upY - downY;
-        let newArr = draw_fill_helper()
-
-        for (let i = downY; i <= numX + downY; i++) {
-            newArr[downX][i] = selectedColor
-        }
-        for (let i = downY; i <= numX + downY; i++) {
-            newArr[upX][i] = selectedColor
-        }
-        for (let i = downX; i <= upX; i++) {
-            newArr[i][downY] = selectedColor
-        }
-        for (let i = downX; i <= upX; i++) {
-            newArr[i][upY] = selectedColor
-        }
 
         setCurrentCanvas(newArr)
     }
 
-    //====================== Handles rectangle outline ======================
+
+
+    //====================== Handles display rectangle tool ======================
     const handleRectangleOutline = (e, add) => {
         let classNameNW = "NW"
         let classNameSW = "SW"
@@ -275,6 +252,7 @@ function PixelCanvas() {
         let columnDiff = southEast[0] - northWest[0]
         let rowDiff = southEast[1] - northWest[1]
 
+        //re-assigns depending on direction user creates rectangle
         if (columnDiff < -0 && rowDiff < -0) {
             classNameNW = "SE"
             classNameSW = "NE"
@@ -332,7 +310,7 @@ function PixelCanvas() {
         }
     }
 
-    //====================== downloads array as text file ======================
+    //====================== downloads array as text file for backup ======================
     // thanks CesMak: https://gist.github.com/CesMak
     // from GitHub https://gist.github.com/liabru/11263260
     function download(filename, text) {
@@ -347,11 +325,10 @@ function PixelCanvas() {
     // Start file download.
 
 
-     //====================== uploads textfile and converts to array ======================
+    //====================== uploads textfile and converts to array for restoring drawing======================
     // thank you Digamber Rawat
     // from https://dev.to/singhdigamber/read-local-text-file-using-javascript-filereader-api-4i76
     function showFile() {
-        //    var preview = document.getElementById('show-text');
         var file = document.querySelector('input[type=file]').files[0];
         var reader = new FileReader()
         var textFile = /text.*/;
@@ -376,13 +353,10 @@ function PixelCanvas() {
                 dispatch(dispatchEditMode(""))
             }
         } else {
-            //   preview.innerHTML = "<span class='error'>It doesn't seem to be a text file!</span>";
             alert("It doesn't seem to be a text file!")
         }
         reader.readAsText(file);
     }
-
-
 
 
 
@@ -404,7 +378,7 @@ function PixelCanvas() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [editMode])
 
-    //====================== Handles Saveing the drawing ======================
+    //====================== Handles Saving the drawing ======================
     async function handleSave(e) {
         e.preventDefault()
         let canvas_array = await JSON.stringify(currentCanvas)
@@ -442,13 +416,13 @@ function PixelCanvas() {
 
     return (
         <div className="canvasWrapper">
-            {/* <div id='show-text' ref={shoText}>wat</div> */}
-
             {editMode === "restoreBackup" &&
                 <div className="saveFormContainer">
                     <div className="form saveForm">
-                        <div className="formElement">Name</div>
-                        <input type="file" onChange={() => showFile()} style={{padding: "10px"}} />
+                        <div className="formElement">Restore Backup</div>
+                        <input type="file" onChange={() => showFile()} style={{ padding: "10px" }}  />
+                        <button className="formButton formElement" onClick={() => dispatch(dispatchEditMode(""))}>Cancel</button>
+                        {/* <div className="choose">Choose</div> */}
                     </div>
                 </div>
             }
@@ -476,11 +450,6 @@ function PixelCanvas() {
                                 : editMode === "fillMode" ? `url( ${bucketFill}) 0 20, auto`
                                     : (editMode === "rectangleMode" || editMode === "rectangleLineMode") && `none`
                 }}
-            // onMouseDown={(e) => [
-            //     (editMode === 'drawingMode' || editMode === "fillMode") && handleHistory(),
-
-            // ]
-            // }
             >
 
                 {currentCanvas.map((e, i) =>
@@ -522,8 +491,7 @@ function PixelCanvas() {
                             onMouseUp={(e) => [
                                 mouseUpXY.current = [i, j],
                                 editMode === "drawingMode" && changeColorArray(),
-                                editMode === "rectangleMode" && handleRectangle(mouseDownXY.current, mouseUpXY.current),
-                                editMode === "rectangleLineMode" && handleRectangleLine(mouseDownXY.current, mouseUpXY.current),
+                                (editMode === "rectangleMode" || editMode === "rectangleLineMode") && handleRectangle(mouseDownXY.current, mouseUpXY.current),
                             ]}
                         >
 

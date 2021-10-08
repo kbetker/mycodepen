@@ -3,14 +3,13 @@ import "./Colors.css"
 import { dispatchHideTools, dispatchSelectedColor } from "../../store/pixelDrawing"
 import { useDispatch, useSelector } from "react-redux"
 import transparent from "./transparent.png"
-import { defaultColors, grayscale, reds, blues, greens, yellows, magentas, cyans } from "./colorSchemes.js"
+import { defaultColors, skinTones, grayscale, reds, blues, greens, yellows, magentas, cyans } from "./colorSchemes.js"
 
 function Colors() {
       const pickedColor = useSelector(state => state.pixelDrawing.selectedColor)
       const hideColors = useSelector(state => state.pixelDrawing.hideTools.colors)
       const [colorScheme, setColorScheme] = useState(defaultColors)
       const [active, setActive] = useState('defaultColors')
-      // const [hideColors, setHideColors] = useState(true)
       const knobRed = useRef(0)
       const knobRedPOS = useRef(0)
       const knobGreen = useRef()
@@ -20,7 +19,8 @@ function Colors() {
       const knobAlpha = useRef(0)
       const knobAlphaPOS = useRef(255)
       const colorSchemeArray = {
-            "defaultColors": defaultColors,
+            "Default": defaultColors,
+            "Skin Tones": skinTones,
             "grayscale": grayscale,
             "reds": reds,
             "blues": blues,
@@ -81,7 +81,6 @@ function Colors() {
 
       useEffect(() => {
             let leftMarkerPos = leftMarker.current.getBoundingClientRect().left
-            // console.log(leftMarkerPos)
             dragKnob(knobRed.current);
             dragKnob(knobGreen.current);
             dragKnob(knobBlue.current);

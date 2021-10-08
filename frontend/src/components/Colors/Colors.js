@@ -3,7 +3,7 @@ import "./Colors.css"
 import { dispatchHideTools, dispatchSelectedColor } from "../../store/pixelDrawing"
 import { useDispatch, useSelector } from "react-redux"
 import transparent from "./transparent.png"
-import { defaultColors, grayscale, reds, blues, greens, yellows, magentas, cyans } from "./colorSchemes.js"
+import { defaultColors, skinTones, grayscale, reds, blues, greens, yellows, magentas, cyans } from "./colorSchemes.js"
 
 function Colors() {
       const pickedColor = useSelector(state => state.pixelDrawing.selectedColor)
@@ -20,7 +20,8 @@ function Colors() {
       const knobAlpha = useRef(0)
       const knobAlphaPOS = useRef(255)
       const colorSchemeArray = {
-            "defaultColors": defaultColors,
+            "Default": defaultColors,
+            "Skin Tones": skinTones,
             "grayscale": grayscale,
             "reds": reds,
             "blues": blues,

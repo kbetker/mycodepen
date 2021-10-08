@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { fetchAllMYDrawings } from "../../store/pixelDrawing"
 import { useHistory } from "react-router-dom"
@@ -55,6 +55,8 @@ function MyDrawings() {
 
 
     return (
+        <>
+
         <div className="homePageWrapper">
 
                 {(editMode === "deleteDrawing") &&
@@ -69,7 +71,7 @@ function MyDrawings() {
             }
 
 
-            {myDrawings.length === 0 && <div className="homeTitle">You currently have no drawings. Get busy!!</div>}
+            {myDrawings.length === 0 ? <div className="homeTitle">You currently have no drawings. Get busy!!</div> :  <div className="pageTitle">My Drawings</div>}
             {myDrawings?.map(e =>
 
                 <div key={`picId-${e.id}`} className="artwork">
@@ -98,7 +100,7 @@ function MyDrawings() {
                 </div>
             )}
 
-        </div>)
+        </div></>)
 }
 
 

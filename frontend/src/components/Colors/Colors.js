@@ -91,7 +91,6 @@ function Colors() {
             function dragKnob(theKnob) {
                   let xDiff = 0, Xold = 0;
                   function mouseDown(e) {
-                        // console.log(knobRed.current, knobRedPOS)
                         e.preventDefault();
                         Xold = (e.clientX);
                         document.onmouseup = stopDrag;
@@ -194,7 +193,8 @@ function Colors() {
                                                 className="sliderInput"
                                                 id="red"
                                                 onChange={(e) => dispatch(dispatchSelectedColor(`rgba(${handleInput(e)}, ${green}, ${blue}, ${alpha})`))}
-                                                value={red}>
+                                                value={red}
+                                                type="number">
                                           </input>
                                     </div>
 
@@ -207,7 +207,8 @@ function Colors() {
                                                 className="sliderInput"
                                                 id="green"
                                                 onChange={(e) => dispatch(dispatchSelectedColor(`rgba(${red}, ${handleInput(e)}, ${blue}, ${alpha})`))}
-                                                value={green}>
+                                                value={green}
+                                                type="number">
 
                                           </input>
                                     </div>
@@ -221,7 +222,8 @@ function Colors() {
                                                 className="sliderInput"
                                                 id="blue"
                                                 onChange={(e) => dispatch(dispatchSelectedColor(`rgba(${red}, ${green}, ${handleInput(e)}, ${alpha})`))}
-                                                value={blue}>
+                                                value={blue}
+                                                type="number">
                                           </input>
                                     </div>
 
@@ -233,7 +235,8 @@ function Colors() {
                                           <input className="sliderInput"
                                                 id="alpha"
                                                 onChange={(e) => dispatch(dispatchSelectedColor(`rgba(${red}, ${green}, ${blue}, ${handleInput(e)})`))}
-                                                value={alpha}>
+                                                value={alpha}
+                                                type="number">
                                           </input>
                                     </div>
 

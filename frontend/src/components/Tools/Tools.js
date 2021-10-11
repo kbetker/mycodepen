@@ -75,38 +75,39 @@ function Tools() {
                 {/* <div className="left"> */}
                 <div className={editMode === "drawingMode" ? "tooldivActive" : "tooldiv"} onClick={() => dispatch(dispatchEditMode('drawingMode'))}>&#40;D&#41;raw Mode</div>
                 <div className={editMode === "fillMode" ? "tooldivActive" : "tooldiv"} onClick={() => dispatch(dispatchEditMode('fillMode'))}>&#40;F&#41;ill Mode</div>
+
                 <div className={editMode === "colorPicker" ? "tooldivActive" : "tooldiv"} onClick={() => dispatch(dispatchEditMode('colorPicker'))}>
                     <div>&#40;C&#41;olor</div>
                     <div>Picker</div>
                 </div>
-                <div className={editMode === "eraseMode" ? "tooldivActive" : "tooldiv"} onClick={() => [
-                    dispatch(dispatchSelectedColor("rgba(0, 0, 0, 0)"))
 
-                ]}>
+                <div className={editMode === "eraseMode" ? "tooldivActive" : "tooldiv"} onClick={() => [
+                    dispatch(dispatchSelectedColor("rgba(0, 0, 0, 0)")), dispatch(dispatchEditMode("drawingMode"))]
+                    }>
                     <div>&#40;E&#41;rase</div>
                 </div>
                 <div className={editMode === "rectangleMode" ? "tooldivActive" : "tooldiv"} onClick={() => dispatch(dispatchEditMode('rectangleMode'))}>&#40;R&#41;ectangle</div>
                 <div className={editMode === "rectangleLineMode" ? "tooldivActive" : "tooldiv"} onClick={() => dispatch(dispatchEditMode('rectangleLineMode'))}>&#40;H&#41;ollow <div>Rectangle</div></div>
                 <div className={editMode === "clearCanvas" ? "tooldivActive" : "tooldiv"} onClick={() => dispatch(dispatchEditMode("clearCanvas"))}>
                     <div>Clear Canvas</div>
-                    <div>&#40;ctrl a&#41;</div>
+                    <div>&#40;ctrl x&#41;</div>
                 </div>
-                <div className={editMode === "handleUndo" ? "tooldivActive" : "tooldiv"} onClick={() => dispatch(dispatchEditMode("handleUndo"))}>
+                <div className={editMode === "handleUndo" ? "tooldivActive" : "tooldiv"} onClick={() => dispatch(dispatchEditMode("undo"))}>
                     <div> Undo</div>
                     <div>&#40;ctrl z&#41;</div>
                 </div>
-                {/* </div> */}
-                {/* <div className="right"> */}
-                <div className={editMode === "handleRedo" ? "tooldivActive" : "tooldiv"} onClick={() => dispatch(dispatchEditMode("handleRedo"))}>
+
+                <div className={editMode === "handleRedo" ? "tooldivActive" : "tooldiv"} onClick={() => dispatch(dispatchEditMode("redo"))}>
                     <div> Redo</div>
                     <div>&#40;ctrl y&#41;</div>
-
                 </div>
+
                 <div className={editMode === "zoomIn" ? "tooldivActive" : "tooldiv"} onClick={() => dispatch(dispatchEditMode("zoomIn"))}>
                     <div> Zoom In</div>
                     <div>&#40; = &#41;</div>
 
                 </div>
+
                 <div className={editMode === "zoomOut" ? "tooldivActive" : "tooldiv"} onClick={() => dispatch(dispatchEditMode("zoomOut"))}>
                     <div> Zoom Out</div>
                     <div>&#40; - &#41;</div>

@@ -166,7 +166,7 @@ function PixelCanvas() {
 
     //====================== Undo ======================
     function handleUndo() {
-        if (undo.length <= 1) { console.log("End of History"); return }
+        if (undo.length <= 1) return ;
         let pop = undo.pop()
         setRedo(oldRedo => [...oldRedo, currentCanvas])
         setCurrentCanvas(pop)
@@ -174,7 +174,7 @@ function PixelCanvas() {
 
     //====================== Redo ======================
     function handleRedo() {
-        if (redo.length === 0) { console.log("End of History"); return }
+        if (redo.length === 0) return;
         let pop = redo.pop();
         setUndo(oldRedo => [...oldRedo, currentCanvas])
         setCurrentCanvas(pop)
@@ -336,13 +336,21 @@ function PixelCanvas() {
         if (file.type.match(textFile)) {
             reader.onload = async function (event) {
                 let canvasString = event.target.result;
-                let canvasArray = canvasString.match(/rgba\([0-9]+, [0-9]+, [0-9]+, [0-9]+\.?([0-9]+)?\)/g)
+                let regex = new RegExp(/rgba\([0-9]+, [0-9]+, [0-9]+, [0-9]+\.?([0-9]+)?\)/g);
+                let canvasArray = canvasString.match(regex)
+                if(canvasArray.length !== 2100) {
+                    dispatch(dispatchEditMode("txtError"))
+                    return
+                }
                 let newArray = [];
                 let indx = 0
+                console.log(canvasArray.length)
 
                 for (let i = 0; i < columns; i++) {
                     let row = []
                     for (let j = 0; j < rows; j++) {
+
+                    //    let currColor = canvasArray[indx]
                         row.push(convertToRGBA(canvasArray[indx]))
                         indx++
                     }
@@ -422,6 +430,17 @@ function PixelCanvas() {
                         <div className="formElement">Restore Backup</div>
                         <input type="file" onChange={() => showFile()} style={{ padding: "10px" }}  />
                         <button className="formButton formElement" onClick={() => dispatch(dispatchEditMode(""))}>Cancel</button>
+                        {/* <div className="choose">Choose</div> */}
+                    </div>
+                </div>
+            }
+
+            {editMode === "txtError" &&
+                <div className="saveFormContainer">
+                    <div className="form saveForm">
+                        <div className="formElement">Hmm... This does not appear to be a valid RetroGFX backup file.</div>
+
+                        <button className="formButton formElement" onClick={() => dispatch(dispatchEditMode(""))}>Close message</button>
                         {/* <div className="choose">Choose</div> */}
                     </div>
                 </div>

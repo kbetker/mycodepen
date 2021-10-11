@@ -42,6 +42,7 @@ function App() {
                dispatch(dispatchEditMode("undo"))
           } else if (e.key === "e") {
                dispatch(dispatchSelectedColor("rgba(0, 0, 0, 0)"))
+               dispatch(dispatchEditMode("drawingMode"))
           } else if (e.ctrlKey && e.key === "y") {
                dispatch(dispatchEditMode("redo"))
           } else if (e.code === "Equal" || e.key === "+") {

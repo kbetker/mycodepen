@@ -5,8 +5,8 @@
 .msSquare{
     width: 30px;
     height: 30px;
-    background-color: grey;
     box-sizing: border-box;
+    background-color: grey;
     border-top: 2px solid rgb(226, 226, 226);
     border-left: 2px solid rgb(153, 153, 153);
     border-right: 2px solid rgb(100, 100, 100);
@@ -20,4 +20,25 @@
 
 .msSquare:hover{
     background-color: rgb(145, 145, 145);
+}
+
+.msHidden{
+    opacity: 0.3;
+}
+.msSquareValue{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+}
+
+.msEmptySquare{
+    color: rgba(0, 0, 0, 0);
+    background-color: rgb(82, 82, 82);
+    border-bottom: 1px solid rgb(226, 226, 226);
+    border-right: 1px solid rgb(153, 153, 153);
+    border-left: 1px solid rgb(100, 100, 100);
+    border-top: 1px solid rgb(48, 48, 48);
 }

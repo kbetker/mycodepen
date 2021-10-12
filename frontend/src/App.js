@@ -14,7 +14,7 @@ import Navigation from "./components/Navigation";
 import { Route, Switch } from "react-router";
 import Home from "./components/Home"
 import MyDrawings from "./components/MyDrawings";
-
+import MineSweeper from "./components/MineSweeper/MineSweeper";
 
 
 function App() {
@@ -86,6 +86,10 @@ function App() {
           <>
 
                <Switch>
+
+                    <Route path="/MineSweeper">
+                         <MineSweeper />
+                    </Route>
 
                     <Route path="/login/:demo">
                          <Navigation isLoaded={isLoaded} />

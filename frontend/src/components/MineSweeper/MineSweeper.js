@@ -1,5 +1,8 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import "./MineSweeper.css"
+import svg003 from "./svg003.svg"
+import svg002 from "./svg002.svg"
+import svg001 from "./svg001.svg"
 
 function MineSweeper() {
     const [level, setLevel] = useState(0)
@@ -8,7 +11,16 @@ function MineSweeper() {
     const [grid, setGrid] = useState([[]])
     const [mineCount, setMineCount] = useState(0)
     const [emptyCount, setEmptyCount] = useState(0)
+    const [squaresLeft, setSquaresLeft] = useState(0)
     const getRandomNum = () => Math.floor(Math.random() * 10);
+    const noContextMenu = useRef()
+    // const [flags, setFlags] = useState(svg001)
+
+    useEffect(() => {
+        if (squaresLeft > 0 && (squaresLeft === emptyCount)) {
+            alert("Winner winner chicken dinner!")
+        }
+    }, [squaresLeft])
 
 
 
@@ -68,54 +80,71 @@ function MineSweeper() {
     }
 
 
-    //================ handles the click ===============
-    function handleSquareClick(e) {
-        // console.log(e.target.childNodes[0])
-        let split = e.target.id.split("-")
+    //================ Counts number of non-mine squares have been checked ===============
+    function countChecked() {
+        let countThis = document.querySelectorAll(".checked")
+        setSquaresLeft(countThis.length)
+    }
 
-        if (e.target.childNodes[0].innerHTML === "X") {
-            alert("Boom!")
-        } else if (e.target.childNodes[0].innerHTML === "0") {
-
-            clearEmpties(split[0], split[1])
-            countChecked()
-
-        } else {
-            e.target.childNodes[0].classList.remove("msHidden")
-            e.target.childNodes[0].classList.add("checked")
-            countChecked()
+    function handleBoom(e){
+        let allBombs = document.querySelectorAll(".bomb")
+        // console.log(allBombs)
+        for(let i = 0; i < allBombs.length; i++){
+            allBombs[i].style.backgroundColor = "red";
+            console.log(allBombs[i])
+            allBombs[i].classList.remove("bomb")
         }
     }
 
-    function countChecked() {
-        let countThis = document.querySelectorAll(".checked")
-        setEmptyCount(countThis.length)
-        console.log(countThis.length)
+
+    //================ handles the click ===============
+    function handleSquareClick(e) {
+        e.preventDefault()
+
+        let split = e.target.id.split("-")
+
+        if (e.button === 0) {
+            if (e.target.childNodes[0].innerHTML === "X") {
+               handleBoom(e)
+            } else if (e.target.childNodes[0].innerHTML === "0") {
+                clearEmpties(split[0], split[1])
+                countChecked()
+            } else {
+                e.target.childNodes[0].classList.remove("msHidden")
+                e.target.classList.add("checked")
+                countChecked()
+            }
+        } else if (e.button === 2) {
+            if(e.target.classList.value.includes("checked"))return
+            const img = e.target.childNodes[1]
+
+            if (img.src.includes("svg001")) {
+                img.src = svg002
+                if(mineCount > 0){
+                setMineCount(old => old -1)
+                }
+            } else if (img.src.includes("svg002")){
+                img.src = svg003
+                setMineCount(old => old + 1)
+            } else {
+                img.src = svg001
+            }
+        }
     }
 
-    useEffect(()=>{
-        countChecked()
-    },[clearEmpties])
 
     // ================ clear out the zeroes ===============
     function clearEmpties(x, y) {
         //=== edge cases and base case ===
         if (x === null || y === null || grid[x][y] !== 0) return;
 
-
-        // if(grid[x][y] !== 0){
-        //     setEmptyCount(old => old - 1)
-        //     return
-        // }
-
         let row = parseInt(x)
         let column = parseInt(y)
-        // msHidden
-        // console.log(row,column)
-        // childNodes[0].
+        let squareDiv = document.getElementById(`${row}-${column}`)
 
-        document.getElementById(`${row}-${column}`).classList.add("msEmptySquare")
-        document.getElementById(`${row}-${column}`).classList.add("checked")
+        squareDiv.classList.add("msEmptySquare")
+        squareDiv.classList.add("checked")
+
 
         let NW = document.getElementById(`${row - 1}-${column - 1}`)
         let N = document.getElementById(`${row - 1}-${column}`)
@@ -126,12 +155,9 @@ function MineSweeper() {
         let S = document.getElementById(`${row + 1}-${column}`)
         let SE = document.getElementById(`${row + 1}-${column + 1}`)
         let surroundingArray = [NW, N, NE, W, E, SW, S, SE]
-        surroundingArray.forEach(el => el && [el.childNodes[0].classList.remove("msHidden"), el.childNodes[0].classList.add("checked")])
+        surroundingArray.forEach(el => el && [el.childNodes[0].classList.remove("msHidden"), el.classList.add("checked")])
 
-        // e.target.childNodes[0].classList.add("msEmptySquare")
         grid[row][column] = "-"
-        // setEmptyCount(old => old - 1)
-
 
         let up = row - 1 >= 0 ? row - 1 : null
         let down = row + 1 < grid.length ? row + 1 : null
@@ -142,35 +168,49 @@ function MineSweeper() {
         clearEmpties(down, column)
         clearEmpties(row, left)
         clearEmpties(row, right)
-        // return newArr
     }
 
+    useEffect(() => {
+        noContextMenu.current.addEventListener("contextmenu", e => e.preventDefault())
+    }, [])
 
+    const prevent_default = (e) => e.preventDefault();
 
-    return (<>
+    return (<div id="noContext" ref={noContextMenu}>
         <div>MineCount{mineCount}</div>
         <div>Empty Squares{emptyCount}</div>
+        <div>Squares Left{squaresLeft}</div>
         {grid.map((ele, int) =>
-            <div className="msRow" key={`rowKey-${int}`}>
+            <div className="msRow" key={`rowKey-${int}`} onMouseDown={(e) => prevent_default(e)}>
                 {ele.map((el, i) =>
                     <div
                         className="msSquare"
                         key={`squareKey-${i}`}
-                        onClick={(e) => handleSquareClick(e)}
+                        onMouseDown={(e) => handleSquareClick(e)}
                         id={`${int}-${i}`}
                     >
-                        {el === 0 ? <span className="msSquareValue msHidden">{el}</span>
-                            : el === "X" ? <span className="msSquareValue red">{el}</span>
-                                : <span className="msSquareValue msHidden">{el}</span>
+                        {   el === 0 ? <span className="msSquareValue msHidden">{el}</span>
+                            : el === "X" ? <span className="msSquareValue bomb">{el}</span>
+                            : <span className="msSquareValue msHidden" style={{color: `${
+                                  el === 1 ? "#024C00"
+                                : el === 2 ? "#00756D"
+                                : el === 3 ? "#00194C"
+                                : el === 4 ? "#1A004C"
+                                : el === 5 ? "#8E0000"
+                                : el === 6 ? "#B40000"
+                                : el === 7 ? "#CA0000"
+                                : el === 8 ? "#FF0000"
+                                : ""
+                            }`}}>{el}</span>
                         }
-
+                        <img src={svg001} className="msFlag"></img>
                     </div>)}
             </div>
         )}
 
         <input type="number" value={level} onChange={(e) => setLevel(e.target.value)}></input>
         <button onClick={handleStart}>Start</button>
-    </>)
+    </div>)
 }
 
 export default MineSweeper

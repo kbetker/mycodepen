@@ -151,7 +151,7 @@ function PixelCanvas() {
 
     //======================   Records History   ======================
     function handleHistory() {
-        if (undo.length >= 30) {
+        if (undo.length >= 31) {
             let newArr = []
             for (let i = 1; i < undo.length; i++) {
                 newArr.push(undo[i]);

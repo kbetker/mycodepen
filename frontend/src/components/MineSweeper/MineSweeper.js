@@ -5,20 +5,23 @@ import svg002 from "./svg002.svg"
 import svg001 from "./svg001.svg"
 
 function MineSweeper() {
-    const [level, setLevel] = useState(0)
+    const [level, setLevel] = useState(4)
     const [rows, setRows] = useState(20)
     const [columns, setColumns] = useState(20)
     const [grid, setGrid] = useState([[]])
     const [mineCount, setMineCount] = useState(0)
     const [emptyCount, setEmptyCount] = useState(0)
     const [squaresLeft, setSquaresLeft] = useState(0)
-    const getRandomNum = () => Math.floor(Math.random() * 10);
+    const gameWon = useRef("red")
+    const [sqrDimensions, setSqrDimensions] = useState(30)
+    const getRandomNum = () => Math.floor(Math.random() * 100);
     const noContextMenu = useRef()
     // const [flags, setFlags] = useState(svg001)
 
     useEffect(() => {
         if (squaresLeft > 0 && (squaresLeft === emptyCount)) {
-            alert("Winner winner chicken dinner!")
+            gameWon.current = "green"
+            handleBoom()
         }
     }, [squaresLeft])
 
@@ -86,13 +89,51 @@ function MineSweeper() {
         setSquaresLeft(countThis.length)
     }
 
-    function handleBoom(e){
+    async function handleBoom(e){
+        if(e){
+            e.target.childNodes[0].style.backgroundColor = "red"
+            e.target.childNodes[0].classList.remove("bomb")
+            e.target.childNodes[1].src = svg001
+        }
+
         let allBombs = document.querySelectorAll(".bomb")
-        // console.log(allBombs)
-        for(let i = 0; i < allBombs.length; i++){
-            allBombs[i].style.backgroundColor = "red";
-            console.log(allBombs[i])
-            allBombs[i].classList.remove("bomb")
+        let arrayCount = []
+        for(let i = 0; i < allBombs.length; i++){arrayCount.push(i)}
+
+
+        let bombLength = arrayCount.length
+
+        // console.log(arrayCount)
+
+        const getRandomNode = (num) => Math.floor(Math.random() * num);
+
+        // thank you MDN for this one
+        function getRandomTime(min, max) {
+            min = Math.ceil(min);
+            max = Math.floor(max);
+            return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
+          }
+
+        const remove = (i) => {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    allBombs[i].style.backgroundColor =  gameWon.current;
+                    // console.log(allBombs[i])
+                    allBombs[i].classList.remove("bomb")
+                    // allBombs[i].childNodes[1].src = svg001
+                    allBombs[i].nextSibling.src = svg001
+                    resolve();
+                }, getRandomTime(1, 400));
+            });
+        }
+
+        while(bombLength > 0){
+            let int = getRandomNode(bombLength)
+            let num = arrayCount.splice(int, 1)
+
+            await remove(num)
+
+            bombLength--
         }
     }
 
@@ -154,8 +195,9 @@ function MineSweeper() {
         let SW = document.getElementById(`${row + 1}-${column - 1}`)
         let S = document.getElementById(`${row + 1}-${column}`)
         let SE = document.getElementById(`${row + 1}-${column + 1}`)
-        let surroundingArray = [NW, N, NE, W, E, SW, S, SE]
-        surroundingArray.forEach(el => el && [el.childNodes[0].classList.remove("msHidden"), el.classList.add("checked")])
+        // let surroundingArray = [NW, N, NE, W, E, SW, S, SE]
+        let surroundingArray = [N, W, E, S]
+        surroundingArray.forEach(el => (el && el.childNodes[0].innerHTML !== "0") && [el.childNodes[0].classList.remove("msHidden"), el.classList.add("checked")])
 
         grid[row][column] = "-"
 
@@ -188,6 +230,7 @@ function MineSweeper() {
                         key={`squareKey-${i}`}
                         onMouseDown={(e) => handleSquareClick(e)}
                         id={`${int}-${i}`}
+                        style={{width: `${sqrDimensions}px`, height: `${sqrDimensions}px`}}
                     >
                         {   el === 0 ? <span className="msSquareValue msHidden">{el}</span>
                             : el === "X" ? <span className="msSquareValue bomb">{el}</span>

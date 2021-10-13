@@ -3,8 +3,6 @@
 }
 
 .msSquare{
-    width: 30px;
-    height: 30px;
     box-sizing: border-box;
     background-color: rgb(165, 165, 165);
     border-top: 3px solid rgba(226, 226, 226, 0.4);
@@ -12,10 +10,11 @@
     border-right: 3px solid rgba(100, 100, 100, 0.4);
     border-bottom: 3px solid rgba(48, 48, 48, 0.4);
     cursor: pointer;
-    font-size: 10px;
+    font-size: 12px;
     display: flex;
     justify-content: center;
     align-items: center;
+    /* font-family: 'Geostar', cursive; */
 }
 
 .msSquare:hover{
@@ -44,7 +43,7 @@
 }
 .bomb{
     color: lime;
-    opacity: 0.4;
+    opacity: 0;
 }
 
 

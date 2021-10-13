@@ -19,11 +19,11 @@
 }
 
 .msSquare:hover{
-    background-color: rgb(145, 145, 145);
+    box-shadow: 0 0 3px black inset;
 }
 
 .msHidden{
-    opacity: 0.3;
+    opacity: 0.1;
 }
 .msSquareValue{
     width: 100%;
@@ -41,4 +41,8 @@
     border-right: 1px solid rgb(153, 153, 153);
     border-left: 1px solid rgb(100, 100, 100);
     border-top: 1px solid rgb(48, 48, 48);
+}
+.red{
+    color: lime;
+    opacity: 0.1;
 }

@@ -1,1 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#FF0000"><path d="M0 0h24v24H0z" fill="none"/><path d="M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6z"/></svg>
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg" xmlns:bx="https://boxy-svg.com">
+  <path d="M 7.424 225.262 H 115.776 L 115.776 153.356 L 233.462 249.231 L 115.776 345.106 L 115.776 273.2 H 7.424 V 225.262 Z" style="stroke-width: 7px; fill: rgb(255, 255, 0); stroke: rgb(0, 255, 255);" bx:shape="arrow 7.424 153.356 226.038 191.75 47.938 117.686 0 1@99ff7592"/>
+  <path d="M -494.667 225.262 H -386.315 L -386.315 153.356 L -268.629 249.231 L -386.315 345.106 L -386.315 273.2 H -494.667 V 225.262 Z" style="stroke-width: 7px; fill: rgb(255, 255, 0); stroke: rgb(0, 255, 255);" transform="matrix(-1, 0, 0, 1, 0, 0)" bx:shape="arrow -494.667 153.356 226.038 191.75 47.938 117.686 0 1@9d3306f2"/>
+  <path d="M 116.602 226.815 H 225.883 L 225.883 155.521 L 344.58 250.58 L 225.883 345.639 L 225.883 274.345 H 116.602 V 226.815 Z" style="stroke-width: 7px; fill: rgb(255, 255, 0); stroke: rgb(0, 255, 255);" transform="matrix(0, 1, -1, 0, 500.629181, -112.07785)" bx:shape="arrow 116.602 155.521 227.978 190.118 47.53 118.697 0 1@36cacbfe"/>
+  <path d="M 802.18 -80.184 H 911.461 L 911.461 -151.478 L 1030.159 -56.419 L 911.461 38.64 L 911.461 -32.654 H 802.18 V -80.184 Z" style="stroke-width: 7px; fill: rgb(255, 255, 0); stroke: rgb(0, 255, 255);" transform="matrix(0, -1, -1, 0, 193.629907, 1296.119599)" bx:shape="arrow 802.18 -151.478 227.978 190.118 47.53 118.697 0 1@2a243bf1"/>
+</svg>

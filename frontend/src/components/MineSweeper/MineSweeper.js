@@ -80,6 +80,7 @@ function MineSweeper() {
                     allBombs[i].nextSibling.classList.remove("clockwise")
                     // allBombs[i].nextSibling.src = hole
                     allBombs[i].classList.add("white")
+                    allBombs[i].parentElement.classList.add("whiteOuter")
                     allBombs[i].nextSibling.src = svg001
                     // revealedPlayer.current.playbackRate = 2
                     // revealedPlayer.current.volume = 0.5
@@ -198,6 +199,7 @@ function MineSweeper() {
         kaboomPlayer.current.volume = 0.5
         kaboomPlayer.current.play()
 
+
         setTimeout(()=>{  e.target.childNodes[2].src = svg001;  e.target.childNodes[1].src = hole }, 450)
         shakeIt()
 
@@ -270,9 +272,9 @@ function MineSweeper() {
         // handles right click
         } else if (e.button === 2) {
             if(e.target.classList.value.includes("checked"))return
-            interface03.current.volume = 0.3
-            interface03.current.currentTime = 0
-            interface03.current.play()
+            // qMarkPlayer.current.volume = 0.3
+            qMarkPlayer.current.currentTime = 0
+            qMarkPlayer.current.play()
 
             if (img.src.includes("svg001")) {
                 if(mineCount > 0){
@@ -366,7 +368,7 @@ function MineSweeper() {
 
     const prevent_default = (e) => e.preventDefault();
 
-    return (<div id="noContext" ref={noContextMenu} style={{left: `${shakeLeft}px`, top: `${shakeTop}px`}}>
+    return (<div id="noContext" className="changeColor" ref={noContextMenu} style={{left: `${shakeLeft}px`, top: `${shakeTop}px`}}>
         <div className="stats">
         <div>MineCount <span className="statNums">{mineCount}</span></div>
         {/* <div>Empty Squares  <span className="statNums">{emptyCount}</span></div>

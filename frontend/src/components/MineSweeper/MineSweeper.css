@@ -84,17 +84,30 @@
 
 #noContext{
     position: relative;
+    z-index: 0;
+    /* transition: all 0.1s linear; */
+}
+
+.changeColor{
     animation-name: colorChange;
     animation-duration: 77s;
     animation-iteration-count:infinite;
     animation-timing-function: linear;
-    z-index: 0;
+}
 
+.gameOver{
+    filter: hue-rotate(190deg) saturate(0);
 }
 
 .white{
     background-color: white;
     box-shadow: 0 0 25px white;
+    filter: blur(1px);
+    z-index: 999;
+}
+.whiteOuter{
+    box-shadow: 0 0 45px white;
+    filter: blur(1px);
     z-index: 999;
 }
 

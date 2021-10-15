@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchAllDrawings, dispatchDeleteDrawing } from "../../store/pixelDrawing";
 import "./Home.css"
 
-
 function Home() {
     const dispatch = useDispatch()
     const allDrawings = useSelector(state => state.pixelDrawing.allDrawings)
@@ -63,6 +62,8 @@ function Home() {
                 </div>
             )}
 
+
+        {/* <Footer/> */}
         </div></>)
 }
 

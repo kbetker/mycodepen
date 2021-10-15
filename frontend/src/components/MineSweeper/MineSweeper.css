@@ -124,6 +124,20 @@
     color: white;
 }
 
+.popper{
+    position: absolute;
+    z-index: 999;
+    width: 600px;
+    height: 600px;
+    background-color: rgba(0, 0, 0, 0.4);
+    pointer-events: none;
+}
+.bombFlash{
+    filter: saturate(0) brightness(10) drop-shadow(0 0 20px #FFFFFF);
+    width: 90px;
+    z-index: 999;
+}
+
 @keyframes colorChange {
     0%   {filter: hue-rotate(0deg);}
     100%   {filter: hue-rotate(360deg);}

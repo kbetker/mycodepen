@@ -392,7 +392,7 @@ function MineSweeper() {
                             : el === "X" ? <span className="msSquareValue bomb">{el}</span>
                             : <span className="msSquareValue msHidden" style={{color: `${
                                   el === 1 ? "#888800"
-                                : el === 2 ? "#880088"
+                                : el === 2 ? "#AA66AA"
                                 : el === 3 ? "#008888"
                                 : el === 4 ? "#888888"
                                 : el === 5 ? "#FF00FF"

@@ -9,11 +9,11 @@
     transition: all 0.3s linear;
     position: fixed;
     bottom: 0;
-    transition: all 1s ease-in-out;
+    transition: all 0.4s ease-in-out;
   }
 
 .footer:hover{
-    height: 110px
+    height: 150px
 }
 .footer > a{
     color: white;

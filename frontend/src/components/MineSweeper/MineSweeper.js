@@ -19,7 +19,7 @@ import revealedSound from "./revealed.mp3"
 function MineSweeper() {
     const [level, setLevel] = useState(4)
     const [rows, setRows] = useState(20)
-    const [columns, setColumns] = useState(20)
+    const [columns, setColumns] = useState(40)
     const [grid, setGrid] = useState([[]])
     const [mineCount, setMineCount] = useState(0)
     const [emptyCount, setEmptyCount] = useState(0)
@@ -161,8 +161,8 @@ function MineSweeper() {
 
 
     async function shakeIt(){
-        let min = -10
-        let max = 10
+        let min = -5
+        let max = 5
 
         const shake = () => {
             return new Promise((resolve) => {
@@ -172,13 +172,13 @@ function MineSweeper() {
                     setShakeLeft(30 + leftRand)
                     setShakeTop(30 + topRand)
                     resolve();
-                }, 10);
+                }, 20);
             });
         }
         for(let i = 0; i < 5; i++){
             await shake()
-            min += 2
-            max -= 2
+            min += 1
+            max -= 1
         }
         setShakeLeft(30)
         setShakeTop(30)
@@ -369,8 +369,8 @@ function MineSweeper() {
     return (<div id="noContext" ref={noContextMenu} style={{left: `${shakeLeft}px`, top: `${shakeTop}px`}}>
         <div className="stats">
         <div>MineCount <span className="statNums">{mineCount}</span></div>
-        <div>Empty Squares  <span className="statNums">{emptyCount}</span></div>
-        <div>Squares Left  <span className="statNums">{squaresLeft}</span></div>
+        {/* <div>Empty Squares  <span className="statNums">{emptyCount}</span></div>
+        <div>Squares Left  <span className="statNums">{squaresLeft}</span></div> */}
         </div>
         {grid.map((ele, int) =>
             <div className="msRow" key={`rowKey-${int}`} onMouseDown={(e) => prevent_default(e)}>

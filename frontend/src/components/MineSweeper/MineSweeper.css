@@ -84,7 +84,6 @@
 
 #noContext{
     position: relative;
-    /* transition: all 0.1s linear; */
     animation-name: colorChange;
     animation-duration: 77s;
     animation-iteration-count:infinite;
@@ -104,7 +103,7 @@
     justify-content: space-between;
     color: #999900;
     /* margin: 0 50px; */
-    width: 900px;
+    /* width: 900px; */
     background-color: black;
     padding: 10px;
 }

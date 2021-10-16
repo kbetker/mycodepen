@@ -103,9 +103,6 @@
     animation-timing-function: linear;
 }
 
-.gameOver{
-    filter: hue-rotate(190deg) saturate(0);
-}
 
 .white{
     background-color: white;
@@ -144,6 +141,15 @@
     filter: saturate(0) brightness(10) drop-shadow(0 0 20px #FFFFFF);
     width: 90px;
     z-index: 999;
+}
+.gameWrapper{
+    transition: all 8s ease-in-out;
+}
+.flash{
+    filter: brightness(1.3) contrast(1.3);
+}
+.endGame{
+    filter: brightness(0.6) saturate(0);
 }
 
 @keyframes colorChange {

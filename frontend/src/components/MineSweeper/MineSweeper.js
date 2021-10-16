@@ -49,6 +49,8 @@ function MineSweeper() {
     const [confettiPieces, setConfettiPieces] = useState(0)
     const [confettiX, setConfettiX] = useState(100)
     const [confettiY, setConfettiY] = useState(100)
+    const flashEffect = useRef()
+    const gameWrapper = useRef()
     // const { width, height } = useWindowSize()
 
     // const [flags, setFlags] = useState(svg001)
@@ -196,10 +198,10 @@ function MineSweeper() {
 
     //============================   KABOOM!!!!!!  ===========================
     async function handleBoom(e){
-       setGameOver(true)
-         e.target.childNodes[0].style.opacity = "1"
-         console.log( e.target.childNodes[0].classList)
-         interface01.current.play()
+        setGameOver(true)
+        e.target.childNodes[0].style.opacity = "1"
+        console.log( e.target.childNodes[0].classList)
+        interface01.current.play()
 
         setTimeout(() => {
              asplodeAllBombs()
@@ -229,20 +231,22 @@ function MineSweeper() {
 
                    allBombs[i].parentElement.classList.add("bombed")
                    allBombs[i].nextSibling.classList.add("bombFlash")
+                   flashEffect.current.classList.add("flash")
                    allBombs[i].classList.remove("bomb")
                    allBombs[i].nextSibling.classList.remove("clockwise")
                    allBombs[i].nextSibling.src = hole
-                //    kaboomPlayer.current.playbackRate = 2
-                //    kaboomPlayer.current.volume = 0.5
+                   kaboomPlayer.current.playbackRate = 2
+                   kaboomPlayer.current.volume = 0.5
                    kaboomPlayer.current.play()
-                   setConfettiPieces(40)
+                   setConfettiPieces(140)
                    setTimeout(()=>{
                     //    setConfettiPieces(0)
                        allBombs[i].nextSibling.classList.remove("bombFlash")
-                   }, 120)
+                       flashEffect.current.classList.remove("flash")
+                   }, 20)
                 //    shakeIt()
                    resolve();
-               }, randomMinMax(120, 500));
+               }, randomMinMax(20, 400));
            });
        }
          while(arrayCount.length > 0){
@@ -250,6 +254,7 @@ function MineSweeper() {
              let num = arrayCount.splice(int, 1)
              await remove(num)
          }
+         gameWrapper.current.classList.add("endGame")
          setConfettiPieces(0)
     }
 
@@ -389,7 +394,9 @@ function MineSweeper() {
 
     const prevent_default = (e) => e.preventDefault();
 
-    return (<>
+    return (
+        <div ref={flashEffect} className="flashEffect">
+    <div ref={gameWrapper} className="gameWrapper">
       <Confetti
         numberOfPieces={confettiPieces}
         confettiSource={{x: confettiX, y:confettiY, w:30, h:30}}
@@ -469,7 +476,8 @@ function MineSweeper() {
         <audio ref={successPlayer} src={successSound} type="audio/mpeg"></audio>
         <audio ref={revealedPlayer} src={revealedSound} type="audio/mpeg"></audio>
     </div>
-                        </>
+                        </div>
+                        </div>
     )
 }
 

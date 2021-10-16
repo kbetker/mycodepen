@@ -218,27 +218,31 @@ function MineSweeper() {
 
        const remove = (i) => {
            return new Promise((resolve) => {
-               setTimeout(() => {
+               setTimeout(async () => {
                    let coordinates = allBombs[i].getBoundingClientRect();
                    setConfettiX(coordinates.left)
                    setConfettiY(coordinates.top)
                    kaboomPlayer.current.currentTime = 0
                    allBombs[i].innerHTML = ""
+                   console.log(allBombs[i].parentElement)
+                   allBombs[i].parentElement.classList.remove("msSquare")
+
+                   allBombs[i].parentElement.classList.add("bombed")
                    allBombs[i].nextSibling.classList.add("bombFlash")
                    allBombs[i].classList.remove("bomb")
                    allBombs[i].nextSibling.classList.remove("clockwise")
                    allBombs[i].nextSibling.src = hole
-                   kaboomPlayer.current.playbackRate = 2
-                   kaboomPlayer.current.volume = 0.5
+                //    kaboomPlayer.current.playbackRate = 2
+                //    kaboomPlayer.current.volume = 0.5
                    kaboomPlayer.current.play()
-                   setConfettiPieces(80)
+                   setConfettiPieces(40)
                    setTimeout(()=>{
-                       setConfettiPieces(0)
+                    //    setConfettiPieces(0)
                        allBombs[i].nextSibling.classList.remove("bombFlash")
-                   }, 10)
+                   }, 120)
                 //    shakeIt()
                    resolve();
-               }, randomMinMax(40, 400));
+               }, randomMinMax(120, 500));
            });
        }
          while(arrayCount.length > 0){
@@ -246,6 +250,7 @@ function MineSweeper() {
              let num = arrayCount.splice(int, 1)
              await remove(num)
          }
+         setConfettiPieces(0)
     }
 
 
@@ -366,10 +371,11 @@ function MineSweeper() {
         clearEmpties(row, right)
     }
 
-    function randoColor(e){
+    function randomColor(e){
         // console.log( e.target.parentElement.style.backgroundColor)
         // console.log(e.target.parentElement.className)
-       if(e.target.parentElement.className.includes("checked")){
+        let theClassName = e.target.parentElement.className
+       if(theClassName.includes("checked") || theClassName.includes("bombed")){
         e.target.parentElement.style.backgroundColor = `rgb(0, 0, ${randomMinMax(50, 100)})`
        } else {
         e.target.parentElement.style.backgroundColor = `rgb(0, 0, ${randomMinMax(180, 255)})`
@@ -387,20 +393,21 @@ function MineSweeper() {
       <Confetti
         numberOfPieces={confettiPieces}
         confettiSource={{x: confettiX, y:confettiY, w:30, h:30}}
-        colors={["#6666FF"]}
-        initialVelocityX={{min:-15, max:15}}
-        initialVelocityY={{min:-15, max:15}}
+        colors={["#9999FF"]}
+        initialVelocityX={{min:-10, max:10}}
+        initialVelocityY={{min:-10, max:10}}
         drawShape={ctx => {
             ctx.beginPath()
             ctx.lineTo(0, 0);
             ctx.moveTo(0, 0)
-            ctx.lineTo(0, 4);
-            ctx.moveTo(0, 4)
-            ctx.lineTo(4, 4);
-            ctx.moveTo(4, 4)
-            ctx.lineTo(4, 0);
-            ctx.moveTo(4, 0)
-            ctx.lineWidth = 5;
+            ctx.lineTo(0, 3);
+            ctx.moveTo(0, 3)
+            ctx.lineTo(3, 3);
+            ctx.moveTo(3, 3)
+            ctx.lineTo(3, 0);
+            ctx.moveTo(3, 0);
+            ctx.lineTo(0, 0);
+            ctx.lineWidth = 3;
             ctx.stroke();
             ctx.closePath()
           }}
@@ -426,9 +433,9 @@ function MineSweeper() {
                         style={{
                             width: `${sqrDimensions}px`,
                             height: `${sqrDimensions}px`,
-                            // backgroundColor: `rgb(0, 0, ${randoColor()})`
+                            // backgroundColor: `rgb(0, 0, ${randomColor()})`
                         }}
-                        onLoad={(e)=>randoColor(e)}
+                        onLoad={(e)=>randomColor(e)}
                     >
                         {   el === 0 ? <span className="msSquareValue msHidden">{el}</span>
                             : el === "X" ? <span className="msSquareValue bomb">{el}</span>

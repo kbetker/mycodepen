@@ -24,13 +24,13 @@ import Confetti from 'react-confetti'
 function MineSweeper() {
     const [level, setLevel] = useState(4)
     const [rows, setRows] = useState(20)
-    const [columns, setColumns] = useState(40)
+    const [columns, setColumns] = useState(30)
     const [grid, setGrid] = useState([[]])
     const [mineCount, setMineCount] = useState(0)
     const [emptyCount, setEmptyCount] = useState(0)
     const [squaresLeft, setSquaresLeft] = useState(0)
     const [gameOver, setGameOver] = useState(false)
-    const [sqrDimensions, setSqrDimensions] = useState(30)
+    const [sqrDimensions, setSqrDimensions] = useState(40)
     const getRandomNum = (max) => Math.floor(Math.random() * max);
     const noContextMenu = useRef()
     const [shakeLeft, setShakeLeft] = useState(30)
@@ -424,12 +424,12 @@ function MineSweeper() {
 
     <div id="noContext" className="changeColor" ref={noContextMenu} style={{left: `${shakeLeft}px`, top: `${shakeTop}px`}}>
         <div className="stats">
-        <div>MineCount <span className="statNums">{mineCount}</span></div>
+        <div className="mineCount"><img src={svg002} className="mineCountImg"></img> <span className="statNums">{mineCount}</span></div>
         {/* <div>Empty Squares  <span className="statNums">{emptyCount}</span></div>
         <div>Squares Left  <span className="statNums">{squaresLeft}</span></div> */}
         </div>
         {grid.map((ele, int) =>
-            <div className="msRow" key={`rowKey-${int}`} onMouseDown={(e) => prevent_default(e)}>
+            <div className="msRow" key={`rowKey-${int}`} onMouseDown={(e) => prevent_default(e)} style={{width: `${columns * sqrDimensions}px`}}>
                 {ele.map((el, i) =>
                     <div
                         className="msSquare"
@@ -458,7 +458,7 @@ function MineSweeper() {
                                 : ""
                             }`}}>{el}</span>
                         }
-                        <img src={svg001} className="msFlag clockwise"></img>
+                        <img src={svg001} className="msFlag clockwise" style={{width: `${sqrDimensions - 5}px`}}></img>
                         <img src={svg001} className="kaboom"></img>
                     </div>)}
             </div>

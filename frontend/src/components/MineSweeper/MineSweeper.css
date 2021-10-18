@@ -1,6 +1,5 @@
 .msRow{
     display: flex;
-
 }
 
 .msSquare{
@@ -81,7 +80,16 @@
     pointer-events: none;
     width: 20px;
 }
-
+.mineCount{
+    width: 60px;
+    display: flex;
+    justify-content: space-between;
+    height: 30px;
+    align-items: center;
+}
+.mineCountImg{
+    width: 30px;
+}
 
 .kaboom{
     position: absolute;

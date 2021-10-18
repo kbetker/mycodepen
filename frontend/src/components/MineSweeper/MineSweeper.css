@@ -34,7 +34,42 @@
     align-items: center;
     pointer-events: none;
     /* transition: all 0.5s linear; */
+}
 
+.lvlSelect,.startGame{
+    color: #000000;
+    background-color: #FF6666;
+    border-bottom: 3px solid rgb(59, 40, 228);
+    border-right: 3px solid rgb(48, 29, 155);
+    border-left: 3px solid rgb(13, 15, 87);
+    border-top: 3px solid rgb(0, 0, 0);
+    /* width: 50px; */
+    height: 50px;
+    cursor: pointer;
+}
+.startGame{
+    background-color: #6666FF;
+}
+.lvlSelect:hover,.startGame:hover{
+    filter: brightness(1.4);
+}
+
+.lvlSelectActive{
+    color: #FF6666;
+    background-color: #990000;
+    border-top: 3px solid rgb(59, 40, 228);
+    border-left: 3px solid rgb(48, 29, 155);
+    border-right: 3px solid rgb(13, 15, 87);
+    border-bottom: 3px solid rgb(0, 0, 0);
+    /* width: 50px; */
+    height: 50px;
+    cursor: pointer;
+}
+.levelSelect{
+    display: flex;
+    height: 50px;
+    color: white;
+    align-items: center;
 }
 
 .msEmptySquare{
@@ -89,6 +124,7 @@
 }
 .mineCountImg{
     width: 30px;
+    margin-right: 10px;
 }
 
 .kaboom{
@@ -136,15 +172,12 @@
 .statNums{
     color: white;
 }
-
-.popper{
-    position: absolute;
-    z-index: 999;
-    width: 600px;
-    height: 600px;
-    background-color: rgba(0, 0, 0, 0.4);
-    pointer-events: none;
+.hint{
+    color: white;
+    text-shadow: 0 0 5px white;
+    filter: brightness(2);
 }
+
 .bombFlash{
     filter: saturate(0) brightness(10) drop-shadow(0 0 20px #FFFFFF);
     width: 90px;

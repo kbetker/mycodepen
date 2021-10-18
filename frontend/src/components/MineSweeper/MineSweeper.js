@@ -5,7 +5,7 @@ import svg002 from "./svg002.svg"
 import svg001 from "./svg001.svg"
 import kaboom from "./asplode5.gif"
 import kaboomSound from "./explosion.mp3"
-import hole from "./hole3.png"
+import hole from "./hole4.png"
 import interfaceSound01 from "./interface01.mp3"
 import interfaceSound02 from "./interface02.mp3"
 import interfaceSound03 from "./interface03.mp3"
@@ -16,6 +16,7 @@ import successSound from "./success.mp3"
 import revealedSound from "./revealed.mp3"
 // import useWindowSize from 'react-use/lib/useWindowSize'
 import Confetti from 'react-confetti'
+import screenshot from './screenshot.png'
 
 // import {conf}
 // import pop from "./pop.svg"
@@ -269,21 +270,23 @@ function MineSweeper() {
                     allBombs[i].parentElement.classList.remove("msSquare")
 
                     allBombs[i].parentElement.classList.add("bombed")
-                    allBombs[i].nextSibling.classList.add("bombFlash")
                     flashEffect.current.classList.add("flash")
                     allBombs[i].classList.remove("bomb")
                     allBombs[i].nextSibling.classList.remove("clockwise")
-                    allBombs[i].nextSibling.src = hole
+                    allBombs[i].nextSibling.src = svg001
+                    allBombs[i].nextSibling.nextSibling.src = hole
                     kaboomPlayer.current.playbackRate = 2
                     kaboomPlayer.current.volume = 0.5
                     kaboomPlayer.current.play()
                     setConfettiPieces(140)
-                    if(!gameOver) clearTimeout(wat);
+                    allBombs[i].nextSibling.nextSibling.classList.add("bombFlash")
+                    // if(!gameOver) clearTimeout(wat);
                     setTimeout(() => {
                         //    setConfettiPieces(0)
-                        allBombs[i].nextSibling.classList.remove("bombFlash")
+                        allBombs[i].nextSibling.nextSibling.classList.remove("bombFlash")
+                        allBombs[i].nextSibling.nextSibling.classList.add("holeSized")
                         flashEffect.current.classList.remove("flash")
-                    }, 20)
+                    }, 50)
                     //    shakeIt()
                     resolve();
                 }, randomMinMax(20, 400));
@@ -313,6 +316,9 @@ function MineSweeper() {
 
         // handles left click
         if (e.button === 0) {
+            // ingores if flagged
+            if(img.src.includes("svg002") || img.src.includes("svg003")) return;
+
             if (e.target.childNodes[0].innerHTML === "X") {
                 await setConfettiX(e.clientX)
                 await setConfettiY(e.clientY)
@@ -446,6 +452,7 @@ function MineSweeper() {
         setGameStart(false)
         setActiveLevel("")
         setGrid([[]])
+        setGiveHint(false)
         breakLoop = true
         gameWrapper.current.classList.remove("endGame")
     }
@@ -495,6 +502,20 @@ function MineSweeper() {
                         {/* <div>Empty Squares  <span className="statNums">{emptyCount}</span></div>
         <div>Squares Left  <span className="statNums">{squaresLeft}</span></div> */}
                     </div>
+
+                    {(!gameStart && !gameOver) &&
+                        <div className="instructions">
+                            <div className="instructionsTitle">Minesweeper - Instructions</div>
+                            <p>To win the game, you must click on all the squares that do not contain mines. Each number represents the number of mines that are directly adjacent to that number.</p>
+                            <img src={screenshot} className="screenshot"></img>
+
+                            <p>Right clicking a square will place a marker designating it as a square you beleive to house a mine. You must still click all non-mine squares to win even when all markers have been placed. Right click again to change it to a question mark and once more to change back to unmarked.</p>
+
+                            <div></div>
+                            <div style={{textAlign: "center"}}><span className="warning">EPILEPSY WARNING!</span><div>This app uses bright flashing lights</div></div>
+                        </div>
+
+                    }
                     {grid.map((ele, int) =>
                         <div className="msRow" key={`rowKey-${int}`} onMouseDown={(e) => prevent_default(e)}>
                             {ele.map((el, i) =>
@@ -637,7 +658,7 @@ function MineSweeper() {
                         </button>
                         { (mineCount > 0 && !gameStart) && <>
                         <button className="startGame" onClick={handleStart}>Start Game</button>
-                        <input type="checkbox" value={giveHint} onChange={(e) => [setGiveHint(e.target.checked), console.log(giveHint)]}></input>Starting Hint?
+                        <input type="checkbox" value={giveHint} onChange={(e) => setGiveHint(e.target.checked)}></input>Starting Hint?
                         </>
                         }
                     </div>}

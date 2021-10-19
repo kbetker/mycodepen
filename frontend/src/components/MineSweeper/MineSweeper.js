@@ -44,6 +44,7 @@ function MineSweeper() {
     const [activeLevel, setActiveLevel] = useState("")
     const [hint, setHint] = useState([])
     const [giveHint, setGiveHint] = useState(false)
+    const [instructions, setInstructions] = useState(false)
 
     const noContextMenu = useRef()
     const flashEffect = useRef()
@@ -105,7 +106,8 @@ function MineSweeper() {
                     allBombs[i].nextSibling.src = svg001
                     // revealedPlayer.current.playbackRate = 2
                     // revealedPlayer.current.volume = 0.5
-                    revealedPlayer.current.play()
+                    let newAudio = revealedPlayer.current.cloneNode()
+                    newAudio.play()
                     setTimeout(() => { allBombs[i].nextSibling.nextSibling.src = svg001 }, 500)
                     // shakeIt()
                     resolve();
@@ -505,15 +507,25 @@ function MineSweeper() {
 
                     {(!gameStart && !gameOver) &&
                         <div className="instructions">
-                            <div className="instructionsTitle">Minesweeper - Instructions</div>
+                            <div className="gameTitle">Minesweeper</div>
+
+                            {!instructions && <div className="instructionsTitle" onClick={()=>setInstructions(true)}>+ Instructions</div>}
+                            {instructions &&
+                            <>
+                            <div className="instructionsTitle" onClick={()=>setInstructions(false)}>- Instructions</div>
+
+
+
+
                             <p>To win the game, you must click on all the squares that do not contain mines. Each number represents the number of mines that are directly adjacent to that number.</p>
                             <img src={screenshot} className="screenshot"></img>
 
                             <p>Right clicking a square will place a marker designating it as a square you beleive to house a mine. You must still click all non-mine squares to win even when all markers have been placed. Right click again to change it to a question mark and once more to change back to unmarked.</p>
 
                             <div></div>
-                            <div style={{textAlign: "center"}}><span className="warning">EPILEPSY WARNING!</span><div>This app uses bright flashing lights</div></div>
-                        </div>
+                            </>}
+                            <div style={{textAlign: "center"}}><span className="warning">EPILEPSY WARNING!</span><div>This game uses bright flashing lights</div></div>
+                            </div>
 
                     }
                     {grid.map((ele, int) =>
@@ -663,7 +675,7 @@ function MineSweeper() {
                         }
                     </div>}
 
-                    { gameOver && <button className="startGame" onClick={handleNewGame}>New Game</button>}
+                    { gameOver && <button className="newGame" onClick={handleNewGame}>New Game</button>}
 
                     <audio ref={kaboomPlayer} src={kaboomSound} type="audio/mpeg"></audio>
                     <audio ref={flagPlayer} src={flagSound} type="audio/mpeg"></audio>

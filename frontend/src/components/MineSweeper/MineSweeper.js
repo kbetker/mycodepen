@@ -115,6 +115,7 @@ function MineSweeper() {
             });
         }
         while (arrayCount.length > 0) {
+            if(breakLoop)break;
             let int = getRandomNum(arrayCount.length)
             let num = arrayCount.splice(int, 1)
             await remove(num)
@@ -401,12 +402,12 @@ function MineSweeper() {
         let W = document.getElementById(`${row}-${column - 1}`)
         let E = document.getElementById(`${row}-${column + 1}`)
         let S = document.getElementById(`${row + 1}-${column}`)
-        // let NW = document.getElementById(`${row - 1}-${column - 1}`)
-        // let NE = document.getElementById(`${row - 1}-${column + 1}`)
-        // let SW = document.getElementById(`${row + 1}-${column - 1}`)
-        // let SE = document.getElementById(`${row + 1}-${column + 1}`)
-        // let surroundingArray = [NW, N, NE, W, E, SW, S, SE]
-        let surroundingArray = [N, W, E, S]
+        let NW = document.getElementById(`${row - 1}-${column - 1}`)
+        let NE = document.getElementById(`${row - 1}-${column + 1}`)
+        let SW = document.getElementById(`${row + 1}-${column - 1}`)
+        let SE = document.getElementById(`${row + 1}-${column + 1}`)
+        let surroundingArray = [NW, N, NE, W, E, SW, S, SE]
+        // let surroundingArray = [N, W, E, S]
 
         surroundingArray.forEach(el =>
             (el && el.childNodes[0].innerHTML !== "0") && [

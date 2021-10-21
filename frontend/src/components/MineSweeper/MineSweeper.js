@@ -22,6 +22,8 @@ import screenshot from './screenshot.png'
 // import pop from "./pop.svg"
 
 let breakLoop = false
+let startTime
+let score = 0
 
 function MineSweeper() {
 
@@ -45,6 +47,11 @@ function MineSweeper() {
     const [hint, setHint] = useState([])
     const [giveHint, setGiveHint] = useState(false)
     const [instructions, setInstructions] = useState(false)
+    // const [startTime, setStartTime] = useState('')
+    const [currentTime, setCurrentTime] = useState('')
+    const [endTime, setEndTime] = useState('')
+    const [winOrLose, setWinOrLose] = useState('')
+    const [finalScore, setFinalScore] = useState(0)
 
     const noContextMenu = useRef()
     const flashEffect = useRef()
@@ -61,6 +68,7 @@ function MineSweeper() {
     const interface06 = useRef()
     const successPlayer = useRef()
     const revealedPlayer = useRef()
+    const time = useRef('')
 
     const getRandomNum = (max) => Math.floor(Math.random() * max);
     // const { width, height } = useWindowSize()
@@ -69,7 +77,10 @@ function MineSweeper() {
 
     useEffect(() => {
         if (squaresLeft > 0 && (squaresLeft === emptyCount)) {
+            clearInterval(time.current)
             setGameOver(true)
+            setFinalScore(score)
+            setWinOrLose("win")
             handleWin()
         }
     }, [squaresLeft])
@@ -81,6 +92,18 @@ function MineSweeper() {
         return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
     }
 
+
+    function countUp() {
+
+        time.current = setInterval(() => {
+            let newTime = new Date()
+            let ms = newTime - startTime
+            let seconds = (ms / 1000).toFixed(0)
+            setCurrentTime(seconds)
+            score--
+
+        }, 1000);
+    }
 
 
     async function handleWin() {
@@ -115,7 +138,7 @@ function MineSweeper() {
             });
         }
         while (arrayCount.length > 0) {
-            if(breakLoop)break;
+            if (breakLoop) break;
             let int = getRandomNum(arrayCount.length)
             let num = arrayCount.splice(int, 1)
             await remove(num)
@@ -172,12 +195,12 @@ function MineSweeper() {
                 surrounding.forEach(el => el === "X" && count++)
                 newArr[i][j] = count
 
-                if(count < lowestCount){
-                    hintArray=[]
+                if (count < lowestCount) {
+                    hintArray = []
                     lowestCount = count
                 }
-                if(count <= lowestCount){
-                    hintArray.push([i,j, `Count:${count}`])
+                if (count <= lowestCount) {
+                    hintArray.push([i, j, `Count:${count}`])
                 }
 
                 countingEmptys++
@@ -188,22 +211,26 @@ function MineSweeper() {
         setHint(hintArray)
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         let hintId = hint[randomMinMax(0, hint.length - 1)]
-            if(hintId && giveHint){
-                let hintDiv = document.getElementById(`${hintId[0]}-${hintId[1]}`)
-                hintDiv.childNodes[0].classList.remove("msHidden")
-                hintDiv.childNodes[0].classList.add("hint")
-                hintDiv.classList.add("hint")
-                // hintDiv.childNodes[0].style.color = "#FFFFFF"
-                // hintDiv.childNodes[0].style.textShadow
-            }
-    },[hint])
+        if (hintId && giveHint) {
+            let hintDiv = document.getElementById(`${hintId[0]}-${hintId[1]}`)
+            hintDiv.childNodes[0].classList.remove("msHidden")
+            hintDiv.childNodes[0].classList.add("hint")
+            hintDiv.classList.add("hint")
+            // hintDiv.childNodes[0].style.color = "#FFFFFF"
+            // hintDiv.childNodes[0].style.textShadow
+        }
+    }, [hint])
 
 
     function handleStart() {
+        startTime = new Date()
+        // setStartTime(newTime)
         gridInit()
         setGameStart(true)
+        countUp()
+        score = mineCount * 10
     }
 
 
@@ -243,8 +270,10 @@ function MineSweeper() {
     //============================   KABOOM!!!!!!  ===========================
     async function handleBoom(e) {
         setGameOver(true)
+        setWinOrLose("lose")
         e.target.childNodes[0].style.opacity = "1"
         interface01.current.play()
+        clearInterval(time.current)
 
         setTimeout(() => {
             asplodeAllBombs()
@@ -263,7 +292,7 @@ function MineSweeper() {
 
         const remove = (i) => {
             return new Promise((resolve) => {
-               let wat = setTimeout(async () => {
+                let wat = setTimeout(async () => {
                     let coordinates = allBombs[i].getBoundingClientRect();
                     setConfettiX(coordinates.left)
                     setConfettiY(coordinates.top)
@@ -296,12 +325,13 @@ function MineSweeper() {
             });
         }
         while (arrayCount.length > 0) {
-            if(breakLoop)break
+            if (breakLoop) break
             let int = getRandomNum(arrayCount.length)
             let num = arrayCount.splice(int, 1)
             await remove(num)
         }
-        if(!breakLoop){ gameWrapper.current.classList.add("endGame")
+        if (!breakLoop) {
+            gameWrapper.current.classList.add("endGame")
         }
         setConfettiPieces(0)
     }
@@ -320,7 +350,7 @@ function MineSweeper() {
         // handles left click
         if (e.button === 0) {
             // ingores if flagged
-            if(img.src.includes("svg002") || img.src.includes("svg003")) return;
+            if (img.src.includes("svg002") || img.src.includes("svg003")) return;
 
             if (e.target.childNodes[0].innerHTML === "X") {
                 await setConfettiX(e.clientX)
@@ -445,7 +475,7 @@ function MineSweeper() {
     const prevent_default = (e) => e.preventDefault();
 
     // resets a bunch of stuff to start a new game
-    function handleNewGame(){
+    function handleNewGame() {
         setMineCount(0)
         setRows(0)
         setColumns(0)
@@ -456,6 +486,7 @@ function MineSweeper() {
         setActiveLevel("")
         setGrid([[]])
         setGiveHint(false)
+        setWinOrLose('')
         breakLoop = true
         gameWrapper.current.classList.remove("endGame")
     }
@@ -501,32 +532,40 @@ function MineSweeper() {
 
                 <div id="noContext" className="changeColor" ref={noContextMenu} style={{ left: `${shakeLeft}px`, top: `${shakeTop}px` }}>
                     <div className="stats">
-                        <div className="mineCount"><img src={svg002} className="mineCountImg"></img> <span className="statNums">{mineCount}</span></div>
-                        {/* <div>Empty Squares  <span className="statNums">{emptyCount}</span></div>
-        <div>Squares Left  <span className="statNums">{squaresLeft}</span></div> */}
+                        <div className="mineCount">
+                            <img src={svg002} className="mineCountImg"></img>
+                            <span className="statNums">{mineCount}</span>
+                        </div>
+
+                        {winOrLose === "win" ?  <div>You win. Final Score = {finalScore}</div>
+                          : winOrLose === "lose" ? <div>You lose.</div>
+                          : <div></div>
+                    }
+                        <div className="time">Time: {currentTime}</div>
+
                     </div>
 
                     {(!gameStart && !gameOver) &&
                         <div className="instructions">
                             <div className="gameTitle">Minesweeper</div>
 
-                            {!instructions && <div className="instructionsTitle" onClick={()=>setInstructions(true)}>+ Instructions</div>}
+                            {!instructions && <div className="instructionsTitle" onClick={() => setInstructions(true)}>+ Instructions</div>}
                             {instructions &&
-                            <>
-                            <div className="instructionsTitle" onClick={()=>setInstructions(false)}>- Instructions</div>
+                                <>
+                                    <div className="instructionsTitle" onClick={() => setInstructions(false)}>- Instructions</div>
 
 
 
 
-                            <p>To win the game, you must click on all the squares that do not contain mines. Each number represents the number of mines that are directly adjacent to that number.</p>
-                            <img src={screenshot} className="screenshot"></img>
+                                    <p>To win the game, you must click on all the squares that do not contain mines. Each number represents the number of mines that are directly adjacent to that number.</p>
+                                    <img src={screenshot} className="screenshot"></img>
 
-                            <p>Right clicking a square will place a marker designating it as a square you beleive to house a mine. You must still click all non-mine squares to win even when all markers have been placed. Right click again to change it to a question mark and once more to change back to unmarked.</p>
+                                    <p>Right clicking a square will place a marker designating it as a square you beleive to house a mine. You must still click all non-mine squares to win even when all markers have been placed. Right click again to change it to a question mark and once more to change back to unmarked.</p>
 
-                            <div></div>
-                            </>}
-                            <div style={{textAlign: "center"}}><span className="warning">EPILEPSY WARNING!</span><div>This game uses bright flashing lights</div></div>
-                            </div>
+                                    <div></div>
+                                </>}
+                            <div style={{ textAlign: "center" }}><span className="warning">EPILEPSY WARNING!</span><div>This game uses bright flashing lights</div></div>
+                        </div>
 
                     }
                     {grid.map((ele, int) =>
@@ -568,115 +607,115 @@ function MineSweeper() {
 
 
                     {!gameStart &&
-                    <div className="levelSelect">
-                        Select a level =&gt;
-                        <button className={`lvlSelect ${activeLevel === "level1" && "lvlSelectActive"}`} id="level1" onClick={(e) =>
-                            [
-                                setMineCount(10),
-                                setRows(10),
-                                setColumns(15),
-                                setSqrDimensions(60),
-                                setActiveLevel(e.target.id)
-                            ]
-                        }>level 1
-                        </button>
+                        <div className="levelSelect">
+                            Select a level =&gt;
+                            <button className={`lvlSelect ${activeLevel === "level1" && "lvlSelectActive"}`} id="level1" onClick={(e) =>
+                                [
+                                    setMineCount(10),
+                                    setRows(10),
+                                    setColumns(15),
+                                    setSqrDimensions(60),
+                                    setActiveLevel(e.target.id)
+                                ]
+                            }>level 1
+                            </button>
 
-                        <button className={`lvlSelect ${activeLevel === "level2" && "lvlSelectActive"}`} id="level2" onClick={(e) =>
-                            [
-                                setMineCount(20),
-                                setRows(15),
-                                setColumns(20),
-                                setSqrDimensions(45),
-                                setActiveLevel(e.target.id)
-                            ]
-                        }>level 2
-                        </button>
+                            <button className={`lvlSelect ${activeLevel === "level2" && "lvlSelectActive"}`} id="level2" onClick={(e) =>
+                                [
+                                    setMineCount(20),
+                                    setRows(15),
+                                    setColumns(20),
+                                    setSqrDimensions(45),
+                                    setActiveLevel(e.target.id)
+                                ]
+                            }>level 2
+                            </button>
 
-                        <button className={`lvlSelect ${activeLevel === "level3" && "lvlSelectActive"}`} id="level3" onClick={(e) =>
-                            [
-                                setMineCount(30),
-                                setRows(20),
-                                setColumns(25),
-                                setSqrDimensions(36),
-                                setActiveLevel(e.target.id)
-                            ]
-                        }>level 3
-                        </button>
+                            <button className={`lvlSelect ${activeLevel === "level3" && "lvlSelectActive"}`} id="level3" onClick={(e) =>
+                                [
+                                    setMineCount(30),
+                                    setRows(20),
+                                    setColumns(25),
+                                    setSqrDimensions(36),
+                                    setActiveLevel(e.target.id)
+                                ]
+                            }>level 3
+                            </button>
 
-                        <button className={`lvlSelect ${activeLevel === "level4" && "lvlSelectActive"}`} id="level4" onClick={(e) =>
-                            [
-                                setMineCount(40),
-                                setRows(20),
-                                setColumns(30),
-                                setSqrDimensions(30),
-                                setActiveLevel(e.target.id)
-                            ]
-                        }>level 4
-                        </button>
+                            <button className={`lvlSelect ${activeLevel === "level4" && "lvlSelectActive"}`} id="level4" onClick={(e) =>
+                                [
+                                    setMineCount(40),
+                                    setRows(20),
+                                    setColumns(30),
+                                    setSqrDimensions(30),
+                                    setActiveLevel(e.target.id)
+                                ]
+                            }>level 4
+                            </button>
 
-                        <button className={`lvlSelect ${activeLevel === "level5" && "lvlSelectActive"}`} id="level5" onClick={(e) =>
-                            [
-                                setMineCount(60),
-                                setRows(20),
-                                setColumns(30),
-                                setSqrDimensions(30),
-                                setActiveLevel(e.target.id)
-                            ]
-                        }>level 5
-                        </button>
+                            <button className={`lvlSelect ${activeLevel === "level5" && "lvlSelectActive"}`} id="level5" onClick={(e) =>
+                                [
+                                    setMineCount(60),
+                                    setRows(20),
+                                    setColumns(30),
+                                    setSqrDimensions(30),
+                                    setActiveLevel(e.target.id)
+                                ]
+                            }>level 5
+                            </button>
 
-                        <button className={`lvlSelect ${activeLevel === "level6" && "lvlSelectActive"}`} id="level6" onClick={(e) =>
-                            [
-                                setMineCount(100),
-                                setRows(20),
-                                setColumns(30),
-                                setSqrDimensions(30),
-                                setActiveLevel(e.target.id)
-                            ]
-                        }>level 6
-                        </button>
+                            <button className={`lvlSelect ${activeLevel === "level6" && "lvlSelectActive"}`} id="level6" onClick={(e) =>
+                                [
+                                    setMineCount(100),
+                                    setRows(20),
+                                    setColumns(30),
+                                    setSqrDimensions(30),
+                                    setActiveLevel(e.target.id)
+                                ]
+                            }>level 6
+                            </button>
 
 
-                        <button className={`lvlSelect ${activeLevel === "level7" && "lvlSelectActive"}`} id="level7" onClick={(e) =>
-                            [
-                                setMineCount(150),
-                                setRows(20),
-                                setColumns(30),
-                                setSqrDimensions(30),
-                                setActiveLevel(e.target.id)
-                            ]
-                        }>level 7
-                        </button>
+                            <button className={`lvlSelect ${activeLevel === "level7" && "lvlSelectActive"}`} id="level7" onClick={(e) =>
+                                [
+                                    setMineCount(150),
+                                    setRows(20),
+                                    setColumns(30),
+                                    setSqrDimensions(30),
+                                    setActiveLevel(e.target.id)
+                                ]
+                            }>level 7
+                            </button>
 
-                        <button className={`lvlSelect ${activeLevel === "level8" && "lvlSelectActive"}`} id="level8" onClick={(e) =>
-                            [
-                                setMineCount(250),
-                                setRows(20),
-                                setColumns(30),
-                                setSqrDimensions(30),
-                                setActiveLevel(e.target.id)
-                            ]
-                        }>level 8
-                        </button>
+                            <button className={`lvlSelect ${activeLevel === "level8" && "lvlSelectActive"}`} id="level8" onClick={(e) =>
+                                [
+                                    setMineCount(250),
+                                    setRows(20),
+                                    setColumns(30),
+                                    setSqrDimensions(30),
+                                    setActiveLevel(e.target.id)
+                                ]
+                            }>level 8
+                            </button>
 
-                        <button className={`lvlSelect ${activeLevel === "level9" && "lvlSelectActive"}`} id="level9" onClick={(e) =>
-                            [
-                                setMineCount(400),
-                                setRows(20),
-                                setColumns(30),
-                                setSqrDimensions(30),
-                                setActiveLevel(e.target.id)
-                            ]
-                        }>level 9
-                        </button>
-                        { (mineCount > 0 && !gameStart) && <>
-                        <button className="startGame" onClick={handleStart}>Start Game</button>
-                        <input type="checkbox" value={giveHint} onChange={(e) => setGiveHint(e.target.checked)}></input>Starting Hint?
-                        </>
-                        }
-                    </div>}
+                            <button className={`lvlSelect ${activeLevel === "level9" && "lvlSelectActive"}`} id="level9" onClick={(e) =>
+                                [
+                                    setMineCount(400),
+                                    setRows(20),
+                                    setColumns(30),
+                                    setSqrDimensions(30),
+                                    setActiveLevel(e.target.id)
+                                ]
+                            }>level 9
+                            </button>
+                            {(mineCount > 0 && !gameStart) && <>
+                                <button className="startGame" onClick={handleStart}>Start Game</button>
+                                <input type="checkbox" value={giveHint} onChange={(e) => setGiveHint(e.target.checked)}></input>Starting Hint?
+                            </>
+                            }
+                        </div>}
 
-                    { gameOver && <button className="newGame" onClick={handleNewGame}>New Game</button>}
+                    {gameOver && <button className="newGame" onClick={handleNewGame}>New Game</button>}
 
                     <audio ref={kaboomPlayer} src={kaboomSound} type="audio/mpeg"></audio>
                     <audio ref={flagPlayer} src={flagSound} type="audio/mpeg"></audio>

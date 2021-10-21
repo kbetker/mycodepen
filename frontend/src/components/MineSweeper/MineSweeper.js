@@ -48,7 +48,7 @@ function MineSweeper() {
     const [giveHint, setGiveHint] = useState(false)
     const [instructions, setInstructions] = useState(false)
     // const [startTime, setStartTime] = useState('')
-    const [currentTime, setCurrentTime] = useState('')
+    const [currentTime, setCurrentTime] = useState(0)
     const [endTime, setEndTime] = useState('')
     const [winOrLose, setWinOrLose] = useState('')
     const [finalScore, setFinalScore] = useState(0)
@@ -68,6 +68,7 @@ function MineSweeper() {
     const interface06 = useRef()
     const successPlayer = useRef()
     const revealedPlayer = useRef()
+    const statsBar = useRef()
     const time = useRef('')
 
     const getRandomNum = (max) => Math.floor(Math.random() * max);
@@ -77,10 +78,6 @@ function MineSweeper() {
 
     useEffect(() => {
         if (squaresLeft > 0 && (squaresLeft === emptyCount)) {
-            clearInterval(time.current)
-            setGameOver(true)
-            setFinalScore(score)
-            setWinOrLose("win")
             handleWin()
         }
     }, [squaresLeft])
@@ -107,8 +104,15 @@ function MineSweeper() {
 
 
     async function handleWin() {
+        clearInterval(time.current)
+        setGameOver(true)
+        setWinOrLose("win")
         setGameOver(true)
         successPlayer.current.play()
+        let levelBonus = parseInt(activeLevel) * 5
+        let hintPenalty = giveHint ? -50 : 0
+
+        setFinalScore(score  + hintPenalty + levelBonus)
 
         //====== randomly reveals all other bombs ===========
         let allBombs = document.querySelectorAll(".bomb")
@@ -230,6 +234,7 @@ function MineSweeper() {
         gridInit()
         setGameStart(true)
         countUp()
+        statsBar.current.style.width = `${columns * sqrDimensions -20}px`
         score = mineCount * 10
     }
 
@@ -476,6 +481,7 @@ function MineSweeper() {
 
     // resets a bunch of stuff to start a new game
     function handleNewGame() {
+        clearInterval(time.current)
         setMineCount(0)
         setRows(0)
         setColumns(0)
@@ -487,6 +493,8 @@ function MineSweeper() {
         setGrid([[]])
         setGiveHint(false)
         setWinOrLose('')
+        setCurrentTime(0)
+        statsBar.current.style.width = "840px"
         breakLoop = true
         gameWrapper.current.classList.remove("endGame")
     }
@@ -531,13 +539,13 @@ function MineSweeper() {
 
 
                 <div id="noContext" className="changeColor" ref={noContextMenu} style={{ left: `${shakeLeft}px`, top: `${shakeTop}px` }}>
-                    <div className="stats">
+                    <div className="stats" ref={statsBar}>
                         <div className="mineCount">
                             <img src={svg002} className="mineCountImg"></img>
                             <span className="statNums">{mineCount}</span>
                         </div>
-
-                        {winOrLose === "win" ?  <div>You win. Final Score = {finalScore}</div>
+                        {(gameStart || gameOver) && <div>Level:{activeLevel}</div>}
+                        {winOrLose === "win" ?  <div>You win! Score = {finalScore}</div>
                           : winOrLose === "lose" ? <div>You lose.</div>
                           : <div></div>
                     }
@@ -608,8 +616,8 @@ function MineSweeper() {
 
                     {!gameStart &&
                         <div className="levelSelect">
-                            Select a level =&gt;
-                            <button className={`lvlSelect ${activeLevel === "level1" && "lvlSelectActive"}`} id="level1" onClick={(e) =>
+                            Select level =&gt;
+                            <button className={`lvlSelect ${activeLevel === "1" && "lvlSelectActive"}`} id="1" onClick={(e) =>
                                 [
                                     setMineCount(10),
                                     setRows(10),
@@ -620,7 +628,7 @@ function MineSweeper() {
                             }>level 1
                             </button>
 
-                            <button className={`lvlSelect ${activeLevel === "level2" && "lvlSelectActive"}`} id="level2" onClick={(e) =>
+                            <button className={`lvlSelect ${activeLevel === "2" && "lvlSelectActive"}`} id="2" onClick={(e) =>
                                 [
                                     setMineCount(20),
                                     setRows(15),
@@ -631,7 +639,7 @@ function MineSweeper() {
                             }>level 2
                             </button>
 
-                            <button className={`lvlSelect ${activeLevel === "level3" && "lvlSelectActive"}`} id="level3" onClick={(e) =>
+                            <button className={`lvlSelect ${activeLevel === "3" && "lvlSelectActive"}`} id="3" onClick={(e) =>
                                 [
                                     setMineCount(30),
                                     setRows(20),
@@ -642,7 +650,7 @@ function MineSweeper() {
                             }>level 3
                             </button>
 
-                            <button className={`lvlSelect ${activeLevel === "level4" && "lvlSelectActive"}`} id="level4" onClick={(e) =>
+                            <button className={`lvlSelect ${activeLevel === "4" && "lvlSelectActive"}`} id="4" onClick={(e) =>
                                 [
                                     setMineCount(40),
                                     setRows(20),
@@ -653,7 +661,7 @@ function MineSweeper() {
                             }>level 4
                             </button>
 
-                            <button className={`lvlSelect ${activeLevel === "level5" && "lvlSelectActive"}`} id="level5" onClick={(e) =>
+                            <button className={`lvlSelect ${activeLevel === "5" && "lvlSelectActive"}`} id="5" onClick={(e) =>
                                 [
                                     setMineCount(60),
                                     setRows(20),
@@ -664,7 +672,7 @@ function MineSweeper() {
                             }>level 5
                             </button>
 
-                            <button className={`lvlSelect ${activeLevel === "level6" && "lvlSelectActive"}`} id="level6" onClick={(e) =>
+                            <button className={`lvlSelect ${activeLevel === "6" && "lvlSelectActive"}`} id="6" onClick={(e) =>
                                 [
                                     setMineCount(100),
                                     setRows(20),
@@ -676,7 +684,7 @@ function MineSweeper() {
                             </button>
 
 
-                            <button className={`lvlSelect ${activeLevel === "level7" && "lvlSelectActive"}`} id="level7" onClick={(e) =>
+                            <button className={`lvlSelect ${activeLevel === "7" && "lvlSelectActive"}`} id="7" onClick={(e) =>
                                 [
                                     setMineCount(150),
                                     setRows(20),
@@ -687,7 +695,7 @@ function MineSweeper() {
                             }>level 7
                             </button>
 
-                            <button className={`lvlSelect ${activeLevel === "level8" && "lvlSelectActive"}`} id="level8" onClick={(e) =>
+                            <button className={`lvlSelect ${activeLevel === "8" && "lvlSelectActive"}`} id="8" onClick={(e) =>
                                 [
                                     setMineCount(250),
                                     setRows(20),
@@ -698,7 +706,7 @@ function MineSweeper() {
                             }>level 8
                             </button>
 
-                            <button className={`lvlSelect ${activeLevel === "level9" && "lvlSelectActive"}`} id="level9" onClick={(e) =>
+                            <button className={`lvlSelect ${activeLevel === "9" && "lvlSelectActive"}`} id="9" onClick={(e) =>
                                 [
                                     setMineCount(400),
                                     setRows(20),
@@ -715,7 +723,7 @@ function MineSweeper() {
                             }
                         </div>}
 
-                    {gameOver && <button className="newGame" onClick={handleNewGame}>New Game</button>}
+                    {(gameOver || gameStart) && <button className="newGame" onClick={handleNewGame}>New Game</button>}
 
                     <audio ref={kaboomPlayer} src={kaboomSound} type="audio/mpeg"></audio>
                     <audio ref={flagPlayer} src={flagSound} type="audio/mpeg"></audio>

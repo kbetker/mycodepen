@@ -173,16 +173,16 @@
     align-items: center;
     color: #999900;
     /* margin: 0 50px; */
-    width: 900px;
+    width: 840px;
     background-color: black;
     padding: 10px;
 }
 .statNums{
     color: white;
 }
-.time{
+/* .time{
     width: 300px;
-}
+} */
 .hint{
     color: white;
     text-shadow: 0 0 5px white;

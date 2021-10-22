@@ -36,7 +36,7 @@
     /* transition: all 0.5s linear; */
 }
 
-.lvlSelect,.startGame,.newGame{
+.lvlSelect,.startGame,.newGame,.feelingLucky{
     color: #000000;
     background-color: #FF6666;
     border-bottom: 3px solid rgb(59, 40, 228);
@@ -105,6 +105,16 @@
     border-left: 1px solid rgb(13, 15, 87);
     border-top: 1px solid rgb(0, 0, 0);
     /* transition: all 0.4s linear; */
+}
+
+.feelingLucky{
+    background-color: #750000;
+    color: rgb(180, 218, 253);
+    font-family: 'Press Start 2P', cursive;
+    height: 30px;
+}
+.feelingLucky:hover{
+    background-color: #b41010;
 }
 
 

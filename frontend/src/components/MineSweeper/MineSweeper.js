@@ -3,7 +3,7 @@ import "./MineSweeper.css"
 import svg003 from "./svg003.svg"
 import svg002 from "./svg002.svg"
 import svg001 from "./svg001.svg"
-import kaboom from "./asplode5.gif"
+// import kaboom from "./asplode5.gif"
 import kaboomSound from "./explosion.mp3"
 import hole from "./hole4.png"
 import interfaceSound01 from "./interface01.mp3"
@@ -38,8 +38,8 @@ function MineSweeper() {
     const [gameOver, setGameOver] = useState(false)
     const [gameStart, setGameStart] = useState(false)
     const [sqrDimensions, setSqrDimensions] = useState(30)
-    const [shakeLeft, setShakeLeft] = useState(30)
-    const [shakeTop, setShakeTop] = useState(30)
+    // const [shakeLeft, setShakeLeft] = useState(30)
+    // const [shakeTop, setShakeTop] = useState(30)
     const [confettiPieces, setConfettiPieces] = useState(0)
     const [confettiX, setConfettiX] = useState(100)
     const [confettiY, setConfettiY] = useState(100)
@@ -73,7 +73,6 @@ function MineSweeper() {
 
     const getRandomNum = (max) => Math.floor(Math.random() * max);
     // const { width, height } = useWindowSize()
-
     // const [flags, setFlags] = useState(svg001)
 
     useEffect(() => {
@@ -89,9 +88,8 @@ function MineSweeper() {
         return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
     }
 
-
+    //counts seconds and subtracts from score
     function countUp() {
-
         time.current = setInterval(() => {
             let newTime = new Date()
             let ms = newTime - startTime
@@ -276,7 +274,8 @@ function MineSweeper() {
     async function handleBoom(e) {
         setGameOver(true)
         setWinOrLose("lose")
-        e.target.childNodes[0].style.opacity = "1"
+        if(e) e.target.childNodes[0].style.opacity = "1";
+
         interface01.current.play()
         clearInterval(time.current)
 
@@ -339,6 +338,28 @@ function MineSweeper() {
             gameWrapper.current.classList.add("endGame")
         }
         setConfettiPieces(0)
+    }
+
+
+    function minesMarked(){
+        let ruWinningSon = true
+        let bombs = document.querySelectorAll(".bomb")
+
+        for(let i = 0; i < bombs.length; i++){
+            if(!bombs[i].nextSibling.src.includes("svg002")){
+                bombs[i].style.opacity = 1
+                bombs[i].nextSibling.src = svg001
+                ruWinningSon = false
+            }
+
+        }
+        if(ruWinningSon){
+           handleWin()
+        } else {
+            handleBoom()
+        }
+
+        console.log(bombs[0].nextSibling.src.includes("svg002"))
     }
 
 
@@ -538,12 +559,14 @@ function MineSweeper() {
                 />
 
 
-                <div id="noContext" className="changeColor" ref={noContextMenu} style={{ left: `${shakeLeft}px`, top: `${shakeTop}px` }}>
+                <div id="noContext" className="changeColor" ref={noContextMenu}>
                     <div className="stats" ref={statsBar}>
                         <div className="mineCount">
                             <img src={svg002} className="mineCountImg"></img>
                             <span className="statNums">{mineCount}</span>
                         </div>
+                        {(mineCount === 0 && !gameOver && gameStart) && <button className="feelingLucky" onClick={minesMarked}>Feeling Lucky?</button>}
+
                         {(gameStart || gameOver) && <div>Level:{activeLevel}</div>}
                         {winOrLose === "win" ?  <div>You win! Score = {finalScore}</div>
                           : winOrLose === "lose" ? <div>You lose.</div>
@@ -565,10 +588,10 @@ function MineSweeper() {
 
 
 
-                                    <p>To win the game, you must click on all the squares that do not contain mines. Each number represents the number of mines that are directly adjacent to that number.</p>
+                                    <p>To win the game, you must click on all the squares that do not contain mines, or once all mine markers have been placed, click on the &quot;feeling lucky?&quot; button&#40;providing you marked the mines correctly&#41;. Each number represents the number of mines that are directly adjacent to that number.</p>
                                     <img src={screenshot} className="screenshot"></img>
 
-                                    <p>Right clicking a square will place a marker designating it as a square you beleive to house a mine. You must still click all non-mine squares to win even when all markers have been placed. Right click again to change it to a question mark and once more to change back to unmarked.</p>
+                                    <p>Right clicking a square will place a marker designating it as a square you beleive to house a mine. Right click again to change it to a question mark and once more to change back to unmarked.</p>
 
                                     <div></div>
                                 </>}
